@@ -1,5 +1,12 @@
 # 🏋️ Personalized Fitness Tracker with AI-Based Insights
 
+
+## How to run
+```
+docker build --no-cache -t auth-frontend .
+docker run -p 3000:80 --name auth-app auth-frontend
+```
+
 ## 📌 Overview
 This project is a **full-stack fitness tracking application** that leverages **AI-driven insights** to provide personalized workout recommendations and fitness analytics. Built with **React (frontend), Next.js (backend), and a SQL/NoSQL database**, this tracker enables users to log activities, set fitness goals, and visualize progress.
 
