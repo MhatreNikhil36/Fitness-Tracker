@@ -62,18 +62,6 @@ This project is a **full-stack fitness tracking application** that leverages **A
 ### **Phase 4: Deployment & Presentation (Apr 8 – May 3)**
 - AWS/Vercel deployment, final report, and project presentation.
 
-## 📁 Folder Structure
-```
-/project-root
-│── /frontend         # React (Next.js) app
-│── /backend          # API routes & business logic
-│── /database         # Schema & seed data
-│── /docs             # Project documentation
-│── /ai-models        # AI recommendation logic
-│── README.md         # Project overview
-│── package.json      # Dependencies
-│── .gitignore        # Ignored files
-```
 
 ## ⚡ Installation & Setup
 ### 1️⃣ Clone the repository
