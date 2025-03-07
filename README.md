@@ -7,6 +7,22 @@ docker build --no-cache -t frontend .
 docker run -p 3000:80 --name Fitnessapp frontend
 ```
 
+
+ development (supports hot reloead):
+
+```
+docker build --target dev -t my-app:dev .
+mac :  docker run -p 3000:3000 -v $(pwd):/app my-app:dev
+Win: docker run -p 3000:3000 -v %cd%:/app my-app:dev
+
+```
+
+Production(hot reload off)
+```
+docker build --target prod-server -t my-app:prod .
+docker run -p 80:80 my-app:prod
+```
+
 ## 📌 Overview
 This project is a **full-stack fitness tracking application** that leverages **AI-driven insights** to provide personalized workout recommendations and fitness analytics. Built with **React (frontend), Next.js (backend), and a SQL/NoSQL database**, this tracker enables users to log activities, set fitness goals, and visualize progress.
 
