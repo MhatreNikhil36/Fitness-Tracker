@@ -3,8 +3,8 @@
 
 ## How to run
 ```
-docker build --no-cache -t auth-frontend .
-docker run -p 3000:80 --name auth-app auth-frontend
+docker build --no-cache -t frontend .
+docker run -p 3000:80 --name Fitnessapp frontend
 ```
 
 ## 📌 Overview
