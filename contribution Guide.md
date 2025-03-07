@@ -55,8 +55,8 @@ Clone the repository and install the dependencies by running the following comma
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/fitness-tracker-frontend.git
-cd fitness-tracker-frontend
+git clone https://github.com/MhatreNikhil36/Fitness-Tracker.git
+cd Fitness-Tracker
 
 # Install Node.js dependencies
 npm install
