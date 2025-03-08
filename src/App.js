@@ -5,12 +5,14 @@ import NutritionPage from './components/NutritionPage';
 import LogNutritionPage from './components/LogNutritionPage';
 import GoalsPage from './components/AddGoal';
 import DashboardPage from './components/Dashboard';
+import HomePage from './components/Homepage';
 
 
 function App() {
   return (
     <Router>
       <Routes>
+      <Route path="/Homepage" element={<HomePage />} />
         <Route path="/login" element={<AuthForm isLogin={true} />} />
         <Route path="/signup" element={<AuthForm isLogin={false} />} />
         <Route path="/nutrition" element={<NutritionPage />} />
