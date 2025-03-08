@@ -1,4 +1,4 @@
-# 🏋️ Personalized Fitness Tracker with AI Insights
+# 🏋️ Personalized Fitness Tracker 
 
 
 ## How to run
