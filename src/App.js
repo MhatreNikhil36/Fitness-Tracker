@@ -14,7 +14,7 @@ import GoalProgressPage from './components/GoalProgressPage';
 const Layout = ({ children }) => {
   const location = useLocation();
   // Hide NavigationBar on the homepage ("/" or "/Homepage")
-  const hideNavbar = location.pathname === '/' || location.pathname === '/Homepage';
+  const hideNavbar = location.pathname === '/' || location.pathname === '/Homepage' || location.pathname === '/login' || location.pathname === '/signup';
   
   return (
     <>

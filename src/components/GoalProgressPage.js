@@ -150,6 +150,7 @@ const GoalProgressPage = () => {
       </Card>
 
       {/* Form to add new progress */}
+      {goalData.status === 'in_progress' && (
       <Card>
         <CardContent>
           <Typography variant="h6" color="text.primary" gutterBottom>
@@ -184,7 +185,7 @@ const GoalProgressPage = () => {
             </Box>
           </form>
         </CardContent>
-      </Card>
+      </Card> )}
 
       {/* Optionally a back button */}
       <Box sx={{ textAlign: 'left', mt: 2 }}>

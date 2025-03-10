@@ -23,7 +23,7 @@ const Homepage = () => {
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="h6" fontWeight="bold" color="black">fitTrack</Typography>
             <Box sx={{ display: "flex", gap: 4 }}>
-              <Button color="inherit" component={Link} to="/dashboard">DASHBOARD</Button>
+              <Button color="inherit" component={Link} to="/dash">DASHBOARD</Button>
               <Button color="inherit" component={Link} to="/login">LOG IN</Button>
               <Button color="inherit" component={Link} to="/signup">SIGN UP</Button>
             </Box>
