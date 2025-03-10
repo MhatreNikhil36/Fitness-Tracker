@@ -7,6 +7,10 @@ import {
   Grid,
   Divider,
   CircularProgress,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import {
   LineChart,
@@ -18,30 +22,30 @@ import {
   Legend,
   BarChart,
   Bar,
+  ResponsiveContainer,
 } from 'recharts';
 
 const DashboardPage = () => {
   // States to hold fetched data
-  const [goals, setGoals] = useState(null);
-  const [progressData, setProgressData] = useState(null);
-  const [nutritionData, setNutritionData] = useState(null);
+  const [goals, setGoals] = useState([]);
+  const [progressData, setProgressData] = useState([]);
+  const [nutritionData, setNutritionData] = useState([]);
+  const [recentActivity, setRecentActivity] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // ------------------------------------------------------------------
-    // In a real app, you'd fetch data from your backend:
-    // Example:
-    //   fetch('/api/dashboard')
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       setGoals(data.goals);
-    //       setProgressData(data.progress);
-    //       setNutritionData(data.nutrition);
-    //       setIsLoading(false);
-    //     })
-    //     .catch((err) => console.error(err));
-    // For now, we'll mock up some data:
-    // ------------------------------------------------------------------
+    // In a real app, you'd do something like:
+    // fetch('/api/dashboard')
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setGoals(data.goals);
+    //     setProgressData(data.progress);
+    //     setNutritionData(data.nutrition);
+    //     setRecentActivity(data.activity);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => console.error(err));
+    // Mock data for demonstration:
     setTimeout(() => {
       const mockGoals = [
         {
@@ -51,10 +55,15 @@ const DashboardPage = () => {
           status: 'in_progress',
           deadline: '2025-12-31',
         },
+        {
+          goal_type: 'gain_muscle',
+          target_value: 85,
+          current_value: 83,
+          status: 'in_progress',
+          deadline: '2025-10-01',
+        },
       ];
 
-      // Mock progress data (e.g., weight over time)
-      // The `name` could be a date or week label
       const mockProgress = [
         { name: 'Week 1', weight: 78 },
         { name: 'Week 2', weight: 77 },
@@ -62,7 +71,6 @@ const DashboardPage = () => {
         { name: 'Week 4', weight: 75 },
       ];
 
-      // Mock nutrition data for daily macros
       const mockNutrition = [
         { day: 'Mon', calories: 2000, protein: 150 },
         { day: 'Tue', calories: 1900, protein: 140 },
@@ -71,9 +79,25 @@ const DashboardPage = () => {
         { day: 'Fri', calories: 2000, protein: 150 },
       ];
 
+      const mockActivity = [
+        {
+          id: 1,
+          workout_name: 'Full Body Blast',
+          date: '2025-09-01',
+          calories_burned: 300,
+        },
+        {
+          id: 2,
+          workout_name: 'Cardio Quickie',
+          date: '2025-09-03',
+          calories_burned: 250,
+        },
+      ];
+
       setGoals(mockGoals);
       setProgressData(mockProgress);
       setNutritionData(mockNutrition);
+      setRecentActivity(mockActivity);
       setIsLoading(false);
     }, 1000);
   }, []);
@@ -86,11 +110,62 @@ const DashboardPage = () => {
     );
   }
 
+  // Compute quick stats (e.g., how many goals are in progress vs completed)
+  const goalsInProgress = goals.filter((g) => g.status === 'in_progress').length;
+  const completedGoals = goals.filter((g) => g.status === 'completed').length;
+  // Example: total weekly calories from mockNutrition
+  const totalWeeklyCalories = nutritionData.reduce((acc, day) => acc + day.calories, 0);
+
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4, p: 2 }}>
       <Typography variant="h3" color="text.primary" gutterBottom>
         Dashboard
       </Typography>
+
+      {/* Quick Stats Row */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle2" color="text.secondary">
+                Goals In Progress
+              </Typography>
+              <Typography variant="h5">{goalsInProgress}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle2" color="text.secondary">
+                Completed Goals
+              </Typography>
+              <Typography variant="h5">{completedGoals}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle2" color="text.secondary">
+                Weekly Calories
+              </Typography>
+              <Typography variant="h5">{totalWeeklyCalories}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle2" color="text.secondary">
+                Recent Workouts
+              </Typography>
+              <Typography variant="h5">{recentActivity.length}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
       <Grid container spacing={3}>
         {/* Goals Section */}
         <Grid item xs={12} md={4}>
@@ -118,6 +193,7 @@ const DashboardPage = () => {
                     <Typography variant="body1">
                       <strong>Deadline:</strong> {goal.deadline}
                     </Typography>
+                    <Divider sx={{ mt: 1, mb: 1 }} />
                   </Box>
                 ))
               ) : (
@@ -127,7 +203,7 @@ const DashboardPage = () => {
           </Card>
         </Grid>
 
-        {/* Progress Chart (e.g., Weight Over Time) */}
+        {/* Progress Chart (Weight Over Time) */}
         <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
@@ -136,27 +212,25 @@ const DashboardPage = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               {progressData && progressData.length > 0 ? (
-                <LineChart
-                  width={600}
-                  height={300}
-                  data={progressData}
-                  margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  {/* Animation is enabled by default in Recharts */}
-                  <Line
-                    type="monotone"
-                    dataKey="weight"
-                    stroke="#d32f2f" // red highlight
-                    strokeWidth={3}
-                    dot={{ r: 5 }}
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
+                <Box sx={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <LineChart data={progressData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="weight"
+                        stroke="#d32f2f"
+                        strokeWidth={3}
+                        dot={{ r: 5 }}
+                        activeDot={{ r: 8 }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </Box>
               ) : (
                 <Typography>No progress data available.</Typography>
               )}
@@ -165,7 +239,7 @@ const DashboardPage = () => {
         </Grid>
 
         {/* Nutrition Chart (Daily Calories/Protein) */}
-        <Grid item xs={12}>
+        <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
               <Typography variant="h5" color="text.primary" gutterBottom>
@@ -173,22 +247,47 @@ const DashboardPage = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               {nutritionData && nutritionData.length > 0 ? (
-                <BarChart
-                  width={800}
-                  height={300}
-                  data={nutritionData}
-                  margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="calories" fill="#d32f2f" name="Calories" />
-                  <Bar dataKey="protein" fill="#757575" name="Protein (g)" />
-                </BarChart>
+                <Box sx={{ width: '100%', height: 300 }}>
+                  <ResponsiveContainer>
+                    <BarChart data={nutritionData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Bar dataKey="calories" fill="#d32f2f" name="Calories" />
+                      <Bar dataKey="protein" fill="#757575" name="Protein (g)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </Box>
               ) : (
                 <Typography>No nutrition data available.</Typography>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Recent Activity */}
+        <Grid item xs={12} md={4}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" color="text.primary" gutterBottom>
+                Recent Activity
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+              {recentActivity.length > 0 ? (
+                <List>
+                  {recentActivity.map((act) => (
+                    <ListItem key={act.id} disableGutters>
+                      <ListItemText
+                        primary={act.workout_name}
+                        secondary={`Date: ${act.date} | Calories: ${act.calories_burned}`}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              ) : (
+                <Typography>No recent activity found.</Typography>
               )}
             </CardContent>
           </Card>
