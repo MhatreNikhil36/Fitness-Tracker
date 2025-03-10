@@ -10,6 +10,7 @@ import AddGoal from './components/AddGoal';
 import DashboardPage from './components/Dashboard';
 import GoalsDashboardPage from './components/GoalsDashboardPage'; 
 import GoalProgressPage from './components/GoalProgressPage';
+import NotFoundPage from './components/NotFound';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -39,6 +40,8 @@ const App = () => {
           <Route path="/goal-progress/:goalId" element={<GoalProgressPage />} />
           <Route path="/Dash" element={<DashboardPage />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<NotFoundPage />} />
+          
         </Routes>
       </Layout>
     </Router>
