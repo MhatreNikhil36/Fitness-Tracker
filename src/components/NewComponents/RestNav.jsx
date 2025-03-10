@@ -2,15 +2,14 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  Button,
+  Avatar,
   Box,
   Container,
   useMediaQuery,
   useTheme,
   styled,
-  Avatar,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 // Styled components
 const FitLogo = styled(Typography)(({ theme }) => ({
@@ -28,20 +27,31 @@ const TrackLogo = styled(Typography)(({ theme }) => ({
   borderBottom: `2px solid ${theme.palette.primary.main}`,
 }));
 
-const NavLink = styled(Link)(({ theme }) => ({
+const StyledNavLink = styled(NavLink)(({ theme }) => ({
   color: "black",
   fontWeight: 600,
   textDecoration: "none",
-  "&:hover": {
-    textDecoration: "none",
+  position: "relative", // Needed for positioning the pseudo-element
+  paddingBottom: "12px", // Adds spacing between text and underline
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    width: "100%",
+    height: "3px", // Thickness of the underline
+    bottom: "-6px", // Positioned further down below the text
+    left: "0",
+    backgroundColor: "#dc0019", // Underline color
+    transform: "scaleX(0)", // Initially hidden
+    transformOrigin: "center", // Animation starts from the center
+    transition: "transform 0.3s ease-out", // Smooth animation
+  },
+  "&.active::after": {
+    transform: "scaleX(1)", // Fully visible when active
   },
 }));
 
-const ProfileIcon = styled(Button)(({ theme }) => ({
+const ProfileIcon = styled(Box)(({ theme }) => ({
   padding: "8px",
-  "&:hover": {
-    backgroundColor: "#f5f5f5",
-  },
 }));
 
 export default function RestNav() {
@@ -54,7 +64,7 @@ export default function RestNav() {
         <Toolbar disableGutters sx={{ py: 1, mb: 10 }}>
           {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
-            <Link
+            <NavLink
               to="/"
               style={{
                 display: "flex",
@@ -64,23 +74,23 @@ export default function RestNav() {
             >
               <FitLogo variant="body2">FIT</FitLogo>
               <TrackLogo variant="body2">TRACK</TrackLogo>
-            </Link>
+            </NavLink>
           </Box>
 
           {/* Center Navigation */}
           {!isMobile && (
             <Box sx={{ display: "flex", justifyContent: "center", flex: 1 }}>
               <Box sx={{ display: "flex", gap: 4 }}>
-                <NavLink to="/Dash">Dashboard</NavLink>
-                <NavLink to="/goals">Goals</NavLink>
-                <NavLink to="/logactivity">Workout</NavLink>
-                <NavLink to="/nutrition">Nutrition</NavLink>
+                <StyledNavLink to="/dash">Dashboard</StyledNavLink>
+                <StyledNavLink to="/goals">Goals</StyledNavLink>
+                <StyledNavLink to="/logactivity">Workout</StyledNavLink>
+                <StyledNavLink to="/nutrition">Nutrition</StyledNavLink>
               </Box>
             </Box>
           )}
 
           {/* Spacer */}
-          <Box sx={{ flex: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Profile Icon */}
           <Box
@@ -89,7 +99,7 @@ export default function RestNav() {
               justifyContent: "flex-end",
             }}
           >
-            <ProfileIcon component={Link} to="/settings/profile">
+            <ProfileIcon component={NavLink} to="/settings/profile">
               <Avatar
                 sx={{ width: 32, height: 32 }}
                 src="/static/images/avatar/1.jpg"

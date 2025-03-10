@@ -8,7 +8,7 @@ import {
   useTheme,
   styled,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 // Styled components
 const FitLogo = styled(Typography)(({ theme }) => ({
@@ -26,12 +26,26 @@ const TrackLogo = styled(Typography)(({ theme }) => ({
   borderBottom: `2px solid ${theme.palette.primary.main}`,
 }));
 
-const NavLink = styled(Link)(({ theme }) => ({
+const StyledNavLink = styled(NavLink)(({ theme }) => ({
   color: "black",
   fontWeight: 600,
   textDecoration: "none",
-  "&:hover": {
-    textDecoration: "none",
+  position: "relative", // Needed for positioning the pseudo-element
+  paddingBottom: "12px", // Adds spacing between text and underline
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    width: "100%",
+    height: "3px", // Thickness of the underline
+    bottom: "-6px", // Positioned further down below the text
+    left: "0",
+    backgroundColor: "#dc0019", // Underline color (red)
+    transform: "scaleX(0)", // Initially hidden
+    transformOrigin: "center", // Animation starts from the center
+    transition: "transform 0.3s ease-out", // Smooth animation
+  },
+  "&.active::after": {
+    transform: "scaleX(1)", // Fully visible when active
   },
 }));
 
@@ -45,7 +59,7 @@ export default function AdminNav() {
         <Toolbar disableGutters sx={{ py: 1, mb: 10, width: "100%" }}>
           {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Link
+            <NavLink
               to="/"
               style={{
                 display: "flex",
@@ -55,26 +69,33 @@ export default function AdminNav() {
             >
               <FitLogo variant="body2">FIT</FitLogo>
               <TrackLogo variant="body2">TRACK</TrackLogo>
-            </Link>
+            </NavLink>
           </Box>
 
           {/* Spacer */}
-          <Box sx={{ flex: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* Center Navigation */}
           {!isMobile && (
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ display: "flex", gap: 4 }}>
-                <NavLink to="/admin">Dashboard</NavLink>
-                <NavLink to="/admin/add-exercise">Add Exercise</NavLink>
-                <NavLink to="/admin/add-workout">Add Workout</NavLink>
-                <NavLink to="/admin/add-Ai">Add AI Prompt</NavLink>
+                {/* Add `end` prop to ensure exact matching */}
+                <StyledNavLink to="/admin" end>
+                  Dashboard
+                </StyledNavLink>
+                <StyledNavLink to="/admin/add-exercise">
+                  Add Exercise
+                </StyledNavLink>
+                <StyledNavLink to="/admin/add-workout">
+                  Add Workout
+                </StyledNavLink>
+                <StyledNavLink to="/admin/add-Ai">Add AI Prompt</StyledNavLink>
               </Box>
             </Box>
           )}
 
           {/* Spacer */}
-          <Box sx={{ flex: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
 
           {/* No Auth Buttons */}
           <Box
