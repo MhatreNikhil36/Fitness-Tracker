@@ -1,22 +1,13 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Typography,
-  AppBar,
-  Toolbar,
-} from "@mui/material";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Homepage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "black",
         minHeight: "100vh",
-        width: "100vw",
+        width: "100%",
         display: "flex",
         justifyContent: "center",
         overflowX: "hidden",
@@ -32,33 +23,9 @@ const Homepage = () => {
           display: "flex",
           flexDirection: "column",
           overflowX: "hidden",
+          alignItems: "center",
         }}
       >
-        {/* 🔹 Navbar */}
-        <AppBar
-          position="static"
-          color="default"
-          elevation={0}
-          sx={{ backgroundColor: "white", py: 2 }}
-        >
-          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="h6" fontWeight="bold" color="black">
-              fitTrack
-            </Typography>
-            <Box sx={{ display: "flex", gap: 4 }}>
-              <Button color="inherit" component={Link} to="/dash">
-                DASHBOARD
-              </Button>
-              <Button color="inherit" component={Link} to="/login">
-                LOG IN
-              </Button>
-              <Button color="inherit" component={Link} to="/signup">
-                SIGN UP
-              </Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-
         {/* 🔹 Hero Section - Fix White Background */}
         <Box
           sx={{
@@ -72,6 +39,7 @@ const Homepage = () => {
             backgroundPosition: "center",
             paddingRight: "5%",
             paddingLeft: "5%",
+            width: "60vw",
           }}
         >
           {/* Text Directly on Image (No Background) */}
@@ -193,7 +161,15 @@ const Homepage = () => {
         </Container>
 
         {/* 🔹 Footer - Fix Missing Issue */}
-        <Box sx={{ bgcolor: "grey.100", py: 6, px: 4, minHeight: "100px" }}>
+        <Box
+          sx={{
+            bgcolor: "grey.100",
+            py: 6,
+            px: 4,
+            minHeight: "100px",
+            width: "100%",
+          }}
+        >
           <Container>
             <Grid container spacing={4}>
               <Grid item xs={12} md={4}>

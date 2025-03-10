@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import Navbar from "../NewComponents/Navbar";
 
 import {
   Box,
@@ -78,10 +77,15 @@ export default function Login() {
 
   const handleLogin = () => {
     if (email === "admin@mavs.uta.edu" && password === "admin@123") {
-      // Successful login logic here
-      console.log("Login successful");
+      // Admin login
+      console.log("Admin login successful");
       setLoginError(false);
-      navigate("/Dash"); // Redirect to Dashboard page
+      navigate("/admin");
+    } else if (email === "user@mavs.uta.edu" && password === "user@123") {
+      // User login
+      console.log("User login successful");
+      setLoginError(false);
+      navigate("/dash");
     } else {
       setLoginError(true);
     }
@@ -89,7 +93,6 @@ export default function Login() {
 
   return (
     <>
-      <Navbar />
       <Box
         sx={{
           minHeight: "100vh",

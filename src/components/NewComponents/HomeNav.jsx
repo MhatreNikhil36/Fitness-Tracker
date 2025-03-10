@@ -1,3 +1,4 @@
+// SimpleNavbar.js
 import {
   AppBar,
   Toolbar,
@@ -27,15 +28,6 @@ const TrackLogo = styled(Typography)(({ theme }) => ({
   borderBottom: `2px solid ${theme.palette.primary.main}`,
 }));
 
-const NavLink = styled(Link)(({ theme }) => ({
-  color: "black",
-  fontWeight: 600,
-  textDecoration: "none",
-  "&:hover": {
-    textDecoration: "none",
-  },
-}));
-
 const LoginButton = styled(Button)(({ theme }) => ({
   color: "#111",
   padding: "12px 28px",
@@ -59,14 +51,14 @@ const SignupButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export default function Navbar() {
+export default function HomeNav() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <AppBar position="static" color="transparent" elevation={0}>
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ py: 1, mb: 10 }}>
+        <Toolbar disableGutters sx={{ py: 1, mb: 2 }}>
           {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
             <Link
@@ -81,18 +73,6 @@ export default function Navbar() {
               <TrackLogo variant="body2">TRACK</TrackLogo>
             </Link>
           </Box>
-
-          {/* Center Navigation */}
-          {!isMobile && (
-            <Box sx={{ display: "flex", justifyContent: "center", flex: 1 }}>
-              <Box sx={{ display: "flex", gap: 4 }}>
-                <NavLink to="/Dash">Dashboard</NavLink>
-                <NavLink to="/goals">Goals</NavLink>
-                <NavLink to="/workout">Workout</NavLink>
-                <NavLink to="/nutrition">Nutrition</NavLink>
-              </Box>
-            </Box>
-          )}
 
           {/* Auth Buttons */}
           <Box

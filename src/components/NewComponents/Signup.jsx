@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Calendar, Info } from "lucide-react";
-import Navbar from "../NewComponents/Navbar";
 
 import {
   Box,
@@ -66,7 +65,6 @@ export default function Signup() {
 
   return (
     <>
-      <Navbar />
       <Box
         sx={{
           minHeight: "100vh",

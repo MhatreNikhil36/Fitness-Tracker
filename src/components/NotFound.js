@@ -1,21 +1,20 @@
 // NotFoundPage.js
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Box, Typography, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
-  
+
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-        textAlign: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "50vh",
+        textAlign: "center",
         p: 3,
       }}
     >
@@ -25,10 +24,18 @@ const NotFoundPage = () => {
       <Typography variant="h5" color="textPrimary" gutterBottom>
         Oops! Page not found.
       </Typography>
-      <Typography variant="body1" color="textSecondary" sx={{ maxWidth: 400, mb: 4 }}>
+      <Typography
+        variant="body1"
+        color="textSecondary"
+        sx={{ maxWidth: 400, mb: 4 }}
+      >
         The page you are looking for doesn't exist or may have been moved.
       </Typography>
-      <Button variant="contained" color="error" onClick={() => navigate('/Homepage')}>
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => navigate("/Homepage")}
+      >
         Go to Home
       </Button>
     </Box>

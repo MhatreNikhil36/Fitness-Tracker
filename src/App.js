@@ -6,7 +6,6 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import NavigationBar from "./components/NavigationBar";
 import HomePage from "./components/Homepage";
 import NutritionPage from "./components/NutritionPage";
 import LogNutritionPage from "./components/LogNutritionPage";
@@ -26,19 +25,23 @@ import Signup from "./components/NewComponents/Signup";
 import ProfileSettings from "./components/NewComponents/ProfileSettings";
 import AccountSettings from "./components/NewComponents/AccountSettings";
 import DisplaySettings from "./components/NewComponents/DisplaySettings";
+import HomeNav from "./components/NewComponents/HomeNav";
+import RestNav from "./components/NewComponents/RestNav";
+import AdminNav from "./components/NewComponents/AdminNav";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  // Hide NavigationBar on the homepage ("/" or "/Homepage")
-  const hideNavbar =
+  // Use HomeNav for specific routes, AdminNav for admin routes, otherwise use RestNav
+  const useHomeNav =
     location.pathname === "/" ||
     location.pathname === "/Homepage" ||
     location.pathname === "/login" ||
     location.pathname === "/signup";
+  const useAdminNav = location.pathname.startsWith("/admin");
 
   return (
     <>
-      {!hideNavbar && <NavigationBar />}
+      {useHomeNav ? <HomeNav /> : useAdminNav ? <AdminNav /> : <RestNav />}
       {children}
     </>
   );
@@ -60,7 +63,7 @@ const App = () => {
           <Route path="/goals" element={<GoalsDashboardPage />} />
           <Route path="/addGoal" element={<AddGoal />} />
           <Route path="/goal-progress/:goalId" element={<GoalProgressPage />} />
-          <Route path="/Dash" element={<DashboardPage />} />
+          <Route path="/dash" element={<DashboardPage />} />
           <Route path="/logactivity" element={<LogActivityPage />} />
           <Route path="/activity" element={<Activity />} />
           <Route path="/" element={<HomePage />} />
