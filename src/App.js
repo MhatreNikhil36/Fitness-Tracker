@@ -13,7 +13,10 @@ import GoalProgressPage from './components/GoalProgressPage';
 import NotFoundPage from './components/NotFound';
 import LogActivityPage from './components/LogActivityPage';
 import Activity  from './components/activity';
-
+import AddExercisePage from './components/Admin/AddExercisePage';
+import AddWorkoutPage from './components/Admin/AddWorkoutPage';
+import AddAiPromptPage from './components/Admin/AddAiPromptPage';
+import AdminHome from './components/Admin/AdminHome';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -46,6 +49,10 @@ const App = () => {
           <Route path="/activity" element={<Activity />} />
           <Route path="/" element={<HomePage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/admin/add-exercise" element={<AddExercisePage />} />
+          <Route path="/admin/add-workout" element={<AddWorkoutPage />} />
+          <Route path="/admin/add-Ai" element={<AddAiPromptPage />} />
+          <Route path="/admin" element={<AdminHome />} />
           
         </Routes>
       </Layout>
