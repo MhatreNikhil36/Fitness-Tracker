@@ -38,6 +38,11 @@ const NavigationBar = () => {
         <NavButton component={Link} to="/goals">
           Goals
         </NavButton>
+        <NavButton component={Link} to="/logactivity">
+          Workouts
+        </NavButton>
+
+        
       </Toolbar>
     </AppBar>
   );

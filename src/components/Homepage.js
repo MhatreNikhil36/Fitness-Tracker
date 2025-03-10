@@ -10,7 +10,7 @@ const Homepage = () => {
         sx={{
           backgroundColor: "white",
           width: "90%",
-          maxWidth: "1200px",
+          // maxWidth: "1200px",
           borderRadius: 3,
           overflow: "hidden",
           boxShadow: 3,
