@@ -1,8 +1,14 @@
 // AdminHome.js
-import React from 'react';
-import { Box, Typography, Grid, Card, CardContent, CardActionArea } from '@mui/material';
-import { Link } from 'react-router-dom';
-import AdminNavigationBar from './AdminNavigationBar';
+import React from "react";
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  CardActionArea,
+} from "@mui/material";
+import { Link } from "react-router-dom";
 
 // Example: replace these with real fetch calls or props
 const mockStats = {
@@ -15,14 +21,14 @@ const mockStats = {
 const AdminHome = () => {
   return (
     <Box>
-      <AdminNavigationBar />
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3, minHeight: "80vh" }}>
         <Typography variant="h4" gutterBottom>
           Admin Dashboard
         </Typography>
         <Typography variant="body1" sx={{ mb: 3 }}>
-          Welcome to the admin panel. Use the navigation above to manage exercises,
-          workouts, and AI prompts. Below you’ll find a quick overview and direct actions.
+          Welcome to the admin panel. Use the navigation above to manage
+          exercises, workouts, and AI prompts. Below you’ll find a quick
+          overview and direct actions.
         </Typography>
 
         {/* Quick Stats Section */}
@@ -30,7 +36,11 @@ const AdminHome = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Card>
               <CardContent>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
                   Total Exercises
                 </Typography>
                 <Typography variant="h5">{mockStats.totalExercises}</Typography>
@@ -40,7 +50,11 @@ const AdminHome = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Card>
               <CardContent>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
                   Total Workouts
                 </Typography>
                 <Typography variant="h5">{mockStats.totalWorkouts}</Typography>
@@ -50,7 +64,11 @@ const AdminHome = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Card>
               <CardContent>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
                   AI Prompts
                 </Typography>
                 <Typography variant="h5">{mockStats.totalAiPrompts}</Typography>
@@ -60,7 +78,11 @@ const AdminHome = () => {
           <Grid item xs={12} sm={6} md={3}>
             <Card>
               <CardContent>
-                <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
                   Registered Users
                 </Typography>
                 <Typography variant="h5">{mockStats.totalUsers}</Typography>
