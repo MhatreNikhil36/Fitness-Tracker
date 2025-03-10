@@ -1,28 +1,41 @@
 // App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import NavigationBar from './components/NavigationBar';
-import HomePage from './components/Homepage';
-import AuthForm from './components/AuthForm';
-import NutritionPage from './components/NutritionPage';
-import LogNutritionPage from './components/LogNutritionPage';
-import AddGoal from './components/AddGoal';
-import DashboardPage from './components/Dashboard';
-import GoalsDashboardPage from './components/GoalsDashboardPage'; 
-import GoalProgressPage from './components/GoalProgressPage';
-import NotFoundPage from './components/NotFound';
-import LogActivityPage from './components/LogActivityPage';
-import Activity  from './components/activity';
-import AddExercisePage from './components/Admin/AddExercisePage';
-import AddWorkoutPage from './components/Admin/AddWorkoutPage';
-import AddAiPromptPage from './components/Admin/AddAiPromptPage';
-import AdminHome from './components/Admin/AdminHome';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import NavigationBar from "./components/NavigationBar";
+import HomePage from "./components/Homepage";
+import NutritionPage from "./components/NutritionPage";
+import LogNutritionPage from "./components/LogNutritionPage";
+import AddGoal from "./components/AddGoal";
+import DashboardPage from "./components/Dashboard";
+import GoalsDashboardPage from "./components/GoalsDashboardPage";
+import GoalProgressPage from "./components/GoalProgressPage";
+import NotFoundPage from "./components/NotFound";
+import LogActivityPage from "./components/LogActivityPage";
+import Activity from "./components/activity";
+import AddExercisePage from "./components/Admin/AddExercisePage";
+import AddWorkoutPage from "./components/Admin/AddWorkoutPage";
+import AddAiPromptPage from "./components/Admin/AddAiPromptPage";
+import AdminHome from "./components/Admin/AdminHome";
+import Login from "./components/NewComponents/Login";
+import Signup from "./components/NewComponents/Signup";
+import ProfileSettings from "./components/NewComponents/ProfileSettings";
+import AccountSettings from "./components/NewComponents/AccountSettings";
+import DisplaySettings from "./components/NewComponents/DisplaySettings";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   // Hide NavigationBar on the homepage ("/" or "/Homepage")
-  const hideNavbar = location.pathname === '/' || location.pathname === '/Homepage' || location.pathname === '/login' || location.pathname === '/signup';
-  
+  const hideNavbar =
+    location.pathname === "/" ||
+    location.pathname === "/Homepage" ||
+    location.pathname === "/login" ||
+    location.pathname === "/signup";
+
   return (
     <>
       {!hideNavbar && <NavigationBar />}
@@ -37,8 +50,11 @@ const App = () => {
       <Layout>
         <Routes>
           <Route path="/Homepage" element={<HomePage />} />
-          <Route path="/login" element={<AuthForm isLogin={true} />} />
-          <Route path="/signup" element={<AuthForm isLogin={false} />} />
+          <Route path="/login" element={<Login isLogin={true} />} />
+          <Route path="/signup" element={<Signup isLogin={false} />} />
+          <Route path="/settings/profile" element={<ProfileSettings />} />
+          <Route path="/settings/account" element={<AccountSettings />} />
+          <Route path="/settings/display" element={<DisplaySettings />} />
           <Route path="/nutrition" element={<NutritionPage />} />
           <Route path="/log-nutrition" element={<LogNutritionPage />} />
           <Route path="/goals" element={<GoalsDashboardPage />} />
@@ -53,7 +69,6 @@ const App = () => {
           <Route path="/admin/add-workout" element={<AddWorkoutPage />} />
           <Route path="/admin/add-Ai" element={<AddAiPromptPage />} />
           <Route path="/admin" element={<AdminHome />} />
-          
         </Routes>
       </Layout>
     </Router>

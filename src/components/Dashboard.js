@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -7,11 +7,10 @@ import {
   Grid,
   Divider,
   CircularProgress,
-  Paper,
   List,
   ListItem,
   ListItemText,
-} from '@mui/material';
+} from "@mui/material";
 import {
   LineChart,
   Line,
@@ -23,7 +22,7 @@ import {
   BarChart,
   Bar,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
 const DashboardPage = () => {
   // States to hold fetched data
@@ -49,47 +48,47 @@ const DashboardPage = () => {
     setTimeout(() => {
       const mockGoals = [
         {
-          goal_type: 'lose_weight',
+          goal_type: "lose_weight",
           target_value: 70,
           current_value: 75,
-          status: 'in_progress',
-          deadline: '2025-12-31',
+          status: "in_progress",
+          deadline: "2025-12-31",
         },
         {
-          goal_type: 'gain_muscle',
+          goal_type: "gain_muscle",
           target_value: 85,
           current_value: 83,
-          status: 'in_progress',
-          deadline: '2025-10-01',
+          status: "in_progress",
+          deadline: "2025-10-01",
         },
       ];
 
       const mockProgress = [
-        { name: 'Week 1', weight: 78 },
-        { name: 'Week 2', weight: 77 },
-        { name: 'Week 3', weight: 76 },
-        { name: 'Week 4', weight: 75 },
+        { name: "Week 1", weight: 78 },
+        { name: "Week 2", weight: 77 },
+        { name: "Week 3", weight: 76 },
+        { name: "Week 4", weight: 75 },
       ];
 
       const mockNutrition = [
-        { day: 'Mon', calories: 2000, protein: 150 },
-        { day: 'Tue', calories: 1900, protein: 140 },
-        { day: 'Wed', calories: 2100, protein: 160 },
-        { day: 'Thu', calories: 2200, protein: 165 },
-        { day: 'Fri', calories: 2000, protein: 150 },
+        { day: "Mon", calories: 2000, protein: 150 },
+        { day: "Tue", calories: 1900, protein: 140 },
+        { day: "Wed", calories: 2100, protein: 160 },
+        { day: "Thu", calories: 2200, protein: 165 },
+        { day: "Fri", calories: 2000, protein: 150 },
       ];
 
       const mockActivity = [
         {
           id: 1,
-          workout_name: 'Full Body Blast',
-          date: '2025-09-01',
+          workout_name: "Full Body Blast",
+          date: "2025-09-01",
           calories_burned: 300,
         },
         {
           id: 2,
-          workout_name: 'Cardio Quickie',
-          date: '2025-09-03',
+          workout_name: "Cardio Quickie",
+          date: "2025-09-03",
           calories_burned: 250,
         },
       ];
@@ -104,20 +103,25 @@ const DashboardPage = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
         <CircularProgress />
       </Box>
     );
   }
 
   // Compute quick stats (e.g., how many goals are in progress vs completed)
-  const goalsInProgress = goals.filter((g) => g.status === 'in_progress').length;
-  const completedGoals = goals.filter((g) => g.status === 'completed').length;
+  const goalsInProgress = goals.filter(
+    (g) => g.status === "in_progress"
+  ).length;
+  const completedGoals = goals.filter((g) => g.status === "completed").length;
   // Example: total weekly calories from mockNutrition
-  const totalWeeklyCalories = nutritionData.reduce((acc, day) => acc + day.calories, 0);
+  const totalWeeklyCalories = nutritionData.reduce(
+    (acc, day) => acc + day.calories,
+    0
+  );
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4, p: 2 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4, p: 2 }}>
       <Typography variant="h3" color="text.primary" gutterBottom>
         Dashboard
       </Typography>
@@ -212,7 +216,7 @@ const DashboardPage = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               {progressData && progressData.length > 0 ? (
-                <Box sx={{ width: '100%', height: 300 }}>
+                <Box sx={{ width: "100%", height: 300 }}>
                   <ResponsiveContainer>
                     <LineChart data={progressData}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -247,7 +251,7 @@ const DashboardPage = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               {nutritionData && nutritionData.length > 0 ? (
-                <Box sx={{ width: '100%', height: 300 }}>
+                <Box sx={{ width: "100%", height: 300 }}>
                   <ResponsiveContainer>
                     <BarChart data={nutritionData}>
                       <CartesianGrid strokeDasharray="3 3" />
@@ -256,7 +260,11 @@ const DashboardPage = () => {
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="calories" fill="#d32f2f" name="Calories" />
-                      <Bar dataKey="protein" fill="#757575" name="Protein (g)" />
+                      <Bar
+                        dataKey="protein"
+                        fill="#757575"
+                        name="Protein (g)"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </Box>
