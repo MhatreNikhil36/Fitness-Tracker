@@ -1,5 +1,4 @@
-// LogActivityPage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Drawer,
@@ -17,13 +16,14 @@ import {
   DialogContent,
   DialogActions,
   Divider,
+  TextField,
+  MenuItem,
+  CircularProgress,
 } from '@mui/material';
 
-/** Typical Material UI AppBar height is ~64px. Adjust if your NavBar differs. */
 const navBarHeight = 64;
 const drawerWidth = 240;
 
-/** Example mock data for demonstration */
 const mockAvailable = [
   {
     id: 101,
@@ -33,7 +33,6 @@ const mockAvailable = [
     exercises: [
       {
         id: 1,
-        exercise_id: 201,
         name: 'Push Ups',
         sets: 3,
         reps: 12,
@@ -42,7 +41,6 @@ const mockAvailable = [
       },
       {
         id: 2,
-        exercise_id: 202,
         name: 'Squats',
         sets: 3,
         reps: 10,
@@ -59,7 +57,6 @@ const mockAvailable = [
     exercises: [
       {
         id: 3,
-        exercise_id: 203,
         name: 'Jumping Jacks',
         sets: 2,
         reps: 15,
@@ -101,134 +98,138 @@ const mockRecommended = [
 ];
 
 const LogActivityPage = () => {
-  // Track which tab is selected: 'available', 'past', 'recommended'
   const [selectedTab, setSelectedTab] = useState('available');
-
-  // For the dialog that shows workout details
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
 
-  // Sidebar navigation
+  const [workouts, setWorkouts] = useState([]);
+  const [selectedWorkoutId, setSelectedWorkoutId] = useState('');
+  const [selectedExercise, setSelectedExercise] = useState('');
+  const [duration, setDuration] = useState('');
+  const [calories, setCalories] = useState('');
+  const [loadingWorkouts, setLoadingWorkouts] = useState(true);
+  const [pastWorkouts, setPastWorkouts] = useState(mockPast);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setWorkouts(mockAvailable);
+      setLoadingWorkouts(false);
+    }, 500);
+  }, []);
+
   const handleTabChange = (tab) => {
     setSelectedTab(tab);
     setOpenDialog(false);
     setSelectedWorkout(null);
   };
 
-  // Clicking a workout card
   const handleWorkoutClick = (workout) => {
     setSelectedWorkout(workout);
     setOpenDialog(true);
   };
 
-  // "Finish/Complete" in the dialog
   const handleFinishWorkout = () => {
-    if (!selectedWorkout) return;
-
-    // For each exercise in the workout, we'd do a POST to /api/activity-logs
-    if (selectedWorkout.exercises) {
-      selectedWorkout.exercises.forEach((ex) => {
-        const activityData = {
-          workout_id: selectedWorkout.id,
-          exercise_id: ex.exercise_id,
-          duration_minutes: 30, // Could be user input
-          calories_burned: 200, // Or calculated by server
-        };
-        console.log('Mock POST /api/activity-logs:', activityData);
-      });
-    } else {
-      // If no exercises, just log one entry for the workout
-      console.log('Mock POST single entry for workout:', selectedWorkout.id);
-    }
-
-    alert(`Workout "${selectedWorkout.workout_name}" completed (mock)!`);
+    alert(`Workout "${selectedWorkout.workout_name}" completed!`);
     setOpenDialog(false);
   };
 
-  // Sidebar content
+  const handleWorkoutChange = (e) => {
+    const workoutId = e.target.value;
+    setSelectedWorkoutId(workoutId);
+    const foundWorkout = workouts.find(w => w.id.toString() === workoutId);
+    if (foundWorkout && foundWorkout.exercises.length > 0) {
+      setSelectedExercise(foundWorkout.exercises[0].name);
+    } else {
+      setSelectedExercise('');
+    }
+    setDuration('');
+    setCalories('');
+  };
+
+  const handleExerciseChange = (e) => {
+    setSelectedExercise(e.target.value);
+  };
+
+  const handleDurationChange = (e) => {
+    setDuration(e.target.value);
+  };
+
+  const handleCaloriesChange = (e) => {
+    setCalories(e.target.value);
+  };
+
+  const handleLogActivity = () => {
+    if (!selectedWorkoutId || !selectedExercise || !duration || !calories) {
+      alert('Please fill all the fields before logging activity!');
+      return;
+    }
+    console.log('Activity Logged:', {
+      workout_id: selectedWorkoutId,
+      exercise_name: selectedExercise,
+      duration_minutes: duration,
+      calories_burned: calories,
+    });
+
+    const newActivity = {
+      id: pastWorkouts.length + 1,
+      workout_name: workouts.find(w => w.id.toString() === selectedWorkoutId)?.workout_name,
+      completed_on: new Date().toISOString().split('T')[0], // Using current date for "Completed On"
+      total_calories_burned: calories,
+    };
+
+    setPastWorkouts([...pastWorkouts, newActivity]);
+
+    alert('Activity has been logged!');
+    setSelectedWorkoutId('');
+    setSelectedExercise('');
+    setDuration('');
+    setCalories('');
+  };
+
+  const handleResetForm = () => {
+    setSelectedWorkoutId('');
+    setSelectedExercise('');
+    setDuration('');
+    setCalories('');
+  };
+
+  if (loadingWorkouts) {
+    return (
+      <Box sx={{ textAlign: 'center', mt: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   const sidebarContent = (
     <List>
-      <ListItemButton
-        selected={selectedTab === 'available'}
-        onClick={() => handleTabChange('available')}
-      >
-        <ListItemText primary="Available Workouts" />
-      </ListItemButton>
-      <ListItemButton
-        selected={selectedTab === 'past'}
-        onClick={() => handleTabChange('past')}
-      >
-        <ListItemText primary="Past Workouts" />
-      </ListItemButton>
-      <ListItemButton
-        selected={selectedTab === 'recommended'}
-        onClick={() => handleTabChange('recommended')}
-      >
-        <ListItemText primary="Recommended" />
-      </ListItemButton>
+      {['Available Workouts', 'Past Workouts', 'Recommended Workouts', 'Log Activity'].map((tab) => (
+        <ListItemButton
+          key={tab}
+          selected={selectedTab === tab.toLowerCase().replace(' ', '_')}
+          onClick={() => handleTabChange(tab.toLowerCase().replace(' ', '_'))}
+        >
+          <ListItemText primary={tab} />
+        </ListItemButton>
+      ))}
     </List>
   );
 
-  // Main content based on selectedTab
   let mainContent;
-  if (selectedTab === 'available') {
-    mainContent = (
-      <Grid container spacing={3}>
-        {mockAvailable.map((w) => (
-          <Grid item xs={12} md={6} lg={4} key={w.id}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="h5">{w.workout_name}</Typography>
-                <Typography variant="body1">Duration: {w.duration} min</Typography>
-                <Typography variant="body1">Intensity: {w.level_of_intensity}</Typography>
-              </CardContent>
-              <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
-                <Button variant="contained" color="error" onClick={() => handleWorkoutClick(w)}>
-                  View Details
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    );
-  } else if (selectedTab === 'past') {
-    mainContent = (
-      <Box>
-        <Typography variant="h5" gutterBottom>
-          Past Workouts
-        </Typography>
-        {mockPast.map((pw) => (
-          <Card key={pw.id} sx={{ mb: 2 }}>
-            <CardContent>
-              <Typography variant="h6">{pw.workout_name}</Typography>
-              <Typography variant="body2">
-                Completed on: {pw.completed_on} | Calories: {pw.total_calories_burned}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-    );
-  } else if (selectedTab === 'recommended') {
-    mainContent = (
-      <Box>
-        <Typography variant="h5" gutterBottom>
-          Recommended Workouts
-        </Typography>
+  switch (selectedTab) {
+    case 'available':
+      mainContent = (
         <Grid container spacing={3}>
-          {mockRecommended.map((rw) => (
-            <Grid item xs={12} md={6} lg={4} key={rw.id}>
+          {mockAvailable.map((w) => (
+            <Grid item xs={12} md={6} lg={4} key={w.id}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6">{rw.workout_name}</Typography>
-                  <Typography variant="body2">Duration: {rw.duration} min</Typography>
-                  <Typography variant="body2">
-                    Intensity: {rw.level_of_intensity}
-                  </Typography>
+                  <Typography variant="h5">{w.workout_name}</Typography>
+                  <Typography variant="body1">Duration: {w.duration} min</Typography>
+                  <Typography variant="body1">Intensity: {w.level_of_intensity}</Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
-                  <Button variant="contained" color="error" onClick={() => handleWorkoutClick(rw)}>
+                  <Button variant="contained" color="error" onClick={() => handleWorkoutClick(w)}>
                     View Details
                   </Button>
                 </CardActions>
@@ -236,24 +237,147 @@ const LogActivityPage = () => {
             </Grid>
           ))}
         </Grid>
-      </Box>
-    );
+      );
+      break;
+    case 'past':
+      mainContent = (
+        <Box>
+          <Typography variant="h5" gutterBottom>
+            Past Workouts
+          </Typography>
+          {pastWorkouts.map((pw) => (
+            <Card key={pw.id} sx={{ mb: 2 }}>
+              <CardContent>
+                <Typography variant="h6">{pw.workout_name}</Typography>
+                <Typography variant="body2">
+                  Completed on: {pw.completed_on} | Calories: {pw.total_calories_burned}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      );
+      break;
+    case 'recommended':
+      mainContent = (
+        <Box>
+          <Typography variant="h5" gutterBottom>
+            Recommended Workouts
+          </Typography>
+          <Grid container spacing={3}>
+            {mockRecommended.map((rw) => (
+              <Grid item xs={12} md={6} lg={4} key={rw.id}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <CardContent sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6">{rw.workout_name}</Typography>
+                    <Typography variant="body2">Duration: {rw.duration} min</Typography>
+                    <Typography variant="body2">
+                      Intensity: {rw.level_of_intensity}
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ justifyContent: 'flex-end', p: 2 }}>
+                    <Button variant="contained" color="error" onClick={() => handleWorkoutClick(rw)}>
+                      View Details
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      );
+      break;
+    case 'log_activity':
+      mainContent = (
+        <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4, p: 2 }}>
+          <Typography variant="h4" gutterBottom>
+            Log New Activity
+          </Typography>
+          <Divider sx={{ mb: 3 }} />
+
+          <TextField
+            select
+            fullWidth
+            margin="normal"
+            label="Select a Workout"
+            value={selectedWorkoutId}
+            onChange={handleWorkoutChange}
+          >
+            <MenuItem value="">-- Choose Workout --</MenuItem>
+            {workouts.map((w) => (
+              <MenuItem key={w.id} value={w.id.toString()}>
+                {w.workout_name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {selectedWorkoutId && (
+            <TextField
+              select
+              fullWidth
+              margin="normal"
+              label="Select Exercise"
+              value={selectedExercise}
+              onChange={handleExerciseChange}
+            >
+              <MenuItem value="">-- Choose Exercise --</MenuItem>
+              {workouts.find(w => w.id.toString() === selectedWorkoutId)?.exercises.map((exercise, index) => (
+                <MenuItem key={index} value={exercise.name}>
+                  {exercise.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Duration (minutes)"
+            type="number"
+            value={duration}
+            onChange={handleDurationChange}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Calories Burned"
+            type="number"
+            value={calories}
+            onChange={handleCaloriesChange}
+          />
+
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ mt: 3 }}
+            onClick={handleLogActivity}
+          >
+            Log Activity
+          </Button>
+
+          <Button
+            variant="outlined"
+            color="secondary"
+            sx={{ mt: 2, ml: 2 }}
+            onClick={handleResetForm}
+          >
+            Reset
+          </Button>
+        </Box>
+      );
+      break;
   }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {/* Global NavBar at the top */}
-
-
-      {/* Main content with sidebar below the nav bar */}
       <Box sx={{ display: 'flex', flex: 1 }}>
-        {/* SIDEBAR DRAWER (Permanent) */}
         <Drawer
           variant="permanent"
           sx={{
             width: drawerWidth,
             flexShrink: 0,
-            mt: '64px', // offset if your NavBar is ~64px tall
+            mt: `${navBarHeight}px`,
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
@@ -263,16 +387,14 @@ const LogActivityPage = () => {
           }}
           anchor="left"
         >
-          <Box sx={{ overflow: 'auto' }}>{sidebarContent}</Box>
+          {sidebarContent}
         </Drawer>
 
-        {/* MAIN AREA */}
-        <Box component="main" sx={{ flexGrow: 1, p: 3, ml: `${drawerWidth}px`, mt: '64px' }}>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, ml: `${drawerWidth}px`, mt: `${navBarHeight}px` }}>
           {mainContent}
         </Box>
       </Box>
 
-      {/* WORKOUT DETAIL DIALOG */}
       {selectedWorkout && (
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>{selectedWorkout.workout_name}</DialogTitle>
