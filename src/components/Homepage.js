@@ -39,7 +39,7 @@ const Homepage = () => {
             backgroundPosition: "center",
             paddingRight: "5%",
             paddingLeft: "5%",
-            width: "60vw",
+            width: "55%",
           }}
         >
           {/* Text Directly on Image (No Background) */}

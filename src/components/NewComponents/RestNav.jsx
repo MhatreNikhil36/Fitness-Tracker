@@ -8,6 +8,7 @@ import {
   useMediaQuery,
   useTheme,
   styled,
+  Avatar,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -36,30 +37,14 @@ const NavLink = styled(Link)(({ theme }) => ({
   },
 }));
 
-const LoginButton = styled(Button)(({ theme }) => ({
-  color: "#111",
-  padding: "12px 28px",
-  textTransform: "uppercase",
-  fontSize: "0.875rem",
-  fontWeight: 500,
+const ProfileIcon = styled(Button)(({ theme }) => ({
+  padding: "8px",
   "&:hover": {
     backgroundColor: "#f5f5f5",
   },
 }));
 
-const SignupButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "black",
-  color: "white",
-  padding: "8px 24px",
-  textTransform: "uppercase",
-  fontSize: "0.875rem",
-  fontWeight: 500,
-  "&:hover": {
-    backgroundColor: "#333",
-  },
-}));
-
-export default function Navbar2() {
+export default function RestNav() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -94,26 +79,22 @@ export default function Navbar2() {
             </Box>
           )}
 
-          {/* Auth Buttons */}
+          {/* Spacer */}
+          <Box sx={{ flex: 1 }} />
+
+          {/* Profile Icon */}
           <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
-              gap: 2,
-              flex: 1,
             }}
           >
-            <LoginButton component={Link} to="/login" variant="text">
-              Log In
-            </LoginButton>
-            <SignupButton
-              component={Link}
-              to="/signup"
-              variant="contained"
-              disableElevation
-            >
-              Sign Up
-            </SignupButton>
+            <ProfileIcon component={Link} to="/settings/profile">
+              <Avatar
+                sx={{ width: 32, height: 32 }}
+                src="/static/images/avatar/1.jpg"
+              />
+            </ProfileIcon>
           </Box>
         </Toolbar>
       </Container>
