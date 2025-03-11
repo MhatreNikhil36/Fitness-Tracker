@@ -20,6 +20,7 @@ import {
   Security,
 } from "@mui/icons-material";
 import Footer from "../components/Footer";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 const AboutUs = () => {
   const features = [
@@ -104,22 +105,26 @@ const AboutUs = () => {
                   fitness journey.
                 </Typography>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  sx={{
-                    mt: 2,
-                    bgcolor: (theme) =>
-                      theme.palette.mode === "light" ? "#d32f2f" : "#f44336",
-                    "&:hover": {
+                <Link to="/signup" style={{ textDecoration: "none" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    sx={{
+                      mt: 2,
                       bgcolor: (theme) =>
-                        theme.palette.mode === "light" ? "#b71c1c" : "#e53935",
-                    },
-                  }}
-                >
-                  Start Your Journey
-                </Button>
+                        theme.palette.mode === "light" ? "#d32f2f" : "#f44336",
+                      "&:hover": {
+                        bgcolor: (theme) =>
+                          theme.palette.mode === "light"
+                            ? "#b71c1c"
+                            : "#e53935",
+                      },
+                    }}
+                  >
+                    Start Your Journey
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </Grid>
