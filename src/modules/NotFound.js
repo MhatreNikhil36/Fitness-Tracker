@@ -31,11 +31,7 @@ const NotFoundPage = () => {
       >
         The page you are looking for doesn't exist or may have been moved.
       </Typography>
-      <Button
-        variant="contained"
-        color="error"
-        onClick={() => navigate("/Homepage")}
-      >
+      <Button variant="contained" color="error" onClick={() => navigate("/")}>
         Go to Home
       </Button>
     </Box>

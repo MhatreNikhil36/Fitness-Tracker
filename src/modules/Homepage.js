@@ -1,6 +1,6 @@
-import React from "react";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 
 const Homepage = () => {
   return (
@@ -9,16 +9,15 @@ const Homepage = () => {
         minHeight: "100vh",
         width: "100%",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column", // Changed to column to accommodate footer
+        justifyContent: "space-between", // This will push the footer to the bottom
         overflowX: "hidden",
       }}
     >
-      {/* 🔹 White Card Container */}
       <Box
         sx={{
           backgroundColor: "white",
           width: "100%",
-          // maxWidth: "1200px",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -49,7 +48,7 @@ const Homepage = () => {
             </Typography>
             <Typography variant="body1" sx={{ mt: 2 }} color="white">
               Whether you're training for a marathon or your biggest season yet,
-              we’re here to help you make serious progress.
+              we're here to help you make serious progress.
             </Typography>
             <Button
               variant="contained"
@@ -159,56 +158,8 @@ const Homepage = () => {
             </Grid>
           </Grid>
         </Container>
-
-        {/* 🔹 Footer - Fix Missing Issue */}
-        <Box
-          sx={{
-            bgcolor: "grey.100",
-            py: 6,
-            px: 4,
-            minHeight: "100px",
-            width: "100%",
-          }}
-        >
-          <Container>
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" color="black">
-                  Help
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">Account Settings</Link>
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">Privacy Center</Link>
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">Support</Link>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" color="black">
-                  About
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">About Us</Link>
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">Contact Us</Link>
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Typography variant="h6" color="black">
-                  Connect
-                </Typography>
-                <Typography variant="body2">
-                  <Link to="#">Facebook</Link>
-                </Typography>
-              </Grid>
-            </Grid>
-          </Container>
-        </Box>
       </Box>
+      <Footer />
     </Box>
   );
 };

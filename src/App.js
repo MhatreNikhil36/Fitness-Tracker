@@ -1,4 +1,3 @@
-// App.js
 import React from "react";
 import {
   BrowserRouter as Router,
@@ -28,12 +27,16 @@ import DisplaySettings from "./modules/DisplaySettings";
 import HomeNav from "./components/HomeNav";
 import RestNav from "./components/RestNav";
 import AdminNav from "./components/AdminNav";
+import Contact from "./modules/Contact";
+import AboutUs from "./modules/About";
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const useHomeNav =
     location.pathname === "/" ||
     location.pathname === "/Homepage" ||
+    location.pathname === "/contact" ||
+    location.pathname === "/about" ||
     location.pathname === "/login" ||
     location.pathname === "/signup";
   const useAdminNav = location.pathname.startsWith("/admin");
@@ -70,6 +73,8 @@ const App = () => {
           <Route path="/admin/add-workout" element={<AddWorkoutPage />} />
           <Route path="/admin/add-Ai" element={<AddAiPromptPage />} />
           <Route path="/admin" element={<AdminHome />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<AboutUs />} />
         </Routes>
       </Layout>
     </Router>
