@@ -52,7 +52,7 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/Homepage" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login isLogin={true} />} />
           <Route path="/signup" element={<Signup isLogin={false} />} />
           <Route path="/settings/profile" element={<ProfileSettings />} />
@@ -66,7 +66,6 @@ const App = () => {
           <Route path="/dash" element={<DashboardPage />} />
           <Route path="/logactivity" element={<LogActivityPage />} />
           <Route path="/activity" element={<Activity />} />
-          <Route path="/" element={<HomePage />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/admin/add-exercise" element={<AddExercisePage />} />
           <Route path="/admin/add-workout" element={<AddWorkoutPage />} />

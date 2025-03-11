@@ -1,4 +1,3 @@
-// AdminHome.js
 import React from "react";
 import {
   Box,
@@ -20,8 +19,14 @@ const mockStats = {
 
 const AdminHome = () => {
   return (
-    <Box>
-      <Box sx={{ p: 3, minHeight: "80vh" }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Box sx={{ p: 3, width: "60%" }}>
         <Typography variant="h4" gutterBottom>
           Admin Dashboard
         </Typography>

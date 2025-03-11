@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff, Calendar, Info } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 
 import {
   Box,
@@ -61,6 +61,14 @@ export default function Signup() {
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
+  };
+
+  const handleBirthdateChange = (e) => {
+    const dateValue = e.target.value;
+    const dateParts = dateValue.split("-");
+    if (dateParts.length === 3 && dateParts[0].length > 4) {
+      e.target.value = dateValue.slice(0, -1); // Prevent adding more than four digits
+    }
   };
 
   return (
@@ -151,21 +159,17 @@ export default function Signup() {
                 }}
               />
 
+              {/* Adjusted Birthdate Field */}
               <TextField
                 id="birthdate"
+                type="date"
                 label="Birthdate"
-                placeholder="mm/dd/yyyy"
                 fullWidth
                 variant="outlined"
                 size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end">
-                        <Calendar size={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                onChange={handleBirthdateChange}
+                InputLabelProps={{
+                  shrink: true, // Ensures the label doesn't overlap the input
                 }}
               />
 
