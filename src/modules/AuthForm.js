@@ -1,5 +1,5 @@
 // AuthForm.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -7,18 +7,18 @@ import {
   Typography,
   Divider,
   MenuItem,
-} from '@mui/material';
-import { Google, Facebook } from '@mui/icons-material';
+} from "@mui/material";
+import { Google, Facebook } from "@mui/icons-material";
 
 const AuthForm = ({ isLogin }) => {
   // Local state for form data
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    dateOfBirth: '',
-    gender: '',
-    email: '',
-    password: '',
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    gender: "",
+    email: "",
+    password: "",
     // You can add is_admin or other fields as needed
   });
 
@@ -35,9 +35,9 @@ const AuthForm = ({ isLogin }) => {
     // Here you’d call your API to either login or sign up
     // based on isLogin, sending formData to your backend.
     if (isLogin) {
-      console.log('Logging in with:', formData);
+      console.log("Logging in with:", formData);
     } else {
-      console.log('Signing up with:', formData);
+      console.log("Signing up with:", formData);
     }
   };
 
@@ -45,16 +45,16 @@ const AuthForm = ({ isLogin }) => {
     <Box
       sx={{
         maxWidth: 400,
-        mx: 'auto',
+        mx: "auto",
         mt: 8,
         p: 3,
-        border: '1px solid #ccc',
+        border: "1px solid #ccc",
         borderRadius: 2,
-        backgroundColor: 'background.paper',
+        backgroundColor: "background.paper",
       }}
     >
       <Typography variant="h4" gutterBottom color="text.primary">
-        {isLogin ? 'Login' : 'Create Account'}
+        {isLogin ? "Login" : "Create Account"}
       </Typography>
 
       <form onSubmit={handleSubmit}>
@@ -139,18 +139,18 @@ const AuthForm = ({ isLogin }) => {
           sx={{ mt: 2 }}
           type="submit"
         >
-          {isLogin ? 'LOGIN' : 'CREATE ACCOUNT'}
+          {isLogin ? "LOGIN" : "CREATE ACCOUNT"}
         </Button>
       </form>
 
       <Divider sx={{ my: 3 }}>OR</Divider>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Button
           variant="outlined"
           color="primary" // black outline
           startIcon={<Google />}
-          onClick={() => window.location.href = '/auth/google'}
+          onClick={() => (window.location.href = "/auth/google")}
         >
           Continue with Google
         </Button>
@@ -158,7 +158,7 @@ const AuthForm = ({ isLogin }) => {
           variant="outlined"
           color="primary" // black outline
           startIcon={<Facebook />}
-          onClick={() => window.location.href = '/auth/facebook'}
+          onClick={() => (window.location.href = "/auth/facebook")}
         >
           Continue with Facebook
         </Button>

@@ -1,6 +1,6 @@
 // LogNutritionPage.js
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,17 +9,17 @@ import {
   Card,
   CardContent,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 
 const LogNutritionPage = () => {
   // Local state for form fields
   const [formData, setFormData] = useState({
-    date: '',
-    meal: '',
-    calories: '',
-    protein: '',
-    carbs: '',
-    fats: '',
+    date: "",
+    meal: "",
+    calories: "",
+    protein: "",
+    carbs: "",
+    fats: "",
   });
 
   const handleChange = (e) => {
@@ -44,20 +44,20 @@ const LogNutritionPage = () => {
     //   .catch((error) => console.error(error));
     // ------------------------------------------------------------
 
-    console.log('Logging nutrition:', formData);
+    console.log("Logging nutrition:", formData);
     // Optionally, clear the form or navigate the user away
     setFormData({
-      date: '',
-      meal: '',
-      calories: '',
-      protein: '',
-      carbs: '',
-      fats: '',
+      date: "",
+      meal: "",
+      calories: "",
+      protein: "",
+      carbs: "",
+      fats: "",
     });
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 8, p: 2 }}>
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 8, p: 2 }}>
       <Typography variant="h4" color="text.primary" gutterBottom>
         Log Nutrition
       </Typography>

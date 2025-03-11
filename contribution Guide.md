@@ -20,19 +20,23 @@ This document provides everything you need to install, run, and contribute to th
 
 The Fitness Tracker Frontend is built with React and Material UI, and includes the following key pages:
 
-1. **AuthForm Page:**  
+1. **AuthForm Page:**
+
    - Handles both login and signup functionalities with fields matching our user schema, including social login options.
 
-2. **NutritionPage:**  
+2. **NutritionPage:**
+
    - Displays AI-generated nutrition recommendations and a sample meal plan based on user health metrics and goals.
 
-3. **LogNutritionPage:**  
+3. **LogNutritionPage:**
+
    - Allows users to log their daily nutritional intake (e.g., calories, protein, carbs, fats) for tracking purposes.
 
-4. **GoalsPage:**  
+4. **GoalsPage:**
+
    - Enables users to select a predefined goal type (Lose Weight, Gain Muscle, Add Weight) and set associated target values, statuses, and deadlines.
 
-5. **DashboardPage:**  
+5. **DashboardPage:**
    - Consolidates user data such as goals, progress, and nutrition metrics, visualized with interactive charts and animations (using Recharts).
 
 All pages adhere to our Material UI theme: a white background, black text, and red highlights for primary actions.
@@ -121,6 +125,7 @@ The repository includes a multi-stage Dockerfile that supports both development 
 ## Git and Code Contribution Best Practices
 
 1. **Branching Strategy:**
+
    - Always create a new branch for your feature or bug fix:
      ```bash
      git checkout -b feature/your-feature-name
@@ -128,6 +133,7 @@ The repository includes a multi-stage Dockerfile that supports both development 
    - Keep your branch up-to-date with the main branch by regularly pulling changes.
 
 2. **Commit Messages:**
+
    - Write clear, concise commit messages that describe the changes made.
    - Example:
      ```
@@ -136,6 +142,7 @@ The repository includes a multi-stage Dockerfile that supports both development 
      ```
 
 3. **Code Style and Linting:**
+
    - Follow the existing code style and conventions.
    - Run the linter before committing to ensure code consistency:
      ```bash
@@ -162,4 +169,3 @@ The repository includes a multi-stage Dockerfile that supports both development 
 
 - **Communication:**  
   If you run into any issues or have questions, please reach out to the team via our teams channel or GitHub Issues.
-

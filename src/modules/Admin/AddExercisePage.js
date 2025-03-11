@@ -1,5 +1,5 @@
 // AddExercisePage.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -7,16 +7,16 @@ import {
   Typography,
   Card,
   CardContent,
-} from '@mui/material';
+} from "@mui/material";
 
 const AddExercisePage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    muscle_group: '',
-    instructions: '',
-    video_link: '',
-    calories: '',
+    name: "",
+    description: "",
+    muscle_group: "",
+    instructions: "",
+    video_link: "",
+    calories: "",
   });
 
   const handleChange = (e) => {
@@ -27,20 +27,20 @@ const AddExercisePage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Example: POST /api/exercises
-    console.log('Submitting new exercise:', formData);
+    console.log("Submitting new exercise:", formData);
     // Reset
     setFormData({
-      name: '',
-      description: '',
-      muscle_group: '',
-      instructions: '',
-      video_link: '',
-      calories: '',
+      name: "",
+      description: "",
+      muscle_group: "",
+      instructions: "",
+      video_link: "",
+      calories: "",
     });
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }}>
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 5 }}>
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
@@ -100,7 +100,12 @@ const AddExercisePage = () => {
               required
             />
 
-            <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="error"
+              sx={{ mt: 2 }}
+            >
               Save Exercise
             </Button>
           </form>

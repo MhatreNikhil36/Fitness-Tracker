@@ -8,7 +8,7 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import SettingsSidebar from "../NewComponents/Settings_Sidebar";
+import SettingsSidebar from "../components/Settings_Sidebar";
 
 export default function AccountSettings() {
   return (

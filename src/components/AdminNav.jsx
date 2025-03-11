@@ -30,22 +30,22 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
   color: "black",
   fontWeight: 600,
   textDecoration: "none",
-  position: "relative", // Needed for positioning the pseudo-element
-  paddingBottom: "12px", // Adds spacing between text and underline
+  position: "relative",
+  paddingBottom: "12px",
   "&::after": {
     content: '""',
     position: "absolute",
     width: "100%",
-    height: "3px", // Thickness of the underline
-    bottom: "-6px", // Positioned further down below the text
+    height: "3px",
+    bottom: "-6px",
     left: "0",
-    backgroundColor: "#dc0019", // Underline color (red)
-    transform: "scaleX(0)", // Initially hidden
-    transformOrigin: "center", // Animation starts from the center
-    transition: "transform 0.3s ease-out", // Smooth animation
+    backgroundColor: "#dc0019",
+    transform: "scaleX(0)",
+    transformOrigin: "center",
+    transition: "transform 0.3s ease-out",
   },
   "&.active::after": {
-    transform: "scaleX(1)", // Fully visible when active
+    transform: "scaleX(1)",
   },
 }));
 
@@ -104,9 +104,7 @@ export default function AdminNav() {
               justifyContent: "flex-end",
               gap: 2,
             }}
-          >
-            {/* You can add other buttons or links here if needed */}
-          </Box>
+          ></Box>
         </Toolbar>
       </Container>
     </AppBar>

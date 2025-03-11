@@ -1,12 +1,19 @@
 // AddAiPromptPage.js
-import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Card, CardContent } from '@mui/material';
+import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Card,
+  CardContent,
+} from "@mui/material";
 
 const AddAiPromptPage = () => {
   const [formData, setFormData] = useState({
-    type: '',
-    prompt: '',
-    content: '',
+    type: "",
+    prompt: "",
+    content: "",
   });
 
   const handleChange = (e) => {
@@ -18,13 +25,13 @@ const AddAiPromptPage = () => {
     e.preventDefault();
     // Example: POST /api/ai-prompts
     // In reality, you'd set user_id & generated_at on the backend
-    console.log('Submitting AI prompt:', formData);
+    console.log("Submitting AI prompt:", formData);
     // Reset form
-    setFormData({ type: '', prompt: '', content: '' });
+    setFormData({ type: "", prompt: "", content: "" });
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 5 }}>
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 5 }}>
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
@@ -60,7 +67,12 @@ const AddAiPromptPage = () => {
               multiline
               required
             />
-            <Button type="submit" variant="contained" color="error" sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="error"
+              sx={{ mt: 2 }}
+            >
               Save AI Prompt
             </Button>
           </form>

@@ -1,5 +1,5 @@
 // HomePage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,7 +8,7 @@ import {
   Button,
   CircularProgress,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 
 const Activity = () => {
   const [recentActivity, setRecentActivity] = useState([]);
@@ -18,7 +18,7 @@ const Activity = () => {
 
   useEffect(() => {
     // 1. Fetch user’s recent activity
-    fetch('/api/activity-logs?limit=5')
+    fetch("/api/activity-logs?limit=5")
       .then((res) => res.json())
       .then((data) => {
         setRecentActivity(data); // array of activity log objects
@@ -30,7 +30,7 @@ const Activity = () => {
       });
 
     // 2. Fetch available workouts
-    fetch('/api/workouts')
+    fetch("/api/workouts")
       .then((res) => res.json())
       .then((data) => {
         setWorkouts(data); // array of workout objects
@@ -52,19 +52,19 @@ const Activity = () => {
       calories_burned: 200, // or calculate on server
     };
 
-    fetch('/api/activity-logs', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    fetch("/api/activity-logs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newLog),
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error('Failed to add activity log');
+          throw new Error("Failed to add activity log");
         }
         return res.json();
       })
       .then((createdLog) => {
-        console.log('Activity log created:', createdLog);
+        console.log("Activity log created:", createdLog);
         // Optionally refresh recent activity
         setRecentActivity((prev) => [createdLog, ...prev]);
       })
@@ -72,7 +72,7 @@ const Activity = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 1000, mx: 'auto', mt: 4, p: 2 }}>
+    <Box sx={{ maxWidth: 1000, mx: "auto", mt: 4, p: 2 }}>
       <Typography variant="h3" gutterBottom>
         Home
       </Typography>
