@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,16 +8,16 @@ import {
   Button,
   MenuItem,
   Divider,
-} from '@mui/material';
+} from "@mui/material";
 
 const GoalsPage = () => {
   // Local state matching the schema (minus id/user_id)
   const [goalData, setGoalData] = useState({
-    goal_type: '',
-    target_value: '',
-    current_value: '',
-    status: '',
-    deadline: '',
+    goal_type: "",
+    target_value: "",
+    current_value: "",
+    status: "",
+    deadline: "",
   });
 
   const handleChange = (e) => {
@@ -45,14 +45,14 @@ const GoalsPage = () => {
     //   })
     //   .catch(err => console.error(err));
     // --------------------------------------------------
-    console.log('Submitted goal:', goalData);
+    console.log("Submitted goal:", goalData);
 
     // Optionally reset form
     // setGoalData({ goal_type: '', target_value: '', current_value: '', status: '', deadline: '' });
   };
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', mt: 8, p: 2 }}>
+    <Box sx={{ maxWidth: 600, mx: "auto", mt: 8, p: 2 }}>
       <Typography variant="h4" color="text.primary" gutterBottom>
         Set or Update Your Goal
       </Typography>

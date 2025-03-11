@@ -1,49 +1,49 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { red } from "@mui/material/colors";
 
 // Define a custom theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#000000', // black
+      main: "#000000", // black
     },
     secondary: {
-      main: '#ffffff', // white
+      main: "#ffffff", // white
     },
     error: {
-      main: red[600],  // red highlight
+      main: red[600], // red highlight
     },
     background: {
-      default: '#ffffff', // overall background color
+      default: "#ffffff", // overall background color
     },
     text: {
-      primary: '#000000', // black text
+      primary: "#000000", // black text
     },
   },
   typography: {
     // Optional: tweak your typography to match the wireframe
     fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
+      "-apple-system",
+      "BlinkMacSystemFont",
       '"Segoe UI"',
-      'Roboto',
-      'Oxygen',
-      'Ubuntu',
-      'Cantarell',
+      "Roboto",
+      "Oxygen",
+      "Ubuntu",
+      "Cantarell",
       '"Fira Sans"',
       '"Droid Sans"',
       '"Helvetica Neue"',
-      'sans-serif',
-    ].join(','),
+      "sans-serif",
+    ].join(","),
   },
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>

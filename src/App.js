@@ -6,32 +6,31 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-import HomePage from "./components/Homepage";
-import NutritionPage from "./components/NutritionPage";
-import LogNutritionPage from "./components/LogNutritionPage";
-import AddGoal from "./components/AddGoal";
-import DashboardPage from "./components/Dashboard";
-import GoalsDashboardPage from "./components/GoalsDashboardPage";
-import GoalProgressPage from "./components/GoalProgressPage";
-import NotFoundPage from "./components/NotFound";
-import LogActivityPage from "./components/LogActivityPage";
-import Activity from "./components/activity";
-import AddExercisePage from "./components/Admin/AddExercisePage";
-import AddWorkoutPage from "./components/Admin/AddWorkoutPage";
-import AddAiPromptPage from "./components/Admin/AddAiPromptPage";
-import AdminHome from "./components/Admin/AdminHome";
-import Login from "./components/NewComponents/Login";
-import Signup from "./components/NewComponents/Signup";
-import ProfileSettings from "./components/NewComponents/ProfileSettings";
-import AccountSettings from "./components/NewComponents/AccountSettings";
-import DisplaySettings from "./components/NewComponents/DisplaySettings";
-import HomeNav from "./components/NewComponents/HomeNav";
-import RestNav from "./components/NewComponents/RestNav";
-import AdminNav from "./components/NewComponents/AdminNav";
+import HomePage from "./modules/Homepage";
+import NutritionPage from "./modules/NutritionPage";
+import LogNutritionPage from "./modules/LogNutritionPage";
+import AddGoal from "./modules/AddGoal";
+import DashboardPage from "./modules/Dashboard";
+import GoalsDashboardPage from "./modules/GoalsDashboardPage";
+import GoalProgressPage from "./modules/GoalProgressPage";
+import NotFoundPage from "./modules/NotFound";
+import LogActivityPage from "./modules/LogActivityPage";
+import Activity from "./modules/activity";
+import AddExercisePage from "./modules/Admin/AddExercisePage";
+import AddWorkoutPage from "./modules/Admin/AddWorkoutPage";
+import AddAiPromptPage from "./modules/Admin/AddAiPromptPage";
+import AdminHome from "./modules/Admin/AdminHome";
+import Login from "./modules/Login";
+import Signup from "./modules/Signup";
+import ProfileSettings from "./modules/ProfileSettings";
+import AccountSettings from "./modules/AccountSettings";
+import DisplaySettings from "./modules/DisplaySettings";
+import HomeNav from "./components/HomeNav";
+import RestNav from "./components/RestNav";
+import AdminNav from "./components/AdminNav";
 
 const Layout = ({ children }) => {
   const location = useLocation();
-  // Use HomeNav for specific routes, AdminNav for admin routes, otherwise use RestNav
   const useHomeNav =
     location.pathname === "/" ||
     location.pathname === "/Homepage" ||

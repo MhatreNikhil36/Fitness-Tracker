@@ -1,5 +1,5 @@
 // GoalsDashboardPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -9,7 +9,7 @@ import {
   Grid,
   CircularProgress,
   Button,
-} from '@mui/material';
+} from "@mui/material";
 import {
   LineChart,
   Line,
@@ -18,8 +18,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
-import { useNavigate } from 'react-router-dom';
+} from "recharts";
+import { useNavigate } from "react-router-dom";
 
 const GoalsDashboardPage = () => {
   const navigate = useNavigate();
@@ -35,29 +35,29 @@ const GoalsDashboardPage = () => {
         {
           id: 1,
           user_id: 101,
-          goal_type: 'lose_weight',
+          goal_type: "lose_weight",
           target_value: 70,
           current_value: 75,
-          status: 'in_progress',
-          deadline: '2025-12-31',
+          status: "in_progress",
+          deadline: "2025-12-31",
           progress: [
-            { recorded_value: 78, timestamp: '2025-05-01' },
-            { recorded_value: 76, timestamp: '2025-06-01' },
-            { recorded_value: 75, timestamp: '2025-07-01' },
+            { recorded_value: 78, timestamp: "2025-05-01" },
+            { recorded_value: 76, timestamp: "2025-06-01" },
+            { recorded_value: 75, timestamp: "2025-07-01" },
           ],
         },
         {
           id: 2,
           user_id: 101,
-          goal_type: 'gain_muscle',
+          goal_type: "gain_muscle",
           target_value: 85,
           current_value: 85,
-          status: 'completed',
-          deadline: '2024-12-31',
+          status: "completed",
+          deadline: "2024-12-31",
           progress: [
-            { recorded_value: 80, timestamp: '2024-03-01' },
-            { recorded_value: 83, timestamp: '2024-05-01' },
-            { recorded_value: 85, timestamp: '2024-07-01' },
+            { recorded_value: 80, timestamp: "2024-03-01" },
+            { recorded_value: 83, timestamp: "2024-05-01" },
+            { recorded_value: 85, timestamp: "2024-07-01" },
           ],
         },
       ];
@@ -69,7 +69,7 @@ const GoalsDashboardPage = () => {
   // Delete goal handler
   const handleDeleteGoal = (goalId) => {
     const confirmDelete = window.confirm(
-      'Are you sure you want to delete this goal?'
+      "Are you sure you want to delete this goal?"
     );
     if (confirmDelete) {
       // -------------------------------------------------------
@@ -90,42 +90,42 @@ const GoalsDashboardPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
         <CircularProgress />
       </Box>
     );
   }
 
   // Separate goals into current (active) vs. past (completed)
-  const currentGoals = goals.filter((g) => g.status === 'in_progress');
-  const pastGoals = goals.filter((g) => g.status === 'completed');
+  const currentGoals = goals.filter((g) => g.status === "in_progress");
+  const pastGoals = goals.filter((g) => g.status === "completed");
 
   // Helper to map goal_type to user-friendly text
   const renderGoalType = (type) => {
     switch (type) {
-      case 'lose_weight':
-        return 'Lose Weight';
-      case 'gain_muscle':
-        return 'Gain Muscle';
-      case 'add_weight':
-        return 'Add Weight';
+      case "lose_weight":
+        return "Lose Weight";
+      case "gain_muscle":
+        return "Gain Muscle";
+      case "add_weight":
+        return "Add Weight";
       default:
         return type;
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4, p: 2 }}>
+    <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4, p: 2 }}>
       <Typography variant="h3" color="text.primary" gutterBottom>
         My Goals
       </Typography>
 
       {/* Add Goal Button */}
-      <Box sx={{ textAlign: 'right', mb: 3 }}>
+      <Box sx={{ textAlign: "right", mb: 3 }}>
         <Button
           variant="contained"
           color="error"
-          onClick={() => navigate('/addGoal')}
+          onClick={() => navigate("/addGoal")}
         >
           Add New Goal
         </Button>
@@ -142,7 +142,7 @@ const GoalsDashboardPage = () => {
         {currentGoals.length > 0 ? (
           currentGoals.map((goal) => (
             <Grid item xs={12} md={6} key={goal.id}>
-              <Card sx={{ cursor: 'pointer' }}>
+              <Card sx={{ cursor: "pointer" }}>
                 <CardContent>
                   <Typography variant="h6" color="text.primary" gutterBottom>
                     {renderGoalType(goal.goal_type)}
@@ -162,7 +162,7 @@ const GoalsDashboardPage = () => {
 
                   {/* Chart for progress */}
                   {goal.progress && goal.progress.length > 0 && (
-                    <Box sx={{ mt: 2, width: '100%', height: 250 }}>
+                    <Box sx={{ mt: 2, width: "100%", height: 250 }}>
                       <ResponsiveContainer>
                         <LineChart data={formatProgressData(goal.progress)}>
                           <CartesianGrid strokeDasharray="3 3" />
@@ -184,8 +184,8 @@ const GoalsDashboardPage = () => {
                   {/* Buttons for View Progress and Delete */}
                   <Box
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      display: "flex",
+                      justifyContent: "space-between",
                       mt: 2,
                     }}
                   >
@@ -224,7 +224,7 @@ const GoalsDashboardPage = () => {
         {pastGoals.length > 0 ? (
           pastGoals.map((goal) => (
             <Grid item xs={12} md={6} key={goal.id}>
-              <Card sx={{ cursor: 'pointer' }}>
+              <Card sx={{ cursor: "pointer" }}>
                 <CardContent>
                   <Typography variant="h6" color="text.primary" gutterBottom>
                     {renderGoalType(goal.goal_type)}
@@ -244,7 +244,7 @@ const GoalsDashboardPage = () => {
 
                   {/* Chart for progress */}
                   {goal.progress && goal.progress.length > 0 && (
-                    <Box sx={{ mt: 2, width: '100%', height: 250 }}>
+                    <Box sx={{ mt: 2, width: "100%", height: 250 }}>
                       <ResponsiveContainer>
                         <LineChart data={formatProgressData(goal.progress)}>
                           <CartesianGrid strokeDasharray="3 3" />
@@ -266,8 +266,8 @@ const GoalsDashboardPage = () => {
                   {/* Buttons for View Progress and Delete */}
                   <Box
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
+                      display: "flex",
+                      justifyContent: "space-between",
                       mt: 2,
                     }}
                   >

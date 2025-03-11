@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,8 +12,8 @@ import {
   TableRow,
   CircularProgress,
   Button,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const NutritionPage = () => {
   const [nutritionData, setNutritionData] = useState(null);
@@ -69,12 +69,12 @@ const NutritionPage = () => {
     setTimeout(() => {
       const dummyData = {
         user: {
-          firstName: 'John',
-          lastName: 'Doe',
+          firstName: "John",
+          lastName: "Doe",
           weight_kg: 80,
           height_cm: 175,
           goal: {
-            goalType: 'Weight Loss',
+            goalType: "Weight Loss",
             targetWeight: 75,
             dailyCalorieDeficit: 300,
           },
@@ -87,18 +87,18 @@ const NutritionPage = () => {
         },
         sampleMealPlan: [
           {
-            meal: 'Breakfast',
-            items: 'Oats with berries, Almond milk, 1 banana',
+            meal: "Breakfast",
+            items: "Oats with berries, Almond milk, 1 banana",
             approxCalories: 400,
           },
           {
-            meal: 'Lunch',
-            items: 'Grilled Chicken Breast, Brown Rice, Mixed Veggies',
+            meal: "Lunch",
+            items: "Grilled Chicken Breast, Brown Rice, Mixed Veggies",
             approxCalories: 600,
           },
           {
-            meal: 'Dinner',
-            items: 'Baked Salmon, Quinoa, Steamed Broccoli',
+            meal: "Dinner",
+            items: "Baked Salmon, Quinoa, Steamed Broccoli",
             approxCalories: 500,
           },
         ],
@@ -111,7 +111,7 @@ const NutritionPage = () => {
   if (isLoading) {
     // Simple loading spinner
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
         <CircularProgress />
       </Box>
     );
@@ -119,7 +119,7 @@ const NutritionPage = () => {
 
   if (!nutritionData) {
     return (
-      <Box sx={{ maxWidth: 600, mx: 'auto', mt: 8, p: 2 }}>
+      <Box sx={{ maxWidth: 600, mx: "auto", mt: 8, p: 2 }}>
         <Typography variant="h5" color="text.primary">
           No nutrition data available.
         </Typography>
@@ -131,7 +131,7 @@ const NutritionPage = () => {
   const { goalType, targetWeight } = user.goal || {};
 
   return (
-    <Box sx={{ maxWidth: 700, mx: 'auto', mt: 8, p: 2 }}>
+    <Box sx={{ maxWidth: 700, mx: "auto", mt: 8, p: 2 }}>
       <Typography variant="h4" color="text.primary" gutterBottom>
         Nutrition Recommendations
       </Typography>
@@ -196,9 +196,15 @@ const NutritionPage = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>Meal</strong></TableCell>
-                  <TableCell><strong>Items</strong></TableCell>
-                  <TableCell><strong>Approx. Calories</strong></TableCell>
+                  <TableCell>
+                    <strong>Meal</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Items</strong>
+                  </TableCell>
+                  <TableCell>
+                    <strong>Approx. Calories</strong>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -218,8 +224,12 @@ const NutritionPage = () => {
       </Card>
 
       {/* ACTIONS (e.g., LOG NUTRITION) */}
-      <Box sx={{ textAlign: 'center', mt: 3 }}>
-        <Button variant="contained" color="error" onClick={() => navigate('/log-nutrition')}>
+      <Box sx={{ textAlign: "center", mt: 3 }}>
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => navigate("/log-nutrition")}
+        >
           Log My Nutrition
         </Button>
       </Box>

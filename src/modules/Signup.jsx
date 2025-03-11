@@ -67,7 +67,7 @@ export default function Signup() {
     const dateValue = e.target.value;
     const dateParts = dateValue.split("-");
     if (dateParts.length === 3 && dateParts[0].length > 4) {
-      e.target.value = dateValue.slice(0, -1); // Prevent adding more than four digits
+      e.target.value = dateValue.slice(0, -1);
     }
   };
 
@@ -159,7 +159,6 @@ export default function Signup() {
                 }}
               />
 
-              {/* Adjusted Birthdate Field */}
               <TextField
                 id="birthdate"
                 type="date"
@@ -169,7 +168,7 @@ export default function Signup() {
                 size="small"
                 onChange={handleBirthdateChange}
                 InputLabelProps={{
-                  shrink: true, // Ensures the label doesn't overlap the input
+                  shrink: true,
                 }}
               />
 

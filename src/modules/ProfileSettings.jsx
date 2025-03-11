@@ -13,7 +13,7 @@ import {
   Paper,
 } from "@mui/material";
 import { User } from "lucide-react";
-import SettingsSidebar from "../NewComponents/Settings_Sidebar";
+import SettingsSidebar from "../components/Settings_Sidebar";
 
 export default function ProfileSettings() {
   return (

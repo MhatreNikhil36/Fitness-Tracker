@@ -1,5 +1,5 @@
 // AddWorkoutPage.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Box,
   TextField,
@@ -9,20 +9,26 @@ import {
   CardContent,
   IconButton,
   Grid,
-} from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DeleteIcon from '@mui/icons-material/Delete';
+} from "@mui/material";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const AddWorkoutPage = () => {
   const [workoutData, setWorkoutData] = useState({
-    workout_name: '',
-    level_of_intensity: '',
-    duration: '',
+    workout_name: "",
+    level_of_intensity: "",
+    duration: "",
   });
 
   const [exercises, setExercises] = useState([
     // Start with one row or none, up to you
-    { exercise_id: '', sets: '', reps: '', rest_seconds: '', total_calories_burned: '' },
+    {
+      exercise_id: "",
+      sets: "",
+      reps: "",
+      rest_seconds: "",
+      total_calories_burned: "",
+    },
   ]);
 
   // Handle workout details
@@ -45,7 +51,13 @@ const AddWorkoutPage = () => {
   const handleAddExercise = () => {
     setExercises((prev) => [
       ...prev,
-      { exercise_id: '', sets: '', reps: '', rest_seconds: '', total_calories_burned: '' },
+      {
+        exercise_id: "",
+        sets: "",
+        reps: "",
+        rest_seconds: "",
+        total_calories_burned: "",
+      },
     ]);
   };
 
@@ -59,15 +71,23 @@ const AddWorkoutPage = () => {
     e.preventDefault();
     // Example: POST /api/workouts to create the workout
     // Then POST /api/workout-exercises for each exercise entry
-    console.log('Workout Data:', workoutData);
-    console.log('Exercises:', exercises);
+    console.log("Workout Data:", workoutData);
+    console.log("Exercises:", exercises);
     // Reset form
-    setWorkoutData({ workout_name: '', level_of_intensity: '', duration: '' });
-    setExercises([{ exercise_id: '', sets: '', reps: '', rest_seconds: '', total_calories_burned: '' }]);
+    setWorkoutData({ workout_name: "", level_of_intensity: "", duration: "" });
+    setExercises([
+      {
+        exercise_id: "",
+        sets: "",
+        reps: "",
+        rest_seconds: "",
+        total_calories_burned: "",
+      },
+    ]);
   };
 
   return (
-    <Box sx={{ maxWidth: 800, mx: 'auto', mt: 5 }}>
+    <Box sx={{ maxWidth: 800, mx: "auto", mt: 5 }}>
       <Card>
         <CardContent>
           <Typography variant="h5" gutterBottom>
@@ -158,8 +178,16 @@ const AddWorkoutPage = () => {
                     type="number"
                   />
                 </Grid>
-                <Grid item xs={12} sm={1} sx={{ display: 'flex', alignItems: 'center' }}>
-                  <IconButton color="error" onClick={() => handleRemoveExercise(index)}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={1}
+                  sx={{ display: "flex", alignItems: "center" }}
+                >
+                  <IconButton
+                    color="error"
+                    onClick={() => handleRemoveExercise(index)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </Grid>
@@ -175,7 +203,12 @@ const AddWorkoutPage = () => {
               Add Exercise
             </Button>
 
-            <Button type="submit" variant="contained" color="error" sx={{ mt: 4, display: 'block' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="error"
+              sx={{ mt: 4, display: "block" }}
+            >
               Save Workout
             </Button>
           </form>
