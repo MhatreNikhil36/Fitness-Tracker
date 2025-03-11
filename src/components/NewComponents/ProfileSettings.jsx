@@ -6,15 +6,13 @@ import {
   Container,
   Grid,
   Avatar,
-  InputAdornment,
-  IconButton,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Paper,
 } from "@mui/material";
-import { Calendar, User } from "lucide-react";
+import { User } from "lucide-react";
 import SettingsSidebar from "../NewComponents/Settings_Sidebar";
 
 export default function ProfileSettings() {
@@ -87,21 +85,12 @@ export default function ProfileSettings() {
               </Grid>
 
               <TextField
+                type="date"
                 label="Birthdate*"
-                defaultValue="01/01/2000"
                 fullWidth
                 size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton edge="end">
-                        <Calendar size={16} />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+                InputLabelProps={{ shrink: true }}
               />
-
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={4}>
                   <TextField
