@@ -1,6 +1,3 @@
-Certainly! Here's your README formatted in Markdown:
-
-```markdown
 # Personalized Fitness Tracker Frontend
 ## Phase 2 - Readme
 
