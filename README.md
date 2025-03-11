@@ -58,7 +58,7 @@ This React-based application (Fittrack) includes:
    ```
    npm start
    ```
-   The project will be available at: http://localhost:5173
+   The project will be available at: https://knv2382.uta.cloud/
 
 ### Running with Docker:
 1. Build the Docker Image:
@@ -97,6 +97,3 @@ This React-based application (Fittrack) includes:
 ## Notes
 - The React project & WordPress files are uploaded to UTA Cloud.
 - Additional revisions will be implemented in Phase 3 if required.
-```
-
-This Markdown file includes all the sections you specified, formatted accordingly. Let me know if there are any further adjustments you'd like to make!
