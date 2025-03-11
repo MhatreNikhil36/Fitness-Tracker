@@ -1,122 +1,99 @@
-# 🏋️ Personalized Fitness Tracker with AI based Insights
+# Personalized Fitness Tracker Frontend
+## Phase 2 - Readme
 
-## How to run
+### Group 11 Members:
+1. Alekhya Yalagonda (1002210903)
+2. Elizabeth Wanyonyi (1002200288)
+3. Kaushal Vibhakar (1002242382)
+4. Mohan Krishna Turlapati (1002216058)
+5. Nikhil Mhatre (1002122555)
 
-```
-docker build --no-cache -t frontend .
-docker run -p 3000:80 --name Fitnessapp frontend
-```
+## Hosted Project
+We named our project Fittrack and hosted it on UTA Cloud. You can access the hosted project [here](https://knv2382.uta.cloud/).
 
-development (supports hot reloead):
+### Login Details
+The login page allows users to sign in either as Admin or User.
+- **Admin Panel:**
+  - Username: admin@mavs.uta.edu
+  - Password: admin@123
+- **User Panel:**
+  - Username: user@mavs.uta.edu
+  - Password: user@123
 
-```
-docker build --target dev -t my-app:dev .
-mac :  docker run -p 3000:3000 -v $(pwd):/app my-app:dev
-Win: docker run -p 3000:3000 -v %cd%:/app my-app:dev
+## Features Implemented
+This React-based application (Fittrack) includes:
+- **User Authentication:** Login and signup screens.
+- **Activity Logging:** Interface for users to track workouts and progress.
+- **Dashboard & Analytics:** Data-driven visualizations for performance insights.
+- **Administrator Authentication and Logging:** Interface for administrator to Login and manage workout plans/exercises.
+- **Responsive Design:** Mobile & desktop compatibility.
 
-```
+## Pages Developed for This Phase
+### User-Facing Pages:
+- `/Homepage` & `/` – Landing page.
+- `/login` – User login.
+- `/signup` – User signup.
+- `/Dash` – Main user dashboard with goals, nutrition charts, and recent activity.
+- `/nutrition` – AI-generated meal/plan recommendations.
+- `/log-nutrition` – Form to track daily calories/macros.
+- `/goals` – Goals overview; add new goal at `/addGoal`.
+- `/goal-progress/:goalId` – Detailed progress tracking for a specific goal.
+- `/logactivity` – Log a workout or activity session.
+- `/activity` – View all logged activities.
+- `*` – Fallback page (NotFound).
 
-Production(hot reload off)
+### Admin Pages:
+- `/admin` – Admin dashboard (custom nav bar, quick stats).
+- `/admin/add-exercise` – Create new exercises (name, muscle group, instructions).
+- `/admin/add-workout` – Build workouts (sets, reps, rest time, attach exercises).
+- `/admin/add-Ai` – Manage AI prompts (type, prompt text, generated content).
 
-```
-docker build --target prod-server -t my-app:prod .
-docker run -p 80:80 my-app:prod
-```
+## How to Run This Program
+### On Localhost:
+1. Install Dependencies:
+   ```
+   npm install
+   ```
+2. Start the Development Server:
+   ```
+   npm start
+   ```
+   The project will be available at: https://knv2382.uta.cloud/
 
-## 📌 Overview
+### Running with Docker:
+1. Build the Docker Image:
+   ```
+   docker build -t fitness-tracker-frontend .
+   ```
+2. Run the Docker Container:
+   ```
+   docker run -p 4000:80 --name Fitnessapp fitness-tracker-frontend
+   ```
+   The project will now be accessible at: http://localhost:4000
 
-This project is a **full-stack fitness tracking application** that leverages **AI-driven insights** to provide personalized workout recommendations and fitness analytics. Built with **React (frontend), Next.js (backend), and a SQL/NoSQL database**, this tracker enables users to log activities, set fitness goals, and visualize progress.
+## Troubleshooting & Common Errors
+1. **Error: "Module Not Found" in React Router:**
+   If you encounter:
+   ```
+   Error: Cannot find module 'react-router-dom'
+   ```
+   Run the following command:
+   ```
+   npm install react-router-dom
+   ```
 
-## 🚀 Features
+2. **Error: Docker Port Already in Use:**
+   If you get:
+   ```
+   docker: Error response from daemon: Conflict. The container name "/Fitnessapp" is already in use
+   ```
+   Remove the existing container and restart:
+   ```
+   docker stop Fitnessapp 
+   docker rm Fitnessapp 
+   docker run -p 4000:80 --name Fitnessapp fitness-tracker-frontend
+   ```
 
-- **User Authentication**: Secure login and account management.
-- **Activity Logging**: Track workouts, steps, and calories.
-- **AI-Powered Recommendations**: Personalized fitness plans using machine learning.
-- **Progress Dashboard**: Interactive charts and reports on fitness performance.
-- **Responsive UI**: Mobile and desktop-friendly design.
-- **API & Database**: Efficient data management with AI-assisted schema generation.
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- **React** (UI components)
-- **Next.js** (for SSR & API routes)
-- **Tailwind CSS** (for styling)
-
-### Backend
-
-- **Next.js API Routes**
-- **Node.js & Express Middleware**
-- **MySQL / MongoDB / PostgreSQL** (Database)
-
-### AI Integrations
-
-- AI-assisted **workout recommendations**
-- AI-driven **API testing & debugging**
-
-## 📅 Project Timeline
-
-### **Phase 1: Project Understanding (Jan 13 – Jan 27)**
-
-- Project proposal, feature planning, wireframes, ERD & database schema.
-
-### **Phase 2: Frontend Development (Jan 28 – Feb 25)**
-
-- React UI implementation with AI-assisted code and debugging.
-
-### **Phase 3: Backend Development (Feb 26 – Apr 7)**
-
-- Next.js API, database setup, middleware, AI-driven recommendations.
-
-### **Phase 4: Deployment & Presentation (Apr 8 – May 3)**
-
-- AWS/Vercel deployment, final report, and project presentation.
-
-## ⚡ Installation & Setup
-
-### 1️⃣ Clone the repository
-
-```bash
-git clone https://github.com/your-repo/fitness-tracker.git
-cd fitness-tracker
-```
-
-### 2️⃣ Install dependencies
-
-```bash
-npm install
-```
-
-### 3️⃣ Set up environment variables
-
-Create a `.env` file and add:
-
-```
-DATABASE_URL=your_database_connection
-NEXT_PUBLIC_API_URL=http://localhost:3000
-```
-
-### 4️⃣ Run the development server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📌 Deployment
-
-The app will be deployed on **AWS or Vercel** with a **custom domain**.
-
-## 📄 Contributing
-
-1. **Fork** the repository.
-2. **Create a feature branch** (`git checkout -b feature-name`).
-3. **Commit changes** (`git commit -m "Added feature"`).
-4. **Push to your branch** (`git push origin feature-name`).
-5. **Open a Pull Request**.
-
-## 📜 License
-
-This project is licensed under the **MIT License**.
+## Notes
+- The React project & WordPress files are uploaded to UTA Cloud.
+- Additional revisions will be implemented in Phase 3 if required.
