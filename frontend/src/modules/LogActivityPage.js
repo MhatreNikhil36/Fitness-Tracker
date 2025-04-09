@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import axios from "axios";
 import { useState } from "react";
 import {
   Box,
@@ -18,6 +20,8 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+
+
 
 /** Example mock data for demonstration */
 const mockAvailable = [
@@ -97,40 +101,79 @@ const mockRecommended = [
 ];
 
 const LogActivityPage = () => {
+  const [availableWorkouts, setAvailableWorkouts] = useState([]);
+  const [pastWorkouts, setPastWorkouts] = useState([]);
+  const [recommendedWorkouts, setRecommendedWorkouts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState("available");
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedWorkout, setSelectedWorkout] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        if (selectedTab === "available") {
+          const res = await axios.get("http://localhost:3001/api/workouts/available");
+          setAvailableWorkouts(res.data);
+        } else if (selectedTab === "past") {
+          const res = await axios.get("http://localhost:3001/api/workouts/past");
+          setPastWorkouts(res.data);
+        } else if (selectedTab === "recommended") {
+          const res = await axios.get("http://localhost:3001/api/workouts/recommended");
+          setRecommendedWorkouts(res.data);
+        }
+      } catch (error) {
+        console.error(`Failed to fetch ${selectedTab} workouts`, error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [selectedTab]);
+  
 
   const handleWorkoutClick = (workout) => {
     setSelectedWorkout(workout);
     setOpenDialog(true);
   };
-
-  const handleFinishWorkout = () => {
+  
+  const handleFinishWorkout = async () => {
     if (!selectedWorkout) return;
-    if (selectedWorkout.exercises) {
-      selectedWorkout.exercises.forEach((ex) => {
-        const activityData = {
-          workout_id: selectedWorkout.id,
-          exercise_id: ex.exercise_id,
-          duration_minutes: 30,
-          calories_burned: 200,
-        };
-        console.log("Mock POST /api/activity-logs:", activityData);
-      });
-    } else {
-      console.log("Mock POST single entry for workout:", selectedWorkout.id);
+  
+    try {
+      if (selectedWorkout.exercises) {
+        for (const ex of selectedWorkout.exercises) {
+          const activityData = {
+            workout_id: selectedWorkout.id,
+            exercise_id: ex.id,
+            duration_minutes: selectedWorkout.duration ?? 30,
+            calories_burned: 200,
+          };
+  
+          await axios.post("http://localhost:3001/api/workouts/complete", {
+            workout_id: selectedWorkout.id
+          });
+        }
+      } else {
+        console.log("Single-entry workout:", selectedWorkout.id);
+        // You can log a single-entry workout here if needed
+      }
+  
+      alert(`Workout "${selectedWorkout.workout_name}" completed!`);
+      setOpenDialog(false);
+    } catch (err) {
+      console.error("Error logging workout:", err);
+      alert("Something went wrong while logging the workout.");
     }
-    alert(`Workout "${selectedWorkout.workout_name}" completed (mock)!`);
-    setOpenDialog(false);
   };
-
   // Main content based on selectedTab
   let mainContent;
   if (selectedTab === "available") {
     mainContent = (
       <Grid container spacing={3}>
-        {mockAvailable.map((w) => (
+        {availableWorkouts.map((w) => (
           <Grid item xs={12} md={6} lg={4} key={w.id}>
             <Card
               sx={{
@@ -173,7 +216,7 @@ const LogActivityPage = () => {
   } else if (selectedTab === "past") {
     mainContent = (
       <Box>
-        {mockPast.map((pw) => (
+        {pastWorkouts.map((pw) => (
           <Card
             key={pw.id}
             sx={{
@@ -197,7 +240,7 @@ const LogActivityPage = () => {
   } else if (selectedTab === "recommended") {
     mainContent = (
       <Grid container spacing={3}>
-        {mockRecommended.map((rw) => (
+        {recommendedWorkouts.map((rw) => (
           <Grid item xs={12} md={6} lg={4} key={rw.id}>
             <Card
               sx={{
