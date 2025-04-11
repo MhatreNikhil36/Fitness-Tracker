@@ -1,4 +1,3 @@
-// SimpleNavbar.js
 import {
   AppBar,
   Toolbar,
@@ -12,7 +11,6 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 
-// Styled components
 const FitLogo = styled(Typography)(({ theme }) => ({
   backgroundColor: "black",
   color: "white",
@@ -59,7 +57,6 @@ export default function HomeNav() {
     <AppBar position="static" color="transparent" elevation={0}>
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ py: 1, mb: 2 }}>
-          {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
             <Link
               to="/"
@@ -74,7 +71,6 @@ export default function HomeNav() {
             </Link>
           </Box>
 
-          {/* Auth Buttons */}
           <Box
             sx={{
               display: "flex",

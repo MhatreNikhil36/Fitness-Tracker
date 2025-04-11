@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Info } from "lucide-react";
-
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -16,9 +16,9 @@ import {
   InputLabel,
   Select,
   styled,
+  Alert,
 } from "@mui/material";
 
-// Styled components
 const StyledLink = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main,
   textDecoration: "none",
@@ -28,6 +28,7 @@ const StyledLink = styled(Link)(({ theme }) => ({
 }));
 
 const SignupButton = styled(Button)(({ theme }) => ({
+  marginTop: "8px",
   backgroundColor: "black",
   color: "white",
   padding: "12px",
@@ -57,221 +58,277 @@ const OrDivider = styled(Box)(({ theme }) => ({
 }));
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    birthdate: "",
+    gender: "",
+    country: "us",
+  });
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
-  const handleBirthdateChange = (e) => {
-    const dateValue = e.target.value;
-    const dateParts = dateValue.split("-");
-    if (dateParts.length === 3 && dateParts[0].length > 4) {
-      e.target.value = dateValue.slice(0, -1);
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+    setErrorMessage("");
+  };
+
+  const handleSelectChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setErrorMessage("");
+  };
+
+  const validateForm = () => {
+    const { firstName, lastName, email, password, birthdate, gender } =
+      formData;
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !birthdate ||
+      !gender
+    ) {
+      return "All fields are required.";
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return "Please enter a valid email address.";
+    }
+
+    if (password.length < 6) {
+      return "Password must be at least 6 characters long.";
+    }
+
+    return "";
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const validationError = validateForm();
+    if (validationError) {
+      setErrorMessage(validationError);
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/api/users/signup", {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        date_of_birth: formData.birthdate,
+        gender: formData.gender,
+        country: formData.country,
+      });
+
+      navigate("/dash");
+    } catch (error) {
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong. Please try again.";
+      setErrorMessage(msg);
     }
   };
 
   return (
-    <>
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Container
+        maxWidth="sm"
+        sx={{ flex: 1, display: "flex", flexDirection: "column" }}
       >
-        <Container
-          maxWidth="sm"
-          sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            <Typography
-              variant="h4"
-              component="h1"
-              align="center"
-              fontWeight="bold"
-              gutterBottom
-            >
-              Welcome to FIT TRACK
-            </Typography>
+        <Box sx={{ width: "100%" }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            align="center"
+            fontWeight="bold"
+            gutterBottom
+          >
+            Welcome to FIT TRACK
+          </Typography>
 
-            <Typography variant="body2" align="center" sx={{ mb: 4 }}>
-              Already a member? <StyledLink to="/login">Log in</StyledLink>
-            </Typography>
+          <Typography variant="body2" align="center" sx={{ mb: 4 }}>
+            Already a member? <StyledLink to="/login">Log in</StyledLink>
+          </Typography>
 
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-              <TextField
-                id="firstName"
-                label="First Name"
-                placeholder="Enter First Name"
-                fullWidth
-                variant="outlined"
-                size="small"
-              />
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
+          >
+            <TextField
+              id="firstName"
+              label="First Name"
+              fullWidth
+              size="small"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
+            <TextField
+              id="lastName"
+              label="Last Name"
+              fullWidth
+              size="small"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+            <TextField
+              id="email"
+              label="Email"
+              type="email"
+              fullWidth
+              size="small"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <TextField
+              id="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              size="small"
+              value={formData.password}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              id="birthdate"
+              type="date"
+              label="Birthdate"
+              fullWidth
+              size="small"
+              value={formData.birthdate}
+              onChange={handleChange}
+              InputLabelProps={{ shrink: true }}
+            />
 
-              <TextField
-                id="lastName"
-                label="Last Name"
-                placeholder="Enter Last Name"
-                fullWidth
-                variant="outlined"
-                size="small"
-              />
-
-              <TextField
-                id="email"
-                label="Email"
-                type="email"
-                placeholder="Enter Email"
-                fullWidth
-                variant="outlined"
-                size="small"
-              />
-
-              <TextField
-                id="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter Password"
-                fullWidth
-                variant="outlined"
-                size="small"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        edge="end"
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <Eye size={20} />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <TextField
-                id="birthdate"
-                type="date"
-                label="Birthdate"
-                fullWidth
-                variant="outlined"
-                size="small"
-                onChange={handleBirthdateChange}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-
-              <FormControl fullWidth size="small">
-                <InputLabel
-                  id="gender-label"
-                  sx={{ display: "flex", alignItems: "center" }}
-                >
-                  Gender
-                  <IconButton size="small" sx={{ ml: 0.5, p: 0 }}>
-                    <Info size={16} color="#9e9e9e" />
-                  </IconButton>
-                </InputLabel>
-                <Select
-                  labelId="gender-label"
-                  id="gender"
-                  label="Gender"
-                  defaultValue=""
-                >
-                  <MenuItem value="" disabled>
-                    Select Gender
-                  </MenuItem>
-                  <MenuItem value="male">Male</MenuItem>
-                  <MenuItem value="female">Female</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </Select>
-              </FormControl>
-
-              <FormControl fullWidth size="small">
-                <InputLabel id="country-label">Country/Region</InputLabel>
-                <Select
-                  labelId="country-label"
-                  id="country"
-                  label="Country/Region"
-                  defaultValue="us"
-                >
-                  <MenuItem value="us">United States</MenuItem>
-                  <MenuItem value="ca">Canada</MenuItem>
-                  <MenuItem value="uk">United Kingdom</MenuItem>
-                  <MenuItem value="au">Australia</MenuItem>
-                </Select>
-              </FormControl>
-
-              <SignupButton
-                variant="contained"
-                fullWidth
-                disableElevation
-                sx={{ mt: 1 }}
+            <FormControl fullWidth size="small">
+              <InputLabel
+                id="gender-label"
+                sx={{ display: "flex", alignItems: "center" }}
               >
-                Sign Up
-              </SignupButton>
+                Gender
+                <IconButton size="small" sx={{ ml: 0.5, p: 0 }}>
+                  <Info size={16} color="#9e9e9e" />
+                </IconButton>
+              </InputLabel>
+              <Select
+                name="gender"
+                labelId="gender-label"
+                id="gender"
+                label="Gender"
+                value={formData.gender}
+                onChange={handleSelectChange}
+              >
+                <MenuItem value="" disabled>
+                  Select Gender
+                </MenuItem>
+                <MenuItem value="male">Male</MenuItem>
+                <MenuItem value="female">Female</MenuItem>
+                <MenuItem value="other">Other</MenuItem>
+              </Select>
+            </FormControl>
 
-              <OrDivider>
-                <Divider sx={{ width: "100%", position: "absolute" }} />
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{
-                    px: 2,
-                    bgcolor: "background.paper",
-                    position: "relative",
-                  }}
-                >
-                  Or sign up with
-                </Typography>
-              </OrDivider>
+            <FormControl fullWidth size="small">
+              <InputLabel id="country-label">Country/Region</InputLabel>
+              <Select
+                name="country"
+                labelId="country-label"
+                id="country"
+                label="Country/Region"
+                value={formData.country}
+                onChange={handleSelectChange}
+              >
+                <MenuItem value="us">United States</MenuItem>
+                <MenuItem value="ca">Canada</MenuItem>
+                <MenuItem value="uk">United Kingdom</MenuItem>
+                <MenuItem value="au">Australia</MenuItem>
+              </Select>
+            </FormControl>
 
-              <GoogleButton
-                variant="outlined"
-                startIcon={
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    width="18"
-                    height="18"
-                  >
-                    <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                      <path
-                        fill="#4285F4"
-                        d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"
-                      />
-                      <path
-                        fill="#34A853"
-                        d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"
-                      />
-                      <path
-                        fill="#FBBC05"
-                        d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"
-                      />
-                      <path
-                        fill="#EA4335"
-                        d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"
-                      />
-                    </g>
-                  </svg>
+            {errorMessage && (
+              <Alert
+                severity={
+                  errorMessage.includes("success") ? "success" : "error"
                 }
               >
-                Sign up with Google
-              </GoogleButton>
-            </Box>
+                {errorMessage}
+              </Alert>
+            )}
+
+            <SignupButton type="submit" fullWidth>
+              Sign Up
+            </SignupButton>
+
+            <OrDivider>
+              <Divider sx={{ width: "100%", position: "absolute" }} />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  px: 2,
+                  bgcolor: "background.paper",
+                  position: "relative",
+                }}
+              >
+                Or sign up with
+              </Typography>
+            </OrDivider>
+
+            <GoogleButton
+              variant="outlined"
+              startIcon={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                >
+                  <path
+                    fill="#4285F4"
+                    d="M21.805 10.023h-9.82v3.953h5.652c-.244 1.278-.988 2.36-2.104 3.088v2.57h3.412c1.999-1.84 3.158-4.552 3.158-7.61z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M11.985 22c2.698 0 4.963-.898 6.618-2.437l-3.412-2.57c-.946.633-2.152 1.01-3.206 1.01-2.47 0-4.56-1.668-5.306-3.912H3.167v2.448A10.003 10.003 0 0 0 11.985 22z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M6.679 13.09a5.997 5.997 0 0 1 0-3.18V7.462H3.167a10.001 10.001 0 0 0 0 9.075l3.512-2.447z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M11.985 5.993c1.468 0 2.788.506 3.826 1.503l2.871-2.87C17.013 2.993 14.748 2 11.985 2A10.003 10.003 0 0 0 3.167 7.462l3.512 2.448c.746-2.244 2.836-3.917 5.306-3.917z"
+                  />
+                </svg>
+              }
+            >
+              Sign up with Google
+            </GoogleButton>
           </Box>
-        </Container>
-      </Box>
-    </>
+        </Box>
+      </Container>
+    </Box>
   );
 }

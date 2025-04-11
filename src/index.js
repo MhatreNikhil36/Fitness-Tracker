@@ -6,27 +6,25 @@ import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { red } from "@mui/material/colors";
 
-// Define a custom theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#000000", // black
+      main: "#000000",
     },
     secondary: {
-      main: "#ffffff", // white
+      main: "#ffffff",
     },
     error: {
-      main: red[600], // red highlight
+      main: red[600],
     },
     background: {
-      default: "#ffffff", // overall background color
+      default: "#ffffff",
     },
     text: {
-      primary: "#000000", // black text
+      primary: "#000000",
     },
   },
   typography: {
-    // Optional: tweak your typography to match the wireframe
     fontFamily: [
       "-apple-system",
       "BlinkMacSystemFont",

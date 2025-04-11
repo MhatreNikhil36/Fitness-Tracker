@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
-// Styled components
 const FitLogo = styled(Typography)(({ theme }) => ({
   backgroundColor: "black",
   color: "white",
@@ -57,7 +56,6 @@ export default function AdminNav() {
     <AppBar position="static" color="transparent" elevation={0}>
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ py: 1, mb: 10, width: "100%" }}>
-          {/* Logo Section */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <NavLink
               to="/"
@@ -72,14 +70,11 @@ export default function AdminNav() {
             </NavLink>
           </Box>
 
-          {/* Spacer */}
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* Center Navigation */}
           {!isMobile && (
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ display: "flex", gap: 4 }}>
-                {/* Add `end` prop to ensure exact matching */}
                 <StyledNavLink to="/admin" end>
                   Dashboard
                 </StyledNavLink>
@@ -94,10 +89,8 @@ export default function AdminNav() {
             </Box>
           )}
 
-          {/* Spacer */}
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* No Auth Buttons */}
           <Box
             sx={{
               display: "flex",

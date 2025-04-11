@@ -1,7 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Box, List, ListItem, ListItemText, styled } from "@mui/material";
 
-// Styled component for the navigation links
 const NavLink = styled(Link)(({ theme, active }) => ({
   display: "block",
   padding: "6px 16px",
@@ -16,26 +15,51 @@ const NavLink = styled(Link)(({ theme, active }) => ({
 
 const SettingsSidebar = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { path: "/settings/profile", label: "Profile Information" },
     { path: "/settings/account", label: "Account" },
     { path: "/settings/display", label: "Display" },
+    { path: "#logout", label: "Log Out", isLogout: true },
   ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <Box sx={{ width: 224 }}>
       <List sx={{ padding: 0 }}>
         {navItems.map((item) => (
-          <ListItem key={item.path} disablePadding sx={{ display: "block" }}>
-            <NavLink to={item.path} active={pathname === item.path ? 1 : 0}>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
+          <ListItem key={item.label} disablePadding sx={{ display: "block" }}>
+            {item.isLogout ? (
+              <Box
+                onClick={handleLogout}
+                sx={{
+                  cursor: "pointer",
+                  padding: "6px 16px",
+                  color: "error.main",
+                  fontWeight: 500,
+                  "&:hover": {
+                    bgcolor: "action.hover",
+                  },
                 }}
-              />
-            </NavLink>
+              >
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ fontSize: "0.875rem" }}
+                />
+              </Box>
+            ) : (
+              <NavLink to={item.path} active={pathname === item.path ? 1 : 0}>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{ fontSize: "0.875rem" }}
+                />
+              </NavLink>
+            )}
           </ListItem>
         ))}
       </List>

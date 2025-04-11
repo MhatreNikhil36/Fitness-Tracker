@@ -20,7 +20,7 @@ import {
   Security,
 } from "@mui/icons-material";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   const features = [
@@ -81,7 +81,6 @@ const AboutUs = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          {/* About FitTrack */}
           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
@@ -129,7 +128,6 @@ const AboutUs = () => {
             </Card>
           </Grid>
 
-          {/* Features */}
           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
@@ -170,7 +168,6 @@ const AboutUs = () => {
       </Box>
 
       <Box sx={{ width: "100%" }}>
-        {" "}
         <Footer />
       </Box>
     </Box>

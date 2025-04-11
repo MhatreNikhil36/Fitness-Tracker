@@ -35,7 +35,6 @@ const Contact = () => {
     severity: "success",
   });
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -44,7 +43,6 @@ const Contact = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -84,7 +82,6 @@ const Contact = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          {/* Contact Form */}
           <Grid item xs={12} md={6}>
             <Card>
               <CardContent>
@@ -165,10 +162,8 @@ const Contact = () => {
             </Card>
           </Grid>
 
-          {/* Contact Information and Map */}
           <Grid item xs={12} md={6}>
             <Grid container spacing={3}>
-              {/* Contact Information */}
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -210,7 +205,6 @@ const Contact = () => {
                 </Card>
               </Grid>
 
-              {/* Map */}
               <Grid item xs={12}>
                 <Card>
                   <CardContent>
@@ -241,7 +235,6 @@ const Contact = () => {
           </Grid>
         </Grid>
 
-        {/* Success/Error Notification */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={5000}

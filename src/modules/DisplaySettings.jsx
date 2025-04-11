@@ -16,12 +16,10 @@ export default function DisplaySettings() {
   return (
     <Container maxWidth="lg">
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        {/* Left Sidebar */}
         <Grid item>
           <SettingsSidebar />
         </Grid>
 
-        {/* Main Content */}
         <Grid item xs>
           <Box sx={{ maxWidth: 600 }}>
             <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>
@@ -32,8 +30,7 @@ export default function DisplaySettings() {
               component="form"
               sx={{ display: "flex", flexDirection: "column", gap: 3 }}
             >
-              {/* Measurement Units */}
-              <FormControl fullWidth variant="outlined">
+              <FormControl fullWidth variant="outlined" size="small">
                 <InputLabel>Measurement Units</InputLabel>
                 <Select defaultValue="metric" label="Measurement Units">
                   <MenuItem value="metric">
@@ -45,8 +42,7 @@ export default function DisplaySettings() {
                 </Select>
               </FormControl>
 
-              {/* Time Zone */}
-              <FormControl fullWidth variant="outlined">
+              <FormControl fullWidth variant="outlined" size="small">
                 <InputLabel>Time Zone</InputLabel>
                 <Select defaultValue="America/Chicago" label="Time Zone">
                   <MenuItem value="America/Chicago">America/Chicago</MenuItem>
@@ -58,17 +54,17 @@ export default function DisplaySettings() {
                 </Select>
               </FormControl>
 
-              {/* Save Button */}
               <Box sx={{ pt: 2 }}>
                 <Button
-                  fullWidth
                   variant="contained"
+                  type="submit"
                   sx={{
                     bgcolor: "black",
                     color: "white",
-                    py: 1.5,
+                    width: 128,
                     textTransform: "uppercase",
                     letterSpacing: "0.05em",
+                    fontWeight: 500,
                     "&:hover": {
                       bgcolor: "#333",
                     },
