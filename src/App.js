@@ -31,6 +31,7 @@ import RestNav from "./components/RestNav";
 import AdminNav from "./components/AdminNav";
 import Contact from "./modules/Contact";
 import AboutUs from "./modules/About";
+import ScrollToTop from "./components/ScrollToTop";
 
 const getUserFromLocalStorage = () => {
   try {
@@ -75,7 +76,6 @@ const Layout = ({ children }) => {
   const isAdmin = token && user?.is_admin;
 
   useEffect(() => {
-    // Re-read from localStorage on route change
     const storedUser = (() => {
       try {
         return JSON.parse(localStorage.getItem("user")) || null;
@@ -108,6 +108,7 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
