@@ -1,9 +1,10 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import HomePage from "./modules/Homepage";
 import NutritionPage from "./modules/NutritionPage";
@@ -60,9 +61,31 @@ const PublicOnlyRoute = ({ children }) => {
 };
 
 const Layout = ({ children }) => {
+  const location = useLocation();
+
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+
   const token = localStorage.getItem("token");
-  const user = getUserFromLocalStorage();
   const isAdmin = token && user?.is_admin;
+
+  useEffect(() => {
+    // Re-read from localStorage on route change
+    const storedUser = (() => {
+      try {
+        return JSON.parse(localStorage.getItem("user")) || null;
+      } catch {
+        return null;
+      }
+    })();
+
+    setUser(storedUser);
+  }, [location.pathname]);
 
   let navToRender;
 
