@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Eye, EyeOff, Info } from "lucide-react";
 import axios from "axios";
 import {
@@ -58,7 +58,6 @@ const OrDivider = styled(Box)(({ theme }) => ({
 }));
 
 export default function Signup() {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -113,12 +112,15 @@ export default function Signup() {
     return "";
   };
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validationError = validateForm();
     if (validationError) {
       setErrorMessage(validationError);
+      setSuccessMessage("");
       return;
     }
 
@@ -133,13 +135,25 @@ export default function Signup() {
         country: formData.country,
       });
 
-      navigate("/dash");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        birthdate: "",
+        gender: "",
+        country: "us",
+      });
+
+      setErrorMessage("");
+      setSuccessMessage("Signup successful! You can now log in.");
     } catch (error) {
       const msg =
         error.response?.data?.message ||
         error.message ||
         "Something went wrong. Please try again.";
       setErrorMessage(msg);
+      setSuccessMessage("");
     }
   };
 
@@ -267,13 +281,13 @@ export default function Signup() {
               </Select>
             </FormControl>
 
-            {errorMessage && (
-              <Alert
-                severity={
-                  errorMessage.includes("success") ? "success" : "error"
-                }
-              >
-                {errorMessage}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            {successMessage && (
+              <Alert severity="success">
+                {successMessage}{" "}
+                <StyledLink to="/login" style={{ fontWeight: 500 }}>
+                  Go to Login
+                </StyledLink>
               </Alert>
             )}
 

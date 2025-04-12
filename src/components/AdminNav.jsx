@@ -7,8 +7,9 @@ import {
   useMediaQuery,
   useTheme,
   styled,
+  Button,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const FitLogo = styled(Typography)(({ theme }) => ({
   backgroundColor: "black",
@@ -51,6 +52,13 @@ const StyledNavLink = styled(NavLink)(({ theme }) => ({
 export default function AdminNav() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
     <AppBar position="static" color="transparent" elevation={0}>
@@ -97,7 +105,24 @@ export default function AdminNav() {
               justifyContent: "flex-end",
               gap: 2,
             }}
-          ></Box>
+          >
+            <Button
+              variant="outlined"
+              onClick={handleLogout}
+              sx={{
+                color: "black",
+                borderColor: "black",
+                textTransform: "uppercase",
+                fontWeight: 500,
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                },
+              }}
+            >
+              Logout
+            </Button>
+          </Box>
         </Toolbar>
       </Container>
     </AppBar>

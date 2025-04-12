@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 import { User } from "lucide-react";
-import SettingsSidebar from "../components/Settings_Sidebar";
+import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 
 export default function ProfileSettings() {

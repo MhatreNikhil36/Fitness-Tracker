@@ -4,7 +4,6 @@ import {
   Routes,
   Route,
   Navigate,
-  useLocation,
 } from "react-router-dom";
 import HomePage from "./modules/Homepage";
 import NutritionPage from "./modules/NutritionPage";
@@ -32,27 +31,42 @@ import AdminNav from "./components/AdminNav";
 import Contact from "./modules/Contact";
 import AboutUs from "./modules/About";
 
-// ✅ Block access if NOT logged in
+const getUserFromLocalStorage = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user")) || null;
+  } catch {
+    return null;
+  }
+};
+
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
 };
 
-// ✅ Block access if ALREADY logged in
 const PublicOnlyRoute = ({ children }) => {
   const token = localStorage.getItem("token");
-  return token ? <Navigate to="/settings/profile" replace /> : children;
+  const user = getUserFromLocalStorage();
+
+  if (token && user?.is_admin) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (token) {
+    return <Navigate to="/settings/profile" replace />;
+  }
+
+  return children;
 };
 
-// ✅ Navbar layout logic
 const Layout = ({ children }) => {
-  const location = useLocation();
   const token = localStorage.getItem("token");
-  const isAdminRoute = location.pathname.startsWith("/admin");
+  const user = getUserFromLocalStorage();
+  const isAdmin = token && user?.is_admin;
 
   let navToRender;
 
-  if (isAdminRoute) {
+  if (isAdmin) {
     navToRender = <AdminNav />;
   } else if (token) {
     navToRender = <RestNav />;
@@ -73,7 +87,6 @@ const App = () => {
     <Router>
       <Layout>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route
             path="/login"
@@ -94,7 +107,6 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<AboutUs />} />
 
-          {/* Protected routes */}
           <Route
             path="/settings/profile"
             element={
@@ -192,7 +204,6 @@ const App = () => {
             }
           />
 
-          {/* Admin routes */}
           <Route
             path="/admin/add-exercise"
             element={
@@ -226,7 +237,6 @@ const App = () => {
             }
           />
 
-          {/* Catch all */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>

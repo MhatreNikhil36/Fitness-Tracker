@@ -9,7 +9,7 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import SettingsSidebar from "../components/Settings_Sidebar";
+import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 
 export default function AccountSettings() {

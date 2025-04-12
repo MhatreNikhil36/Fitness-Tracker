@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
-
 import {
   Box,
   Typography,
@@ -83,11 +82,18 @@ export default function Login() {
         }
       );
 
+      console.log("Login response:", response.data);
+
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginError(false);
-      navigate("/dash");
+
+      const isAdmin =
+        response?.data?.user?.is_admin === 1 ||
+        response?.data?.user?.is_admin === true;
+
+      navigate(isAdmin ? "/admin" : "/dash");
     } catch (err) {
       setLoginError(true);
     }
