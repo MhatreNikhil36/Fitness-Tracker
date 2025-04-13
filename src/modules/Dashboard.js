@@ -12,6 +12,7 @@ import {
   ListItem,
   ListItemText,
   Alert,
+  Button,
 } from "@mui/material";
 import {
   LineChart,
@@ -25,52 +26,104 @@ import {
   Bar,
   ResponsiveContainer,
 } from "recharts";
+import { useNavigate } from "react-router-dom";
+
+// Reusable component to render a single goal's details
+const GoalItem = ({ goal }) => (
+  <Box sx={{ mb: 2 }}>
+    <Typography variant="body1">
+      <strong>Type:</strong> {goal.goal_type}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Target Value:</strong> {goal.target_value}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Current Value:</strong> {goal.current_value}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Status:</strong> {goal.status}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Deadline:</strong> {goal.deadline}
+    </Typography>
+    <Divider sx={{ mt: 1, mb: 1 }} />
+  </Box>
+);
+
+// Helper to format progress data from a goal's progress array (if available)
+function formatProgressData(progressArray) {
+  return progressArray.map((p) => ({
+    weight: p.recorded_value,
+    name: p.timestamp,
+  }));
+}
 
 const DashboardPage = () => {
-  // States to hold fetched data
+  // States for different dashboard data
   const [goals, setGoals] = useState([]);
   const [progressData, setProgressData] = useState([]);
-  const [nutritionData, setNutritionData] = useState([]);
+  const [nutritionData, setNutritionData] = useState([]); // Nutrition logs/daily summaries
   const [recentActivity, setRecentActivity] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Retrieve auth token (adjust if needed)
+  const navigate = useNavigate();
   const authToken = localStorage.getItem("token") || "";
+  const API_URL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      // Use individual try/catch blocks so a failure in one call won't block the others.
+      let fetchedGoals = [];
       try {
-        // Fetch goals from your backend
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/goals`, {
+        const resGoals = await axios.get(`${API_URL}/api/goals`, {
           headers: { Authorization: `Bearer ${authToken}` },
         });
-        console.log("Fetched goals from backend:", res.data);
-
-        setGoals(res.data);
-
-        // If you want to do something special with the first active goal's progress:
-        const activeGoal = res.data.find((g) => g.status === "in_progress");
-        if (activeGoal && activeGoal.progress && activeGoal.progress.length > 0) {
-          setProgressData(formatProgressData(activeGoal.progress));
-        }
-
-        // For now, these remain empty arrays unless you implement endpoints for them
-        setNutritionData([]);
-        setRecentActivity([]);
-
-        setIsLoading(false);
+        console.log("Fetched goals from backend:", resGoals.data);
+        fetchedGoals = resGoals.data;
+        setGoals(fetchedGoals);
       } catch (err) {
-        console.error("Error fetching dashboard data:", err);
-        setErrorMessage(
-          err.response?.data?.message || "Error fetching dashboard data from server."
-        );
-        setIsLoading(false);
+        console.error("Error fetching goals:", err);
+        setGoals([]); // Set empty array to allow rest of the page to render
       }
+
+      // If there is an active goal with progress, set progress data
+      const activeGoal = fetchedGoals.find((g) => g.status === "in_progress" && g.progress && g.progress.length > 0);
+      if (activeGoal) {
+        setProgressData(formatProgressData(activeGoal.progress));
+      } else {
+        setProgressData([]);
+      }
+
+      // Fetch nutrition data from backend
+      try {
+        const resNutrition = await axios.get(`${API_URL}/api/nutrition`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        console.log("Fetched nutrition logs:", resNutrition.data);
+        setNutritionData(resNutrition.data); // Expects an array; if empty, will display fallback
+      } catch (err) {
+        console.error("Error fetching nutrition data:", err);
+        setNutritionData([]); // Fallback to empty array
+      }
+
+      // Fetch recent activity data from backend
+      try {
+        const resActivity = await axios.get(`${API_URL}/api/activities`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        console.log("Fetched recent activity:", resActivity.data);
+        setRecentActivity(resActivity.data);
+      } catch (err) {
+        console.error("Error fetching recent activity:", err);
+        setRecentActivity([]); // Fallback to empty
+      }
+
+      setIsLoading(false);
     };
 
     fetchDashboardData();
-  }, [authToken]);
+  }, [authToken, API_URL]);
 
   if (isLoading) {
     return (
@@ -88,11 +141,15 @@ const DashboardPage = () => {
     );
   }
 
-  // Compute quick stats (e.g., how many goals are in progress vs completed)
+  // Quick Stats
   const goalsInProgress = goals.filter((g) => g.status === "in_progress").length;
   const completedGoals = goals.filter((g) => g.status === "completed").length;
-  // Example: total weekly calories from nutritionData (currently empty)
-  const totalWeeklyCalories = nutritionData.reduce((acc, day) => acc + (day.calories || 0), 0);
+  // For weekly calories, sum calories field from nutritionData if present;
+  // Otherwise, use a meaningful message or fallback value.
+  const totalWeeklyCalories = nutritionData.reduce(
+    (acc, day) => acc + (day.calories || 0),
+    0
+  );
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", mt: 0, p: 2 }}>
@@ -128,7 +185,13 @@ const DashboardPage = () => {
               <Typography variant="subtitle2" color="text.secondary">
                 Weekly Calories
               </Typography>
-              <Typography variant="h5">{totalWeeklyCalories}</Typography>
+              {totalWeeklyCalories > 0 ? (
+                <Typography variant="h5">{totalWeeklyCalories}</Typography>
+              ) : (
+                <Typography variant="body2">
+                  No nutrition logs available. Log your meals to view this stat.
+                </Typography>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -138,7 +201,13 @@ const DashboardPage = () => {
               <Typography variant="subtitle2" color="text.secondary">
                 Recent Workouts
               </Typography>
-              <Typography variant="h5">{recentActivity.length}</Typography>
+              {recentActivity.length > 0 ? (
+                <Typography variant="h5">{recentActivity.length}</Typography>
+              ) : (
+                <Typography variant="body2">
+                  No recent workouts. Start an activity!
+                </Typography>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -154,11 +223,11 @@ const DashboardPage = () => {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               {goals.length > 0 ? (
-                goals.map((goal) => (
-                  <GoalItem key={goal.id} goal={goal} />
-                ))
+                goals.map((goal) => <GoalItem key={goal.id} goal={goal} />)
               ) : (
-                <Typography>No goals found.</Typography>
+                <Typography>
+                  No goals found. Add a goal to get started!
+                </Typography>
               )}
             </CardContent>
           </Card>
@@ -193,13 +262,15 @@ const DashboardPage = () => {
                   </ResponsiveContainer>
                 </Box>
               ) : (
-                <Typography>No progress data available.</Typography>
+                <Typography>
+                  No progress data available. Track your weight to see progress!
+                </Typography>
               )}
             </CardContent>
           </Card>
         </Grid>
 
-        {/* Nutrition Chart (Daily Calories/Protein) */}
+        {/* Nutrition Overview */}
         <Grid item xs={12} md={8}>
           <Card>
             <CardContent>
@@ -222,7 +293,9 @@ const DashboardPage = () => {
                   </ResponsiveContainer>
                 </Box>
               ) : (
-                <Typography>No nutrition data available.</Typography>
+                <Typography>
+                  No nutrition data available. Log your meals to see the chart here!
+                </Typography>
               )}
             </CardContent>
           </Card>
@@ -248,7 +321,9 @@ const DashboardPage = () => {
                   ))}
                 </List>
               ) : (
-                <Typography>No recent activity found.</Typography>
+                <Typography>
+                  No recent workouts found. Start an activity and it will appear here!
+                </Typography>
               )}
             </CardContent>
           </Card>
@@ -257,35 +332,5 @@ const DashboardPage = () => {
     </Box>
   );
 };
-
-// Reusable component to render a single goal's details
-const GoalItem = ({ goal }) => (
-  <Box sx={{ mb: 2 }}>
-    <Typography variant="body1">
-      <strong>Type:</strong> {goal.goal_type}
-    </Typography>
-    <Typography variant="body1">
-      <strong>Target Value:</strong> {goal.target_value}
-    </Typography>
-    <Typography variant="body1">
-      <strong>Current Value:</strong> {goal.current_value}
-    </Typography>
-    <Typography variant="body1">
-      <strong>Status:</strong> {goal.status}
-    </Typography>
-    <Typography variant="body1">
-      <strong>Deadline:</strong> {goal.deadline}
-    </Typography>
-    <Divider sx={{ mt: 1, mb: 1 }} />
-  </Box>
-);
-
-// Helper to format progress data from e.g. goal.progress
-function formatProgressData(progressArray) {
-  return progressArray.map((p) => ({
-    weight: p.recorded_value,
-    name: p.timestamp,
-  }));
-}
 
 export default DashboardPage;

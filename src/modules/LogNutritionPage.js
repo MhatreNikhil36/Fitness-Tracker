@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -7,6 +8,7 @@ import {
   Card,
   CardContent,
   Divider,
+  Alert,
 } from "@mui/material";
 
 const LogNutritionPage = () => {
@@ -20,38 +22,50 @@ const LogNutritionPage = () => {
     fats: "",
   });
 
+  // Optional: track errors and success
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear previous messages on change
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // ------------------------------------------------------------
-    // MAKE AN API CALL HERE TO SAVE THE NUTRITION LOG
-    // Example:
-    // fetch('/api/nutrition', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     console.log('Saved nutrition log:', data);
-    //   })
-    //   .catch((error) => console.error(error));
-    // ------------------------------------------------------------
+    try {
+      const authToken = localStorage.getItem("token") || "";
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/nutrition`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      console.log("Saved nutrition log:", response.data);
 
-    console.log("Logging nutrition:", formData);
-    // Optionally, clear the form or navigate the user away
-    setFormData({
-      date: "",
-      meal: "",
-      calories: "",
-      protein: "",
-      carbs: "",
-      fats: "",
-    });
+      // Display a success message and reset the form
+      setSuccessMessage("Nutrition record saved successfully!");
+      setFormData({
+        date: "",
+        meal: "",
+        calories: "",
+        protein: "",
+        carbs: "",
+        fats: "",
+      });
+    } catch (error) {
+      console.error("Error saving nutrition:", error);
+      setErrorMessage(
+        error.response?.data?.message || "Error saving nutrition record."
+      );
+    }
   };
 
   return (
@@ -59,6 +73,18 @@ const LogNutritionPage = () => {
       <Typography variant="h4" color="text.primary" gutterBottom>
         Log Nutrition
       </Typography>
+
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {successMessage}
+        </Alert>
+      )}
+
       <Card>
         <CardContent>
           <Typography variant="body1" sx={{ mb: 2 }}>
