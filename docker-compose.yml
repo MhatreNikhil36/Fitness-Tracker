@@ -2,24 +2,6 @@ version: '3.8'
 
 services:
   # Frontend service (Production - served by Nginx)
-  frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile  # Use the production server stage (Nginx)
-    ports:
-      - "3000:80"           # Map host port 3000 to container port 80
-    depends_on:
-      - server
-      - db
-    environment:
-      - REACT_APP_API_URL=http://localhost:5000
-    # Do not mount volumes in production to keep the built files intact
-    healthcheck:
-      test: ["CMD", "npm", "list", "axios"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
   # Backend service (Express/Node)
   server:
     build:
@@ -52,6 +34,26 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./initdb:/docker-entrypoint-initdb.d
+  
+  
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Use the production server stage (Nginx)
+    ports:
+      - "3000:80"           # Map host port 3000 to container port 80
+    depends_on:
+      - server
+      - db
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    # Do not mount volumes in production to keep the built files intact
+    healthcheck:
+      test: ["CMD", "npm", "list", "axios"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 
 volumes:
   mysql_data:

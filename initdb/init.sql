@@ -94,6 +94,25 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+
+
+-- -----------------------------------------------------
+-- Table `fitness_tracker`.`recommendations`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS recommendations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  goal_type VARCHAR(50) NOT NULL,
+  target_value DECIMAL(5,2) NOT NULL,
+  deadline DATE NOT NULL,
+  recommended_calories INT,
+  recommended_protein VARCHAR(20),
+  recommended_carbs VARCHAR(20),
+  recommended_fats VARCHAR(20),
+  meal_plan JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 -- -----------------------------------------------------
 -- Table `fitness_tracker`.`workouttemplates`
 -- -----------------------------------------------------

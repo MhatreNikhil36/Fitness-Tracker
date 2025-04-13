@@ -1,4 +1,6 @@
+// NutritionPage.jsx
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -12,107 +14,56 @@ import {
   TableRow,
   CircularProgress,
   Button,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const NutritionPage = () => {
   const [nutritionData, setNutritionData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // USE THE BELOW PROMPT TO FETCH NUTRITION RECOMMENDATIONS
-    // Based on the user's current weight of {HealthMetrics.weight_kg} kg, height of {HealthMetrics.height} cm, age {User.age}, gender {User.gender}, and goal of {Goal.goal_type} by {Goal.deadline}, suggest daily calorie intake, protein, carbs, and fats to achieve the goal. Return the data in JSON.
-    // ----------------------------------------------------------------------
-    // REPLACE WITH ACTUAL API CALL TO FETCH NUTRITION RECOMMENDATIONS
-    // Example:
-    //   fetch('/api/nutrition-recommendations?userId=123')
-    //     .then((res) => res.json())
-    //     .then((data) => {
-    //       setNutritionData(data);
-    //       setIsLoading(false);
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //       setIsLoading(false);
-    //     });
-    // ----------------------------------------------------------------------
+    const fetchNutritionRecommendations = async () => {
+      try {
+        const authToken = localStorage.getItem("token") || "";
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/nutrition/recommendations`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        console.log("Fetched nutrition recommendations:", response.data);
+        setNutritionData(response.data);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching nutrition recommendations:", err);
+        setErrorMessage(
+          err.response?.data?.message ||
+            "Failed to load nutrition recommendations."
+        );
+        setIsLoading(false);
+      }
+    };
 
-    // For now, we’ll mock up some static data to illustrate
-    // how you might handle different user goals and health metrics.
-    // Example structure from the backend might look like:
-    // {
-    //   user: {
-    //     firstName: "John",
-    //     lastName: "Doe",
-    //     weight_kg: 80,
-    //     height_cm: 175,
-    //     goal: {
-    //       goalType: "Weight Loss",
-    //       targetWeight: 75,
-    //       dailyCalorieDeficit: 300
-    //     }
-    //   },
-    //   recommendedNutrition: {
-    //     calories: 2000,
-    //     protein: 150,
-    //     carbs: 250,
-    //     fats: 70
-    //   },
-    //   sampleMealPlan: [
-    //     { meal: "Breakfast", items: "Oats, Banana, Almonds", approxCalories: 400 },
-    //     { meal: "Lunch", items: "Chicken Breast, Brown Rice, Veggies", approxCalories: 600 },
-    //     { meal: "Dinner", items: "Salmon, Quinoa, Broccoli", approxCalories: 500 },
-    //   ]
-    // }
-
-    setTimeout(() => {
-      const dummyData = {
-        user: {
-          firstName: "John",
-          lastName: "Doe",
-          weight_kg: 80,
-          height_cm: 175,
-          goal: {
-            goalType: "Weight Loss",
-            targetWeight: 75,
-            dailyCalorieDeficit: 300,
-          },
-        },
-        recommendedNutrition: {
-          calories: 2000,
-          protein: 150,
-          carbs: 250,
-          fats: 70,
-        },
-        sampleMealPlan: [
-          {
-            meal: "Breakfast",
-            items: "Oats with berries, Almond milk, 1 banana",
-            approxCalories: 400,
-          },
-          {
-            meal: "Lunch",
-            items: "Grilled Chicken Breast, Brown Rice, Mixed Veggies",
-            approxCalories: 600,
-          },
-          {
-            meal: "Dinner",
-            items: "Baked Salmon, Quinoa, Steamed Broccoli",
-            approxCalories: 500,
-          },
-        ],
-      };
-      setNutritionData(dummyData);
-      setIsLoading(false);
-    }, 1000);
+    fetchNutritionRecommendations();
   }, []);
 
   if (isLoading) {
-    // Simple loading spinner
     return (
       <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <Box sx={{ maxWidth: 600, mx: "auto", mt: 8, p: 2 }}>
+        <Alert severity="error">{errorMessage}</Alert>
       </Box>
     );
   }
@@ -127,8 +78,9 @@ const NutritionPage = () => {
     );
   }
 
+  // Destructure the response data
   const { user, recommendedNutrition, sampleMealPlan } = nutritionData;
-  const { goalType, targetWeight } = user.goal || {};
+  const { goalType, targetWeight } = user?.goal || {};
 
   return (
     <Box sx={{ maxWidth: 700, mx: "auto", mt: 8, p: 2 }}>
@@ -170,18 +122,26 @@ const NutritionPage = () => {
           <Typography variant="h6" gutterBottom>
             Daily Macro Targets
           </Typography>
-          <Typography variant="body1">
-            <strong>Calories:</strong> {recommendedNutrition.calories} kcal
-          </Typography>
-          <Typography variant="body1">
-            <strong>Protein:</strong> {recommendedNutrition.protein} g
-          </Typography>
-          <Typography variant="body1">
-            <strong>Carbs:</strong> {recommendedNutrition.carbs} g
-          </Typography>
-          <Typography variant="body1">
-            <strong>Fats:</strong> {recommendedNutrition.fats} g
-          </Typography>
+          {recommendedNutrition ? (
+            <>
+              <Typography variant="body1">
+                <strong>Calories:</strong> {recommendedNutrition.calories} kcal
+              </Typography>
+              <Typography variant="body1">
+                <strong>Protein:</strong> {recommendedNutrition.protein} g
+              </Typography>
+              <Typography variant="body1">
+                <strong>Carbs:</strong> {recommendedNutrition.carbs} g
+              </Typography>
+              <Typography variant="body1">
+                <strong>Fats:</strong> {recommendedNutrition.fats} g
+              </Typography>
+            </>
+          ) : (
+            <Typography variant="body2">
+              No recommended nutrition data available.
+            </Typography>
+          )}
         </CardContent>
       </Card>
 

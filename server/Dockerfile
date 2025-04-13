@@ -1,5 +1,5 @@
 # server/Dockerfile
-FROM node:16
+FROM node:18-alpine
 
 # Create and set the working directory
 WORKDIR /app
@@ -9,6 +9,7 @@ COPY package*.json /app/
 
 # Install dependencies
 RUN npm install
+
 
 # Copy the rest of the server code
 COPY . /app
