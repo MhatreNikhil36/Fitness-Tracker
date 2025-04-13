@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -10,6 +11,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Alert,
 } from "@mui/material";
 import {
   LineChart,
@@ -31,75 +33,44 @@ const DashboardPage = () => {
   const [nutritionData, setNutritionData] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Retrieve auth token (adjust if needed)
+  const authToken = localStorage.getItem("token") || "";
 
   useEffect(() => {
-    // In a real app, you'd do something like:
-    // fetch('/api/dashboard')
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setGoals(data.goals);
-    //     setProgressData(data.progress);
-    //     setNutritionData(data.nutrition);
-    //     setRecentActivity(data.activity);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => console.error(err));
-    // Mock data for demonstration:
-    setTimeout(() => {
-      const mockGoals = [
-        {
-          goal_type: "lose_weight",
-          target_value: 70,
-          current_value: 75,
-          status: "in_progress",
-          deadline: "2025-12-31",
-        },
-        {
-          goal_type: "gain_muscle",
-          target_value: 85,
-          current_value: 83,
-          status: "in_progress",
-          deadline: "2025-10-01",
-        },
-      ];
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch goals from your backend
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/goals`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        console.log("Fetched goals from backend:", res.data);
 
-      const mockProgress = [
-        { name: "Week 1", weight: 78 },
-        { name: "Week 2", weight: 77 },
-        { name: "Week 3", weight: 76 },
-        { name: "Week 4", weight: 75 },
-      ];
+        setGoals(res.data);
 
-      const mockNutrition = [
-        { day: "Mon", calories: 2000, protein: 150 },
-        { day: "Tue", calories: 1900, protein: 140 },
-        { day: "Wed", calories: 2100, protein: 160 },
-        { day: "Thu", calories: 2200, protein: 165 },
-        { day: "Fri", calories: 2000, protein: 150 },
-      ];
+        // If you want to do something special with the first active goal's progress:
+        const activeGoal = res.data.find((g) => g.status === "in_progress");
+        if (activeGoal && activeGoal.progress && activeGoal.progress.length > 0) {
+          setProgressData(formatProgressData(activeGoal.progress));
+        }
 
-      const mockActivity = [
-        {
-          id: 1,
-          workout_name: "Full Body Blast",
-          date: "2025-09-01",
-          calories_burned: 300,
-        },
-        {
-          id: 2,
-          workout_name: "Cardio Quickie",
-          date: "2025-09-03",
-          calories_burned: 250,
-        },
-      ];
+        // For now, these remain empty arrays unless you implement endpoints for them
+        setNutritionData([]);
+        setRecentActivity([]);
 
-      setGoals(mockGoals);
-      setProgressData(mockProgress);
-      setNutritionData(mockNutrition);
-      setRecentActivity(mockActivity);
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching dashboard data:", err);
+        setErrorMessage(
+          err.response?.data?.message || "Error fetching dashboard data from server."
+        );
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [authToken]);
 
   if (isLoading) {
     return (
@@ -109,16 +80,19 @@ const DashboardPage = () => {
     );
   }
 
+  if (errorMessage) {
+    return (
+      <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4, p: 2 }}>
+        <Alert severity="error">{errorMessage}</Alert>
+      </Box>
+    );
+  }
+
   // Compute quick stats (e.g., how many goals are in progress vs completed)
-  const goalsInProgress = goals.filter(
-    (g) => g.status === "in_progress"
-  ).length;
+  const goalsInProgress = goals.filter((g) => g.status === "in_progress").length;
   const completedGoals = goals.filter((g) => g.status === "completed").length;
-  // Example: total weekly calories from mockNutrition
-  const totalWeeklyCalories = nutritionData.reduce(
-    (acc, day) => acc + day.calories,
-    0
-  );
+  // Example: total weekly calories from nutritionData (currently empty)
+  const totalWeeklyCalories = nutritionData.reduce((acc, day) => acc + (day.calories || 0), 0);
 
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", mt: 0, p: 2 }}>
@@ -179,26 +153,9 @@ const DashboardPage = () => {
                 My Goals
               </Typography>
               <Divider sx={{ mb: 2 }} />
-              {goals && goals.length > 0 ? (
-                goals.map((goal, idx) => (
-                  <Box key={idx} sx={{ mb: 2 }}>
-                    <Typography variant="body1">
-                      <strong>Type:</strong> {goal.goal_type}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>Target Value:</strong> {goal.target_value}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>Current Value:</strong> {goal.current_value}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>Status:</strong> {goal.status}
-                    </Typography>
-                    <Typography variant="body1">
-                      <strong>Deadline:</strong> {goal.deadline}
-                    </Typography>
-                    <Divider sx={{ mt: 1, mb: 1 }} />
-                  </Box>
+              {goals.length > 0 ? (
+                goals.map((goal) => (
+                  <GoalItem key={goal.id} goal={goal} />
                 ))
               ) : (
                 <Typography>No goals found.</Typography>
@@ -260,11 +217,7 @@ const DashboardPage = () => {
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="calories" fill="#d32f2f" name="Calories" />
-                      <Bar
-                        dataKey="protein"
-                        fill="#757575"
-                        name="Protein (g)"
-                      />
+                      <Bar dataKey="protein" fill="#757575" name="Protein (g)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </Box>
@@ -304,5 +257,35 @@ const DashboardPage = () => {
     </Box>
   );
 };
+
+// Reusable component to render a single goal's details
+const GoalItem = ({ goal }) => (
+  <Box sx={{ mb: 2 }}>
+    <Typography variant="body1">
+      <strong>Type:</strong> {goal.goal_type}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Target Value:</strong> {goal.target_value}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Current Value:</strong> {goal.current_value}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Status:</strong> {goal.status}
+    </Typography>
+    <Typography variant="body1">
+      <strong>Deadline:</strong> {goal.deadline}
+    </Typography>
+    <Divider sx={{ mt: 1, mb: 1 }} />
+  </Box>
+);
+
+// Helper to format progress data from e.g. goal.progress
+function formatProgressData(progressArray) {
+  return progressArray.map((p) => ({
+    weight: p.recorded_value,
+    name: p.timestamp,
+  }));
+}
 
 export default DashboardPage;

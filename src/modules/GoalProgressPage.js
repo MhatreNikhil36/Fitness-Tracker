@@ -1,12 +1,15 @@
+// GoalProgressPage.jsx
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
   Card,
   CardContent,
+  CircularProgress,
   TextField,
   Button,
-  CircularProgress,
+  Alert,
 } from "@mui/material";
 import {
   LineChart,
@@ -22,76 +25,66 @@ import { useParams, useNavigate } from "react-router-dom";
 const GoalProgressPage = () => {
   const { goalId } = useParams();
   const navigate = useNavigate();
-
   const [goalData, setGoalData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [newProgress, setNewProgress] = useState({
     recorded_value: "",
     timestamp: "",
   });
 
+  // Retrieve auth token from storage
+  const authToken = localStorage.getItem("token") || "";
+
   useEffect(() => {
-    // ------------------------------------------------------
-    // MOCK API CALL: In a real scenario, fetch the goal by ID:
-    // fetch(`/api/goals/${goalId}`)
-    //   .then(res => res.json())
-    //   .then(data => setGoalData(data))
-    //   .catch(err => console.error(err))
-    // ------------------------------------------------------
-    setTimeout(() => {
-      // Example goal with existing progress
-      const mockGoal = {
-        id: Number(goalId),
-        goal_type: "lose_weight",
-        target_value: 70,
-        current_value: 75,
-        status: "in_progress",
-        deadline: "2025-12-31",
-        progress: [
-          { recorded_value: 78, timestamp: "2025-05-01" },
-          { recorded_value: 76, timestamp: "2025-06-01" },
-          { recorded_value: 75, timestamp: "2025-07-01" },
-        ],
-      };
-      setGoalData(mockGoal);
-      setLoading(false);
-    }, 800);
-  }, [goalId]);
+    const fetchGoal = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/goals/${goalId}`,
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+        console.log("Fetched goal data:", res.data);
+        setGoalData(res.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching goal data:", err);
+        setErrorMessage(
+          err.response?.data?.message || "Error fetching goal data."
+        );
+        setLoading(false);
+      }
+    };
+
+    fetchGoal();
+  }, [goalId, authToken]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewProgress((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddProgress = (e) => {
+  const handleAddProgress = async (e) => {
     e.preventDefault();
-    // ------------------------------------------------------
-    // POST the new progress entry to your backend:
-    // fetch(`/api/goals/${goalId}/progress`, {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(newProgress)
-    // })
-    //   .then(res => res.json())
-    //   .then(updatedGoal => setGoalData(updatedGoal))
-    //   .catch(err => console.error(err));
-    // ------------------------------------------------------
-    console.log("Submitting new progress:", newProgress);
-
-    // Mocking an update to the local state:
-    setGoalData((prev) => ({
-      ...prev,
-      progress: [
-        ...prev.progress,
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/goals/${goalId}/progress`,
+        newProgress,
         {
-          recorded_value: Number(newProgress.recorded_value),
-          timestamp: newProgress.timestamp,
-        },
-      ],
-    }));
-
-    // Reset the form
-    setNewProgress({ recorded_value: "", timestamp: "" });
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      console.log("Progress added, updated goal:", res.data);
+      setGoalData(res.data);
+      setNewProgress({ recorded_value: "", timestamp: "" });
+    } catch (err) {
+      console.error("Error adding progress:", err);
+      setErrorMessage(
+        err.response?.data?.message || "Error adding progress. Please try again."
+      );
+    }
   };
 
   if (loading) {
@@ -117,8 +110,11 @@ const GoalProgressPage = () => {
       <Typography variant="h4" color="text.primary" gutterBottom>
         Goal Progress (Goal ID: {goalData.id})
       </Typography>
-
-      {/* Display chart of existing progress */}
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" color="text.primary" gutterBottom>
@@ -147,8 +143,6 @@ const GoalProgressPage = () => {
           )}
         </CardContent>
       </Card>
-
-      {/* Form to add new progress */}
       {goalData.status === "in_progress" && (
         <Card>
           <CardContent>
@@ -186,8 +180,6 @@ const GoalProgressPage = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* Optionally a back button */}
       <Box sx={{ textAlign: "left", mt: 2 }}>
         <Button variant="outlined" onClick={() => navigate("/goals")}>
           Back to Goals

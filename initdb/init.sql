@@ -295,7 +295,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `fitness_tracker`.`progress`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `fitness_tracker`.`progress` (
+CREATE TABLE IF NOT EXISTS `progress` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `goal_id` INT NULL DEFAULT NULL,
@@ -304,8 +304,8 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`progress` (
   `recorded_date` DATE NOT NULL,
   `notes` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `goal_id` (`goal_id` ASC) VISIBLE,
-  INDEX `idx_progress_user` (`user_id` ASC) VISIBLE,
+  INDEX `goal_id` (`goal_id` ASC),
+  INDEX `idx_progress_user` (`user_id` ASC),
   CONSTRAINT `progress_ibfk_1`
     FOREIGN KEY (`user_id`)
     REFERENCES `fitness_tracker`.`users` (`id`)

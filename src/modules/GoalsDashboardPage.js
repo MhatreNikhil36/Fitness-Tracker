@@ -1,4 +1,6 @@
+// GoalsDashboardPage.jsx
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Typography,
@@ -8,6 +10,7 @@ import {
   Grid,
   CircularProgress,
   Button,
+  Alert,
 } from "@mui/material";
 import {
   LineChart,
@@ -24,82 +27,61 @@ const GoalsDashboardPage = () => {
   const navigate = useNavigate();
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Retrieve auth token from localStorage (adjust if needed)
+  const authToken = localStorage.getItem("token") || "";
 
   useEffect(() => {
-    // -----------------------------------------------------
-    // MOCK API CALL: Replace with a real fetch/axios call to your backend.
-    // -----------------------------------------------------
-    setTimeout(() => {
-      const mockGoals = [
-        {
-          id: 1,
-          user_id: 101,
-          goal_type: "lose_weight",
-          target_value: 70,
-          current_value: 75,
-          status: "in_progress",
-          deadline: "2025-12-31",
-          progress: [
-            { recorded_value: 78, timestamp: "2025-05-01" },
-            { recorded_value: 76, timestamp: "2025-06-01" },
-            { recorded_value: 75, timestamp: "2025-07-01" },
-          ],
-        },
-        {
-          id: 2,
-          user_id: 101,
-          goal_type: "gain_muscle",
-          target_value: 85,
-          current_value: 85,
-          status: "completed",
-          deadline: "2024-12-31",
-          progress: [
-            { recorded_value: 80, timestamp: "2024-03-01" },
-            { recorded_value: 83, timestamp: "2024-05-01" },
-            { recorded_value: 85, timestamp: "2024-07-01" },
-          ],
-        },
-      ];
-      setGoals(mockGoals);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    const fetchGoals = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/goals`,
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+        console.log("Fetched goals from backend:", response.data);
+        setGoals(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+        setErrorMessage(
+          error.response?.data?.message || "Error fetching goals from server."
+        );
+        setLoading(false);
+      }
+    };
 
-  // Delete goal handler
-  const handleDeleteGoal = (goalId) => {
+    fetchGoals();
+  }, [authToken]);
+
+  // Delete goal handler: calls backend API to delete a goal.
+  const handleDeleteGoal = async (goalId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this goal?"
     );
     if (confirmDelete) {
-      // -------------------------------------------------------
-      // Dummy API call to delete the goal:
-      // fetch(`/api/goals/${goalId}`, { method: 'DELETE' })
-      //   .then((res) => res.json())
-      //   .then(() => {
-      //     setGoals((prevGoals) =>
-      //       prevGoals.filter((goal) => goal.id !== goalId)
-      //     );
-      //   })
-      //   .catch((err) => console.error(err));
-      // -------------------------------------------------------
-      console.log(`Deleting goal with id: ${goalId}`);
-      setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalId));
+      try {
+        const response = await axios.delete(
+          `${process.env.REACT_APP_API_URL}/api/goals/${goalId}`,
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+        console.log(`Goal with id ${goalId} deleted successfully:`, response.data);
+        setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalId));
+      } catch (error) {
+        console.error("Error deleting goal:", error);
+        setErrorMessage(
+          error.response?.data?.message ||
+            "Error deleting goal. Please try again."
+        );
+      }
     }
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
-        <CircularProgress />
-      </Box>
-    );
-  }
-
-  // Separate goals into current (active) vs. past (completed)
+  // Separate goals into current (active) and past (completed)
   const currentGoals = goals.filter((g) => g.status === "in_progress");
   const pastGoals = goals.filter((g) => g.status === "completed");
 
-  // Helper to map goal_type to user-friendly text
+  // Helper to map goal_type to user-friendly text.
   const renderGoalType = (type) => {
     switch (type) {
       case "lose_weight":
@@ -113,12 +95,27 @@ const GoalsDashboardPage = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (errorMessage) {
+    return (
+      <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4, p: 2 }}>
+        <Alert severity="error">{errorMessage}</Alert>
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4, p: 2 }}>
       <Typography variant="h3" color="text.primary" gutterBottom>
         My Goals
       </Typography>
-
       {/* Add Goal Button */}
       <Box sx={{ textAlign: "right", mb: 3 }}>
         <Button
@@ -129,9 +126,8 @@ const GoalsDashboardPage = () => {
           Add New Goal
         </Button>
       </Box>
-
       <Grid container spacing={3}>
-        {/* Current (Active) Goals Section */}
+        {/* Current Goals Section */}
         <Grid item xs={12}>
           <Typography variant="h5" color="text.primary" gutterBottom>
             Current Goals
@@ -158,7 +154,6 @@ const GoalsDashboardPage = () => {
                   <Typography variant="body1">
                     <strong>Deadline:</strong> {goal.deadline}
                   </Typography>
-
                   {/* Chart for progress */}
                   {goal.progress && goal.progress.length > 0 && (
                     <Box sx={{ mt: 2, width: "100%", height: 250 }}>
@@ -179,7 +174,6 @@ const GoalsDashboardPage = () => {
                       </ResponsiveContainer>
                     </Box>
                   )}
-
                   {/* Buttons for View Progress and Delete */}
                   <Box
                     sx={{
@@ -212,7 +206,6 @@ const GoalsDashboardPage = () => {
             <Typography>No current goals found.</Typography>
           </Grid>
         )}
-
         {/* Past Goals Section */}
         <Grid item xs={12} sx={{ mt: 4 }}>
           <Typography variant="h5" color="text.primary" gutterBottom>
@@ -240,7 +233,6 @@ const GoalsDashboardPage = () => {
                   <Typography variant="body1">
                     <strong>Deadline:</strong> {goal.deadline}
                   </Typography>
-
                   {/* Chart for progress */}
                   {goal.progress && goal.progress.length > 0 && (
                     <Box sx={{ mt: 2, width: "100%", height: 250 }}>
@@ -261,7 +253,6 @@ const GoalsDashboardPage = () => {
                       </ResponsiveContainer>
                     </Box>
                   )}
-
                   {/* Buttons for View Progress and Delete */}
                   <Box
                     sx={{
