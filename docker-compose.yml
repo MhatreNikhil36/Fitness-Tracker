@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Frontend service (Production - served by Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Use the production server stage (Nginx)
+    ports:
+      - "3000:80"           # Map host port 3000 to container port 80
+    depends_on:
+      - server
+      - db
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    # Do not mount volumes in production to keep the built files intact
+    healthcheck:
+      test: ["CMD", "npm", "list", "axios"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend service (Express/Node)
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=ft_appuser
+      - DB_PASSWORD=StrongPassword123!
+      - DB_NAME=fitness_tracker
+      - DB_PORT=3306
+      - JWT_SECRET=secret123
+
+  # Database service (MySQL)
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=StrongPassword123
+      - MYSQL_DATABASE=fitness_tracker
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d
+
+volumes:
+  mysql_data:
