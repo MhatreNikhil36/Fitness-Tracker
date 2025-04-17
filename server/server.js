@@ -6,8 +6,6 @@ import goalProgressRoutes from "./routes/goalProgress.js";
 import nutritionRoutes from "./routes/nutrition.js";
 import aiPromptsRoutes from "./routes/aiPrompts.js";
 
-
-
 const app = express();
 
 app.use(cors());

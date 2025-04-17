@@ -65,7 +65,10 @@ const GoalsDashboardPage = () => {
           `${process.env.REACT_APP_API_URL}/api/goals/${goalId}`,
           { headers: { Authorization: `Bearer ${authToken}` } }
         );
-        console.log(`Goal with id ${goalId} deleted successfully:`, response.data);
+        console.log(
+          `Goal with id ${goalId} deleted successfully:`,
+          response.data
+        );
         setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== goalId));
       } catch (error) {
         console.error("Error deleting goal:", error);

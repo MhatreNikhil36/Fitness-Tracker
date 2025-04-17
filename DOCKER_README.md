@@ -20,6 +20,7 @@ docker-compose up --build
 The `--build` flag ensures that Docker builds fresh images with all required dependencies.
 
 This will:
+
 - Build and start the React frontend (available at http://localhost:3000)
 - Build and start the Node.js backend server (available at http://localhost:5000)
 - Start a MySQL database with persistent storage
@@ -63,34 +64,37 @@ docker-compose down
 If you encounter dependency issues:
 
 1. Fix dependencies manually:
+
    ```bash
    # Install axios in the frontend container
    docker-compose exec frontend npm install --save axios
    ```
 
 2. For a complete rebuild:
+
    ```bash
    # Stop containers and remove volumes
    docker-compose down -v
-   
+
    # Rebuild without using cache
    docker-compose build --no-cache
-   
+
    # Start containers
    docker-compose up
-   
+
    # Then run the dependency installation script
    ./install-dependencies.sh
    ```
 
 3. If the issue persists, check node_modules volume:
+
    ```bash
    # Stop the containers
    docker-compose down
-   
+
    # Remove the node_modules volume
    docker volume rm fitness-tracker_node_modules
-   
+
    # Rebuild and start
    docker-compose up --build
    ```
@@ -111,9 +115,11 @@ The MySQL database data is stored in a named volume `mysql_data`, which persists
 The application uses the following environment variables:
 
 ### Frontend
+
 - `REACT_APP_API_URL`: URL of the backend API (set to http://server:5000 in Docker)
 
 ### Backend
+
 - `DB_HOST`: Database hostname (set to 'db' in Docker)
 - `DB_USER`: Database username
 - `DB_PASSWORD`: Database password
@@ -121,4 +127,4 @@ The application uses the following environment variables:
 - `DB_PORT`: Database port
 - `JWT_SECRET`: Secret key for JWT token generation
 
-These are already configured in the docker-compose.yml file and the .env file. 
+These are already configured in the docker-compose.yml file and the .env file.

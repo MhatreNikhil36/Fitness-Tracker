@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,6 +14,7 @@ import DashboardPage from "./modules/Dashboard";
 import GoalsDashboardPage from "./modules/GoalsDashboardPage";
 import GoalProgressPage from "./modules/GoalProgressPage";
 import NotFoundPage from "./modules/NotFound";
+import AccessDeniedPage from "./modules/AccessDenied";
 import LogActivityPage from "./modules/LogActivityPage";
 import Activity from "./modules/activity";
 import AddExercisePage from "./modules/Admin/AddExercisePage";
@@ -31,28 +32,74 @@ import RestNav from "./components/RestNav";
 import AdminNav from "./components/AdminNav";
 import Contact from "./modules/Contact";
 import AboutUs from "./modules/About";
+import ScrollToTop from "./components/ScrollToTop";
 
-// ✅ Block access if NOT logged in
-const PrivateRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
+const getUserFromLocalStorage = () => {
+  try {
+    return JSON.parse(localStorage.getItem("user")) || null;
+  } catch {
+    return null;
+  }
 };
 
-// ✅ Block access if ALREADY logged in
+const PrivateRoute = ({ children, adminOnly = false }) => {
+  const token = localStorage.getItem("token");
+  const user = getUserFromLocalStorage();
+  const location = useLocation();
+
+  if (!token) return <Navigate to="/login" replace />;
+
+  if (adminOnly && !user?.is_admin) {
+    return <Navigate to="/denied" replace />;
+  }
+
+  return children;
+};
+
 const PublicOnlyRoute = ({ children }) => {
   const token = localStorage.getItem("token");
-  return token ? <Navigate to="/settings/profile" replace /> : children;
+  const user = getUserFromLocalStorage();
+
+  if (token && user?.is_admin) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  if (token) {
+    return <Navigate to="/settings/profile" replace />;
+  }
+
+  return children;
 };
 
-// ✅ Navbar layout logic
 const Layout = ({ children }) => {
   const location = useLocation();
+
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+
   const token = localStorage.getItem("token");
-  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAdmin = token && user?.is_admin;
+
+  useEffect(() => {
+    const storedUser = (() => {
+      try {
+        return JSON.parse(localStorage.getItem("user")) || null;
+      } catch {
+        return null;
+      }
+    })();
+
+    setUser(storedUser);
+  }, [location.pathname]);
 
   let navToRender;
 
-  if (isAdminRoute) {
+  if (isAdmin) {
     navToRender = <AdminNav />;
   } else if (token) {
     navToRender = <RestNav />;
@@ -71,9 +118,9 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<HomePage />} />
           <Route
             path="/login"
@@ -94,7 +141,6 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<AboutUs />} />
 
-          {/* Protected routes */}
           <Route
             path="/settings/profile"
             element={
@@ -192,11 +238,18 @@ const App = () => {
             }
           />
 
-          {/* Admin routes */}
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute adminOnly>
+                <AdminHome />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/admin/add-exercise"
             element={
-              <PrivateRoute>
+              <PrivateRoute adminOnly>
                 <AddExercisePage />
               </PrivateRoute>
             }
@@ -204,7 +257,7 @@ const App = () => {
           <Route
             path="/admin/add-workout"
             element={
-              <PrivateRoute>
+              <PrivateRoute adminOnly>
                 <AddWorkoutPage />
               </PrivateRoute>
             }
@@ -212,21 +265,12 @@ const App = () => {
           <Route
             path="/admin/add-Ai"
             element={
-              <PrivateRoute>
+              <PrivateRoute adminOnly>
                 <AddAiPromptPage />
               </PrivateRoute>
             }
           />
-          <Route
-            path="/admin"
-            element={
-              <PrivateRoute>
-                <AdminHome />
-              </PrivateRoute>
-            }
-          />
-
-          {/* Catch all */}
+          <Route path="/denied" element={<AccessDeniedPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>

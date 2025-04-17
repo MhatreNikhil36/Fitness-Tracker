@@ -71,6 +71,7 @@ export default function Signup() {
     country: "us",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -80,12 +81,14 @@ export default function Signup() {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const validateForm = () => {
@@ -120,6 +123,7 @@ export default function Signup() {
     const validationError = validateForm();
     if (validationError) {
       setErrorMessage(validationError);
+      setSuccessMessage("");
       return;
     }
 
@@ -134,13 +138,25 @@ export default function Signup() {
         country: formData.country,
       });
 
-      navigate("/dash");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        birthdate: "",
+        gender: "",
+        country: "us",
+      });
+
+      setErrorMessage("");
+      setSuccessMessage("Signup successful! You can now log in.");
     } catch (error) {
       const msg =
         error.response?.data?.message ||
         error.message ||
         "Something went wrong. Please try again.";
       setErrorMessage(msg);
+      setSuccessMessage("");
     }
   };
 
@@ -268,13 +284,13 @@ export default function Signup() {
               </Select>
             </FormControl>
 
-            {errorMessage && (
-              <Alert
-                severity={
-                  errorMessage.includes("success") ? "success" : "error"
-                }
-              >
-                {errorMessage}
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            {successMessage && (
+              <Alert severity="success">
+                {successMessage}{" "}
+                <StyledLink to="/login" style={{ fontWeight: 500 }}>
+                  Go to Login
+                </StyledLink>
               </Alert>
             )}
 

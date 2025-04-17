@@ -76,19 +76,23 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/users/login`,
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
+        email,
+        password,
+      });
+
+      console.log("Login response:", response.data);
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginError(false);
-      navigate("/dash");
+
+      const isAdmin =
+        response?.data?.user?.is_admin === 1 ||
+        response?.data?.user?.is_admin === true;
+
+      navigate(isAdmin ? "/admin" : "/dash");
     } catch (err) {
       setLoginError(true);
     }

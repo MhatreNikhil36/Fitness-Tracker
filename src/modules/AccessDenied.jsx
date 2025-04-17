@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const NotFoundPage = () => {
+const AccessDeniedPage = () => {
   const navigate = useNavigate();
 
   return (
@@ -18,17 +18,17 @@ const NotFoundPage = () => {
       }}
     >
       <Typography variant="h1" color="error" gutterBottom>
-        404
+        403
       </Typography>
       <Typography variant="h5" color="textPrimary" gutterBottom>
-        Oops! Page not found.
+        Access Denied.
       </Typography>
       <Typography
         variant="body1"
         color="textSecondary"
         sx={{ maxWidth: 400, mb: 4 }}
       >
-        The page you are looking for doesn't exist or may have been moved.
+        You do not have permission to view this page.
       </Typography>
       <Button variant="contained" color="error" onClick={() => navigate("/")}>
         Go to Home
@@ -37,4 +37,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default AccessDeniedPage;

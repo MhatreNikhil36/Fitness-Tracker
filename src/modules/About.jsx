@@ -104,7 +104,7 @@ const AboutUs = () => {
                   fitness journey.
                 </Typography>
 
-                <Link to="/signup" style={{ textDecoration: "none" }}>
+                <Link to="/dash" style={{ textDecoration: "none" }}>
                   <Button
                     variant="contained"
                     color="primary"

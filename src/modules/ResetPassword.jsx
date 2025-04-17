@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import SettingsSidebar from "../components/Settings_Sidebar";
+import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
 

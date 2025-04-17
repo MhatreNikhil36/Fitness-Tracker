@@ -13,7 +13,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Add Material UI font icons */
 @font-face {
   font-family: "Material Icons";
   font-style: normal;

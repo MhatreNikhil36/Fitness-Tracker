@@ -88,7 +88,9 @@ const DashboardPage = () => {
       }
 
       // If there is an active goal with progress, set progress data
-      const activeGoal = fetchedGoals.find((g) => g.status === "in_progress" && g.progress && g.progress.length > 0);
+      const activeGoal = fetchedGoals.find(
+        (g) => g.status === "in_progress" && g.progress && g.progress.length > 0
+      );
       if (activeGoal) {
         setProgressData(formatProgressData(activeGoal.progress));
       } else {
@@ -142,7 +144,9 @@ const DashboardPage = () => {
   }
 
   // Quick Stats
-  const goalsInProgress = goals.filter((g) => g.status === "in_progress").length;
+  const goalsInProgress = goals.filter(
+    (g) => g.status === "in_progress"
+  ).length;
   const completedGoals = goals.filter((g) => g.status === "completed").length;
   // For weekly calories, sum calories field from nutritionData if present;
   // Otherwise, use a meaningful message or fallback value.
@@ -288,13 +292,18 @@ const DashboardPage = () => {
                       <Tooltip />
                       <Legend />
                       <Bar dataKey="calories" fill="#d32f2f" name="Calories" />
-                      <Bar dataKey="protein" fill="#757575" name="Protein (g)" />
+                      <Bar
+                        dataKey="protein"
+                        fill="#757575"
+                        name="Protein (g)"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </Box>
               ) : (
                 <Typography>
-                  No nutrition data available. Log your meals to see the chart here!
+                  No nutrition data available. Log your meals to see the chart
+                  here!
                 </Typography>
               )}
             </CardContent>
@@ -322,7 +331,8 @@ const DashboardPage = () => {
                 </List>
               ) : (
                 <Typography>
-                  No recent workouts found. Start an activity and it will appear here!
+                  No recent workouts found. Start an activity and it will appear
+                  here!
                 </Typography>
               )}
             </CardContent>

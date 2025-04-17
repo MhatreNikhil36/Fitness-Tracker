@@ -188,12 +188,16 @@ const GoalsPage = () => {
         <DialogTitle>Goal Saved Successfully</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Your goal has been saved. Would you like to add another goal or go back to
-            your goals page?
+            Your goal has been saved. Would you like to add another goal or go
+            back to your goals page?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" color="secondary" onClick={handleAddAnotherGoal}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={handleAddAnotherGoal}
+          >
             Add Another Goal
           </Button>
           <Button variant="contained" color="error" onClick={handleGoBack}>

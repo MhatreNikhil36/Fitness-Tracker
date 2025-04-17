@@ -1,6 +1,11 @@
 // server/routes/goals.js
 import express from "express";
-import { deleteGoal,getGoalsForUser, createGoal, updateGoal } from "../controllers/goalsController.js";
+import {
+  deleteGoal,
+  getGoalsForUser,
+  createGoal,
+  updateGoal,
+} from "../controllers/goalsController.js";
 import { verifyToken } from "../middleware/verifyToken.js"; // Ensure you have this middleware set up
 
 const router = express.Router();
