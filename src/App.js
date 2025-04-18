@@ -28,6 +28,8 @@ import ProfileSettings from "./modules/ProfileSettings";
 import AccountSettings from "./modules/AccountSettings";
 import DisplaySettings from "./modules/DisplaySettings";
 import ResetPassword from "./modules/ResetPassword";
+import ForgotPassword from "./modules/ForgotPassword";
+import ResetPasswordToken from "./modules/ResetPasswordToken";
 import HomeNav from "./components/HomeNav";
 import RestNav from "./components/RestNav";
 import AdminNav from "./components/AdminNav";
@@ -49,13 +51,9 @@ const getUserFromLocalStorage = () => {
 const PrivateRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
   const user = getUserFromLocalStorage();
-  const location = useLocation();
 
   if (!token) return <Navigate to="/login" replace />;
-
-  if (adminOnly && !user?.is_admin) {
-    return <Navigate to="/denied" replace />;
-  }
+  if (adminOnly && !user?.is_admin) return <Navigate to="/denied" replace />;
 
   return children;
 };
@@ -64,20 +62,14 @@ const PublicOnlyRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   const user = getUserFromLocalStorage();
 
-  if (token && user?.is_admin) {
-    return <Navigate to="/admin" replace />;
-  }
-
-  if (token) {
-    return <Navigate to="/settings/profile" replace />;
-  }
+  if (token && user?.is_admin) return <Navigate to="/admin" replace />;
+  if (token) return <Navigate to="/settings/profile" replace />;
 
   return children;
 };
 
 const Layout = ({ children }) => {
   const location = useLocation();
-
   const [user, setUser] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("user")) || null;
@@ -97,19 +89,16 @@ const Layout = ({ children }) => {
         return null;
       }
     })();
-
     setUser(storedUser);
   }, [location.pathname]);
 
-  let navToRender;
-
-  if (isAdmin) {
-    navToRender = <AdminNav />;
-  } else if (token) {
-    navToRender = <RestNav />;
-  } else {
-    navToRender = <HomeNav />;
-  }
+  const navToRender = isAdmin ? (
+    <AdminNav />
+  ) : token ? (
+    <RestNav />
+  ) : (
+    <HomeNav />
+  );
 
   return (
     <>
@@ -139,6 +128,22 @@ const App = () => {
             element={
               <PublicOnlyRoute>
                 <Signup isLogin={false} />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <PublicOnlyRoute>
+                <ForgotPassword />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path="/reset-password/:token"
+            element={
+              <PublicOnlyRoute>
+                <ResetPasswordToken />
               </PublicOnlyRoute>
             }
           />
@@ -241,7 +246,6 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
           <Route
             path="/admin"
             element={
