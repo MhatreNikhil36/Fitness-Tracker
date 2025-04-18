@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   TextField,
@@ -28,12 +29,24 @@ const AuthForm = ({ isLogin }) => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
 
     // Here you’d call your API to either login or sign up
     // based on isLogin, sending formData to your backend.
     if (isLogin) {
+      try {
+        const res = await axios.post(`${API}/api/users/login`, {
+          email: formData.email,
+          password: formData.password,
+        });
+    
+        localStorage.setItem("authToken", res.data.token);
+        window.location.href = "/logactivity"; // redirect on success
+      } catch (err) {
+        alert("Login failed");
+      }
       console.log("Logging in with:", formData);
     } else {
       console.log("Signing up with:", formData);
