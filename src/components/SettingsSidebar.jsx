@@ -21,6 +21,7 @@ const SettingsSidebar = () => {
     { path: "/settings/profile", label: "Profile Information" },
     { path: "/settings/account", label: "Account" },
     { path: "/settings/display", label: "Display" },
+    { path: "/messages",          label: "Messages" }, 
     { path: "#logout", label: "Log Out", isLogout: true },
   ];
 

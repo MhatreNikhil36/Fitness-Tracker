@@ -21,6 +21,7 @@ import AddExercisePage from "./modules/Admin/AddExercisePage";
 import AddWorkoutPage from "./modules/Admin/AddWorkoutPage";
 import AddAiPromptPage from "./modules/Admin/AddAiPromptPage";
 import AdminHome from "./modules/Admin/AdminHome";
+
 import Login from "./modules/Login";
 import Signup from "./modules/Signup";
 import ProfileSettings from "./modules/ProfileSettings";
@@ -35,6 +36,9 @@ import AdminNav from "./components/AdminNav";
 import Contact from "./modules/Contact";
 import AboutUs from "./modules/About";
 import ScrollToTop from "./components/ScrollToTop";
+import Messages from "./modules/Messages";
+
+import AdminMessagesPage from "./modules/Admin/AdminMessagesPage";
 
 const getUserFromLocalStorage = () => {
   try {
@@ -145,7 +149,7 @@ const App = () => {
           />
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<AboutUs />} />
-
+          <Route path="/messages" element={<Messages />} />
           <Route
             path="/settings/profile"
             element={
@@ -247,6 +251,14 @@ const App = () => {
             element={
               <PrivateRoute adminOnly>
                 <AdminHome />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin/messages"
+            element={
+              <PrivateRoute adminOnly>
+                <AdminMessagesPage />
               </PrivateRoute>
             }
           />

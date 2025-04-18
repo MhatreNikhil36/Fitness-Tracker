@@ -6,7 +6,7 @@ import goalProgressRoutes from "./routes/goalProgress.js";
 import nutritionRoutes from "./routes/nutrition.js";
 import aiPromptsRoutes from "./routes/aiPrompts.js";
 import workoutRoutes from "./routes/workoutRoutes.js";
-
+import messageRoutes from "./routes/messageRoutes.js";
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.use("/api/goals", goalsRoutes);
 app.use("/api/nutrition", nutritionRoutes);
 app.use("/api/aiprompts", aiPromptsRoutes);
 app.use("/api/workouts", workoutRoutes);
+app.use("/api/messages", messageRoutes);
 app.listen(5000, () => {
   console.log("Server running on http://localhost:5000");
 });
