@@ -215,6 +215,34 @@ DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
 -- -----------------------------------------------------
+-- Table `fitness_tracker`.`completedworkouts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `fitness_tracker`.`completedworkouts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `template_id` INT NULL DEFAULT NULL,
+  `workout_date` DATE NOT NULL,
+  `duration` INT NULL DEFAULT NULL,
+  `calories_burned` INT NULL DEFAULT NULL,
+  `notes` TEXT NULL DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `template_id` (`template_id` ASC) VISIBLE,
+  INDEX `idx_completed_workouts_user` (`user_id` ASC) VISIBLE,
+  CONSTRAINT `completedworkouts_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `fitness_tracker`.`users` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `completedworkouts_ibfk_2`
+    FOREIGN KEY (`template_id`)
+    REFERENCES `fitness_tracker`.`workouttemplates` (`id`)
+    ON DELETE SET NULL
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
 -- Table `fitness_tracker`.`completedworkoutexercises`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `fitness_tracker`.`completedworkoutexercises` (
@@ -406,6 +434,61 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`workouttemplateexercises` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
+-- Sample data
+INSERT INTO users (first_name, last_name, email, password_hash)
+VALUES ('Test', 'User', 'test@example.com', '$2b$10$V.Z5oDeFiYMuw2g4iPeyOewpsJo8jT47cVXUBm05b3k0kFwOrWqvG'); -- password: "password123"
+
+INSERT INTO exercisecategories (name, created_by) VALUES ('Strength', 1);
+
+INSERT INTO exercises (name, category_id, difficulty_level, created_by)
+VALUES 
+  ('Push Ups', 1, 'beginner', 1),
+  ('Squats', 1, 'beginner', 1);
+
+INSERT INTO workouttemplates (name, description, difficulty_level, estimated_duration, created_by)
+VALUES 
+  ('Full Body Blast', 'A high-intensity full-body workout.', 'intermediate', 45, 1),
+  ('Beginner Cardio', 'Light cardio session.', 'beginner', 20, 1);
+
+INSERT INTO workouttemplateexercises (template_id, exercise_id, sets, reps, rest_time, sequence_order)
+VALUES 
+  (1, 1, 3, 12, 60, 1),
+  (1, 2, 3, 10, 45, 2);
+
+-- Insert additional exercises (assuming category_id 1 and created_by user 1)
+INSERT INTO exercises (name, category_id, difficulty_level, created_by)
+VALUES 
+  ('Jumping Jacks', 1, 'beginner', 1),
+  ('Lunges', 1, 'intermediate', 1),
+  ('Plank', 1, 'intermediate', 1),
+  ('Burpees', 1, 'advanced', 1),
+  ('Mountain Climbers', 1, 'advanced', 1);
+
+-- Insert additional workout templates
+INSERT INTO workouttemplates (name, description, difficulty_level, estimated_duration, created_by)
+VALUES 
+  ('Cardio Burnout', 'High-intensity cardio routine.', 'advanced', 30, 1),
+  ('Strength Builder', 'Intermediate strength training session.', 'intermediate', 40, 1),
+  ('Core Focus', 'Plank-based core exercises.', 'beginner', 20, 1),
+  ('Leg Day Special', 'Targeted lower body workout.', 'intermediate', 35, 1),
+  ('Quick Sweat', 'Short burst workout for busy days.', 'beginner', 15, 1);
+
+-- Link workouts to exercises
+INSERT INTO workouttemplateexercises (template_id, exercise_id, sets, reps, rest_time, sequence_order)
+VALUES
+  (3, 3, 3, 20, 30, 1),  -- Cardio Burnout: Jumping Jacks
+  (3, 7, 3, 10, 45, 2),  -- Cardio Burnout: Burpees
+
+  (4, 2, 3, 12, 60, 1),  -- Strength Builder: Squats
+  (4, 6, 3, 10, 45, 2),  -- Strength Builder: Lunges
+
+  (5, 5, 3, 30, 60, 1),  -- Core Focus: Plank
+
+  (6, 2, 3, 15, 45, 1),  -- Leg Day Special: Squats
+  (6, 6, 3, 10, 45, 2),  -- Leg Day Special: Lunges
+
+  (7, 3, 2, 20, 30, 1);  -- Quick Sweat: Jumping Jacks
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
