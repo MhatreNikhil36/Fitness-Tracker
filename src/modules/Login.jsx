@@ -70,7 +70,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -86,7 +86,7 @@ export default function Login() {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      setLoginError(false);
+      setLoginError("");
 
       const isAdmin =
         response?.data?.user?.is_admin === 1 ||
@@ -94,7 +94,8 @@ export default function Login() {
 
       navigate(isAdmin ? "/admin" : "/dash");
     } catch (err) {
-      setLoginError(true);
+      const msg = err.response?.data?.message || "Invalid email or password.";
+      setLoginError(msg);
     }
   };
 
@@ -182,7 +183,7 @@ export default function Login() {
 
             {loginError && (
               <Alert severity="error" sx={{ mb: 2 }}>
-                Invalid email or password.
+                {loginError}
               </Alert>
             )}
 

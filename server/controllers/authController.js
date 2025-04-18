@@ -20,6 +20,13 @@ export const loginUser = async (req, res) => {
 
     const user = users[0];
 
+    if (!user.password_hash || user.password_hash === "") {
+      return res.status(403).json({
+        message:
+          "This account was created using Google. Please log in using Google Sign-In.",
+      });
+    }
+
     if (password !== user.password_hash) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
