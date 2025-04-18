@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
@@ -65,6 +65,8 @@ const OrDivider = styled(Box)(({ theme }) => ({
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,23 +78,42 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/api/users/login`,
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
+        email,
+        password,
+      });
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginError(false);
-      navigate("/dash");
+
+      const isAdmin =
+        response?.data?.user?.is_admin === 1 ||
+        response?.data?.user?.is_admin === true;
+
+      navigate(isAdmin ? "/admin" : "/dash");
     } catch (err) {
       setLoginError(true);
     }
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    const userStr = params.get("user");
+
+    if (token && userStr) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", userStr);
+
+      const user = JSON.parse(userStr);
+      const isAdmin =
+        user.is_admin === 1 || user.is_admin === true || user.is_admin === "1";
+
+      navigate(isAdmin ? "/admin" : "/dash");
+    }
+  }, [location.search]);
 
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
@@ -191,6 +212,9 @@ export default function Login() {
 
             <GoogleButton
               variant="outlined"
+              onClick={() =>
+                (window.location.href = `${API_BASE_URL}/api/users/auth/google`)
+              }
               startIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -38,6 +38,7 @@ export const loginUser = async (req, res) => {
         heightCm: user.height_cm,
         weightKg: user.weight_kg,
         country: user.country,
+        is_admin: user.is_admin,
       },
     });
   } catch (err) {

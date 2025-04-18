@@ -53,7 +53,16 @@ const SettingsSidebar = () => {
                 />
               </Box>
             ) : (
-              <NavLink to={item.path} active={pathname === item.path ? 1 : 0}>
+              <NavLink
+                to={item.path}
+                active={
+                  pathname === item.path ||
+                  (item.path === "/settings/account" &&
+                    pathname === "/settings/reset-password")
+                    ? 1
+                    : 0
+                }
+              >
                 <ListItemText
                   primary={item.label}
                   primaryTypographyProps={{ fontSize: "0.875rem" }}

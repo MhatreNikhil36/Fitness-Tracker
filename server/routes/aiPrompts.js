@@ -1,7 +1,10 @@
 // server/routes/aiPrompts.js
 import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
-import { createAiPrompt, listAiPrompts } from "../controllers/aiPromptsController.js";
+import {
+  createAiPrompt,
+  listAiPrompts,
+} from "../controllers/aiPromptsController.js";
 
 const router = express.Router();
 

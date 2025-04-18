@@ -74,7 +74,9 @@ export const getNutritionRecommendations = async (req, res) => {
       [userId]
     );
 
-    const hasMetrics = Boolean(latestMetrics?.weight_kg && latestMetrics?.height_cm);
+    const hasMetrics = Boolean(
+      latestMetrics?.weight_kg && latestMetrics?.height_cm
+    );
     const hasActiveGoal = Boolean(activeGoal);
 
     // If no metrics & no active goal => can't produce recommendation
@@ -82,7 +84,7 @@ export const getNutritionRecommendations = async (req, res) => {
       return res.status(200).json({
         message:
           "We need more data about your health metrics and your goals to provide recommendations. " +
-          "Please record your weight/height and set an active goal."
+          "Please record your weight/height and set an active goal.",
       });
     }
 
@@ -94,10 +96,12 @@ export const getNutritionRecommendations = async (req, res) => {
     );
     let disclaimers = "";
     if (!hasMetrics) {
-      disclaimers += "\n(Note: No recorded weight/height, so provide general advice.)";
+      disclaimers +=
+        "\n(Note: No recorded weight/height, so provide general advice.)";
     }
     if (!hasActiveGoal) {
-      disclaimers += "\n(Note: No active goal, so provide general suggestions.)";
+      disclaimers +=
+        "\n(Note: No active goal, so provide general suggestions.)";
     }
     const finalPrompt = prompt + disclaimers;
 
@@ -116,7 +120,7 @@ export const getNutritionRecommendations = async (req, res) => {
           userId,
           activeGoal.goal_type,
           activeGoal.target_value,
-          activeGoal.deadline
+          activeGoal.deadline,
         ]
       );
       if (rows.length > 0) existingRow = rows[0];
@@ -133,16 +137,16 @@ export const getNutritionRecommendations = async (req, res) => {
           goal: {
             goalType: existingRow.goal_type,
             targetWeight: existingRow.target_value,
-            deadline: existingRow.deadline
-          }
+            deadline: existingRow.deadline,
+          },
         },
         recommendedNutrition: {
           calories: existingRow.recommended_calories,
           protein: existingRow.recommended_protein,
           carbs: existingRow.recommended_carbs,
-          fats: existingRow.recommended_fats
+          fats: existingRow.recommended_fats,
         },
-        sampleMealPlan: existingRow.meal_plan || []
+        sampleMealPlan: existingRow.meal_plan || [],
       });
     }
 
@@ -153,7 +157,7 @@ export const getNutritionRecommendations = async (req, res) => {
         message:
           "We tried generating a recommendation, but not enough data was returned. " +
           "Please try again or add more user info.",
-        generatedData: geminiData
+        generatedData: geminiData,
       });
     }
 
@@ -174,7 +178,7 @@ export const getNutritionRecommendations = async (req, res) => {
             geminiData.recommendedNutrition.protein,
             geminiData.recommendedNutrition.carbs,
             geminiData.recommendedNutrition.fats,
-            JSON.stringify(geminiData.sampleMealPlan)
+            JSON.stringify(geminiData.sampleMealPlan),
           ]
         );
       } catch (insertErr) {
@@ -194,12 +198,12 @@ export const getNutritionRecommendations = async (req, res) => {
           ? {
               goalType: activeGoal.goal_type,
               targetWeight: activeGoal.target_value,
-              deadline: activeGoal.deadline
+              deadline: activeGoal.deadline,
             }
-          : null
+          : null,
       },
       recommendedNutrition: geminiData.recommendedNutrition,
-      sampleMealPlan: geminiData.sampleMealPlan
+      sampleMealPlan: geminiData.sampleMealPlan,
     });
   } catch (err) {
     console.error("Error fetching nutrition recommendations:", err);
@@ -213,14 +217,7 @@ export const getNutritionRecommendations = async (req, res) => {
  */
 export const logNutrition = async (req, res) => {
   const userId = req.userId;
-  const {
-    date,
-    meal, 
-    calories,
-    protein,
-    carbs,
-    fats
-  } = req.body;
+  const { date, meal, calories, protein, carbs, fats } = req.body;
 
   try {
     await pool.query(
@@ -234,11 +231,13 @@ export const logNutrition = async (req, res) => {
         calories || 0,
         protein || 0,
         carbs || 0,
-        fats || 0
+        fats || 0,
       ]
     );
 
-    return res.status(201).json({ message: "Nutrition record saved successfully" });
+    return res
+      .status(201)
+      .json({ message: "Nutrition record saved successfully" });
   } catch (err) {
     console.error("Error logging nutrition:", err);
     res.status(500).json({ message: "Server error" });
@@ -277,7 +276,7 @@ async function callGeminiApi(prompt) {
   try {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = await genAI.getGenerativeModel({
-      model: "models/gemini-2.0-flash-lite"
+      model: "models/gemini-2.0-flash-lite",
     });
 
     const result = await model.generateContent(prompt);
@@ -295,11 +294,19 @@ async function callGeminiApi(prompt) {
       const parsedData = JSON.parse(text);
       return parsedData;
     } catch (parseError) {
-      console.error("Error parsing Gemini output:", parseError, "Raw text:", text);
+      console.error(
+        "Error parsing Gemini output:",
+        parseError,
+        "Raw text:",
+        text
+      );
       throw new Error("Invalid JSON returned from Gemini API.");
     }
   } catch (err) {
-    console.error("Gemini API call failed:", err.response ? err.response.data : err);
+    console.error(
+      "Gemini API call failed:",
+      err.response ? err.response.data : err
+    );
     throw new Error("Gemini API call failed");
   }
 }

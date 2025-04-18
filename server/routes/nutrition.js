@@ -4,7 +4,7 @@ import { verifyToken } from "../middleware/verifyToken.js";
 import {
   getAllNutritionRecords,
   getNutritionRecommendations,
-  logNutrition
+  logNutrition,
 } from "../controllers/nutritionController.js";
 
 const router = express.Router();

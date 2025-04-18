@@ -51,7 +51,9 @@ export const createAiPrompt = async (req, res) => {
  */
 export const listAiPrompts = async (req, res) => {
   try {
-    const [rows] = await pool.query(`SELECT * FROM aiprompts ORDER BY created_at DESC`);
+    const [rows] = await pool.query(
+      `SELECT * FROM aiprompts ORDER BY created_at DESC`
+    );
     res.json(rows);
   } catch (err) {
     console.error("Error fetching AI prompts:", err);

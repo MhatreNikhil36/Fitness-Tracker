@@ -10,7 +10,7 @@ import {
   Container,
   Grid,
 } from "@mui/material";
-import SettingsSidebar from "../components/Settings_Sidebar";
+import SettingsSidebar from "../components/SettingsSidebar";
 
 export default function DisplaySettings() {
   return (

@@ -82,7 +82,8 @@ const GoalProgressPage = () => {
     } catch (err) {
       console.error("Error adding progress:", err);
       setErrorMessage(
-        err.response?.data?.message || "Error adding progress. Please try again."
+        err.response?.data?.message ||
+          "Error adding progress. Please try again."
       );
     }
   };
