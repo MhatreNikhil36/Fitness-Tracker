@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useParams, useLocation, Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -6,28 +7,46 @@ import {
   Grid,
   TextField,
   Typography,
+  List,
+  ListItem,
+  ListItemText,
+  styled,
 } from "@mui/material";
-import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
 
-export default function ResetPassword() {
+const NavLink = styled(Link)(({ theme, active }) => ({
+  display: "block",
+  padding: "6px 16px",
+  textDecoration: "none",
+  color: active ? theme.palette.text.primary : theme.palette.text.secondary,
+  fontWeight: active ? 500 : 400,
+  borderLeft: active ? `2px solid ${theme.palette.error.main}` : "none",
+  "&:hover": {
+    color: theme.palette.text.primary,
+  },
+}));
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textDecoration: "none",
+  fontWeight: 500,
+  "&:hover": {
+    textDecoration: "underline",
+  },
+}));
+
+export default function ResetPasswordToken() {
+  const { token } = useParams();
+  const { pathname } = useLocation();
+
   const [form, setForm] = useState({
-    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.password_hash || user?.password_hash === "null") {
-      setIsGoogleUser(true);
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,33 +58,27 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
+    if (!form.newPassword || !form.confirmPassword) {
       setErrorMessage("All fields are required.");
       return;
     }
 
     if (form.newPassword !== form.confirmPassword) {
-      setErrorMessage("New passwords do not match.");
+      setErrorMessage("Passwords do not match.");
       return;
     }
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.put(
-        `${API_BASE_URL}/api/users/password`,
-        {
-          currentPassword: form.currentPassword,
-          newPassword: form.newPassword,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.post(`${API_BASE_URL}/api/users/reset-password/${token}`, {
+        newPassword: form.newPassword,
+      });
 
-      setSuccessMessage("Password updated successfully.");
-      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setSuccessMessage(
+        "Password reset successful! You can now log in with your new password."
+      );
+      setForm({ newPassword: "", confirmPassword: "" });
     } catch (err) {
-      const msg = err.response?.data?.message || "Failed to update password.";
+      const msg = err.response?.data?.message || "Failed to reset password.";
       setErrorMessage(msg);
     }
   };
@@ -74,37 +87,39 @@ export default function ResetPassword() {
     <Container maxWidth="lg">
       <Grid container spacing={4} sx={{ mt: 2 }}>
         <Grid item>
-          <SettingsSidebar />
+          <Box sx={{ width: 224 }}>
+            <List sx={{ padding: 0 }}>
+              <ListItem disablePadding>
+                <NavLink
+                  to="/reset-password/token"
+                  active={pathname.includes("/reset-password") ? 1 : 0}
+                >
+                  <ListItemText
+                    primary="Account"
+                    primaryTypographyProps={{ fontSize: "0.875rem" }}
+                  />
+                </NavLink>
+              </ListItem>
+            </List>
+          </Box>
         </Grid>
 
         <Grid item xs>
           <Box sx={{ maxWidth: 600 }}>
             <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>
-              Reset Password
+              Set New Password
             </Typography>
 
-            {isGoogleUser ? (
+            {errorMessage && (
               <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-                This account was created using Google. You don't need to set or
-                change a password.
+                {errorMessage}
               </Typography>
-            ) : (
-              <>
-                {errorMessage && (
-                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-                    {errorMessage}
-                  </Typography>
-                )}
-                {successMessage && (
-                  <Typography
-                    color="success.main"
-                    variant="body2"
-                    sx={{ mb: 2 }}
-                  >
-                    {successMessage}
-                  </Typography>
-                )}
-              </>
+            )}
+            {successMessage && (
+              <Typography color="success.main" variant="body2" sx={{ mb: 2 }}>
+                {successMessage}{" "}
+                <StyledLink to="/login">Go to Login</StyledLink>
+              </Typography>
             )}
 
             <Box
@@ -113,17 +128,6 @@ export default function ResetPassword() {
               sx={{ display: "flex", flexDirection: "column", gap: 3 }}
             >
               <TextField
-                label="Current Password"
-                name="currentPassword"
-                type="password"
-                value={form.currentPassword}
-                onChange={handleChange}
-                fullWidth
-                size="small"
-                disabled={isGoogleUser}
-              />
-
-              <TextField
                 label="New Password"
                 name="newPassword"
                 type="password"
@@ -131,25 +135,22 @@ export default function ResetPassword() {
                 onChange={handleChange}
                 fullWidth
                 size="small"
-                disabled={isGoogleUser}
               />
 
               <TextField
-                label="Confirm New Password"
+                label="Confirm Password"
                 name="confirmPassword"
                 type="password"
                 value={form.confirmPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
-                disabled={isGoogleUser}
               />
 
               <Box sx={{ mt: 1 }}>
                 <Button
                   variant="contained"
                   type="submit"
-                  disabled={isGoogleUser}
                   sx={{
                     bgcolor: "black",
                     color: "white",

@@ -6,6 +6,8 @@ import {
   getUserProfile,
   updateUserProfile,
   updatePassword,
+  sendPasswordResetEmail,
+  resetPassword,
 } from "../controllers/authController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import "../controllers/googleAuth.js";
@@ -14,11 +16,12 @@ const router = express.Router();
 
 router.post("/signup", registerUser);
 router.post("/login", loginUser);
-
 router.get("/profile", verifyToken, getUserProfile);
 router.put("/profile", verifyToken, updateUserProfile);
-
 router.put("/password", verifyToken, updatePassword);
+
+router.post("/forgot-password", sendPasswordResetEmail);
+router.post("/reset-password/:token", resetPassword);
 
 router.get(
   "/auth/google",
