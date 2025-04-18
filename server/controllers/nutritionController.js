@@ -1,6 +1,6 @@
 // server/controllers/nutritionController.js
 import pool from "../lib/db.js";
-//import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 dotenv.config();
 
