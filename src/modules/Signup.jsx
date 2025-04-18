@@ -160,6 +160,10 @@ export default function Signup() {
     }
   };
 
+  const handleGoogleSignup = () => {
+    window.location.href = `${API_BASE_URL}/api/users/auth/google`;
+  };
+
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Container
@@ -315,6 +319,7 @@ export default function Signup() {
 
             <GoogleButton
               variant="outlined"
+              onClick={handleGoogleSignup}
               startIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
