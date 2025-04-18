@@ -149,3 +149,34 @@ export const updateUserProfile = async (req, res) => {
     res.status(500).json({ message: "Update failed", error: err.message });
   }
 };
+
+export const updatePassword = async (req, res) => {
+  const userId = req.userId;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM users WHERE id = ?", [
+      userId,
+    ]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = rows[0];
+
+    if (currentPassword !== user.password_hash) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [
+      newPassword,
+      userId,
+    ]);
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to update password", error: err.message });
+  }
+};
