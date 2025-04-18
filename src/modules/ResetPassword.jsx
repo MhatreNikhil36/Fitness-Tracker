@@ -65,12 +65,10 @@ export default function ResetPassword() {
   return (
     <Container maxWidth="lg">
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        {/* Sidebar */}
         <Grid item>
           <SettingsSidebar />
         </Grid>
 
-        {/* Main Content */}
         <Grid item xs>
           <Box sx={{ maxWidth: 600 }}>
             <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>

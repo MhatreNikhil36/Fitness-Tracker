@@ -5,6 +5,7 @@ import {
   loginUser,
   getUserProfile,
   updateUserProfile,
+  updatePassword,
 } from "../controllers/authController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import "../controllers/googleAuth.js";
@@ -16,6 +17,8 @@ router.post("/login", loginUser);
 
 router.get("/profile", verifyToken, getUserProfile);
 router.put("/profile", verifyToken, updateUserProfile);
+
+router.put("/password", verifyToken, updatePassword);
 
 router.get(
   "/auth/google",
