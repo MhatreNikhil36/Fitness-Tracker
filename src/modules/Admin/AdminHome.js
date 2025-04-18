@@ -132,6 +132,20 @@ const AdminHome = () => {
               </CardActionArea>
             </Card>
           </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea component={Link} to="/admin/messages">
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    messages
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    check messages from users.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
 
           {/* Add AI Prompt */}
           <Grid item xs={12} sm={6} md={4}>

@@ -268,6 +268,35 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+
+/* ------------------------------------------------------------------
+   Table: fitness_tracker.messages
+   ------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `fitness_tracker`.`messages` (
+  `message_id`   INT             NOT NULL AUTO_INCREMENT,
+  `user_id`      INT             NOT NULL,
+  `subject`      VARCHAR(255)         NULL,
+  `body`         TEXT            NOT NULL,
+  `admin_reply`  TEXT                NULL,          -- ← added for admin responses
+  `status`       ENUM('open','closed') DEFAULT 'open',
+  `is_read`      BOOLEAN          DEFAULT FALSE,
+  `created_at`   TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`message_id`),
+
+  /* helpful for filtering by user in queries */
+  KEY `idx_messages_user` (`user_id`),
+
+  /* FK now matches the actual PK column name in users (id) */
+  CONSTRAINT `messages_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `fitness_tracker`.`users` (`id`)
+    ON DELETE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE       = utf8mb4_0900_ai_ci;
+
+
+
 -- -----------------------------------------------------
 -- Table `fitness_tracker`.`goals`
 -- -----------------------------------------------------
