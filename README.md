@@ -12,6 +12,19 @@
 
 ## Hosted Project
 
+### Running with Docker:
+
+1. Build the Docker Image:
+   ```
+   docker compose build --no-cache
+   ```
+2. Run the Docker Container:
+   ```
+   docker compose up
+   ```
+   The project will now be accessible at: http://localhost:3000
+
+
 We named our project Fittrack and hosted it on UTA Cloud. You can access the hosted project [here](https://knv2382.uta.cloud/).
 
 ### Login Details
@@ -76,13 +89,13 @@ This React-based application (Fittrack) includes:
 
 1. Build the Docker Image:
    ```
-   docker build -t fitness-tracker-frontend .
+   docker compose build --no-cache
    ```
 2. Run the Docker Container:
    ```
-   docker run -p 4000:80 --name Fitnessapp fitness-tracker-frontend
+   docker compose up
    ```
-   The project will now be accessible at: http://localhost:4000
+   The project will now be accessible at: http://localhost:3000
 
 ## Troubleshooting & Common Errors
 
