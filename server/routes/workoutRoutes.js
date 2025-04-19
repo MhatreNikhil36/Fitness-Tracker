@@ -1,9 +1,11 @@
 import express from "express";
 import {
     getAvailableWorkouts,
-    getPastWorkouts,
+    getPastActivity,
     getRecommendedWorkouts,
-    completeWorkout
+    completeWorkout,
+    getAvailableExercises,
+    completeExercise
   } from "../controllers/workoutsController.js";
 
 import { verifyToken } from "../middleware/verifyToken.js";
@@ -11,8 +13,10 @@ import { verifyToken } from "../middleware/verifyToken.js";
 const router = express.Router();
 
 router.get("/available", verifyToken, getAvailableWorkouts);
-router.get("/past", verifyToken, getPastWorkouts);
+router.get("/past", verifyToken, getPastActivity);
 router.get("/recommended", verifyToken, getRecommendedWorkouts);
 router.post("/complete", verifyToken, completeWorkout);
+router.get("/exercises", verifyToken, getAvailableExercises);
+router.post("/exercises/complete", verifyToken, completeExercise);
 
 export default router;
