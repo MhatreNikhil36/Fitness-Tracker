@@ -10,12 +10,12 @@ COPY package*.json /app/
 # Install dependencies
 RUN npm install
 
-
 # Copy the rest of the server code
 COPY . /app
 
 # Expose the port on which your server runs
 EXPOSE 5000
 
-# Start the application
+
+# Start the application 
 CMD ["npm", "run", "start"]
