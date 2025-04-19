@@ -79,6 +79,33 @@ export const getPastWorkouts = async (req, res) => {
   }
 };
 
+export const getPastActivity = async (req, res) => {
+    try {
+      const userId = req.userId;
+  
+      const [workouts] = await db.query(`
+        SELECT cw.id, wt.name AS workout_name, cw.workout_date AS completed_on, cw.calories_burned AS total_calories_burned
+        FROM completedworkouts cw
+        JOIN workouttemplates wt ON cw.template_id = wt.id
+        WHERE cw.user_id = ?
+      `, [userId]);
+  
+      const [exercises] = await db.query(`
+        SELECT ce.id, e.name AS exercise_name, ce.completed_on, ce.calories_burned AS total_calories_burned
+        FROM completedexercises ce
+        JOIN exercises e ON ce.exercise_id = e.id
+        WHERE ce.user_id = ?
+      `, [userId]);
+  
+      const all = [...workouts, ...exercises].sort((a, b) => new Date(b.completed_on) - new Date(a.completed_on));
+  
+      res.status(200).json(all);
+    } catch (err) {
+      console.error("🔥 DB ERROR (past activity):", err);
+      res.status(500).json({ message: "Failed to fetch activity." });
+    }
+  };
+
 // GET /api/workouts/recommended
 export const getRecommendedWorkouts = async (req, res) => {
   try {
@@ -124,3 +151,55 @@ export const completeWorkout = async (req, res) => {
     res.status(500).json({ message: "Failed to log workout", error: err.message });
   }
 };
+
+// Get all available exercises
+export const getAvailableExercises = async (req, res) => {
+    try {
+      const { search = "", intensity = "" } = req.query;
+  
+      let sql = `
+        SELECT id, name, difficulty_level, description 
+        FROM exercises
+        WHERE 1=1
+      `;
+      const params = [];
+  
+      if (search) {
+        sql += " AND name LIKE ?";
+        params.push(`%${search}%`);
+      }
+  
+      if (intensity) {
+        sql += " AND difficulty_level = ?";
+        params.push(intensity);
+      }
+  
+      const [rows] = await db.query(sql, params);
+      res.status(200).json(rows);
+    } catch (err) {
+      console.error("🔥 Error fetching available exercises:", err);
+      res.status(500).json({ message: "Failed to fetch exercises" });
+    }
+  };
+  
+  // POST /api/workouts/exercises/complete
+  export const completeExercise = async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { exercise_id, duration_minutes, calories_burned } = req.body;
+  
+      // Insert with completed_on as today's date
+      await db.query(
+        `
+        INSERT INTO completedexercises (user_id, exercise_id, duration_minutes, calories_burned, completed_on)
+        VALUES (?, ?, ?, ?, CURDATE())
+        `,
+        [userId, exercise_id, duration_minutes || 20, calories_burned || 100]
+      );
+  
+      res.status(201).json({ message: "Exercise marked as complete!" });
+    } catch (err) {
+      console.error("🔥 DB ERROR (exercise):", err);
+      res.status(500).json({ message: "Failed to log completed exercise" });
+    }
+  };

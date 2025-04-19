@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
   Typography,
+  List,
+  ListItemButton,
+  ListItemText,
   Grid,
   Card,
   CardContent,
@@ -13,9 +16,6 @@ import {
   DialogContent,
   DialogActions,
   Divider,
-  List,
-  ListItemButton,
-  ListItemText,
   TextField,
   MenuItem,
   CircularProgress,
@@ -23,258 +23,296 @@ import {
 
 const LogActivityPage = () => {
   const [selectedTab, setSelectedTab] = useState("available");
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [availableWorkouts, setAvailableWorkouts] = useState([]);
-  const [pastWorkouts, setPastWorkouts] = useState([]);
+  const [pastActivity, setPastActivity] = useState([]);
   const [recommendedWorkouts, setRecommendedWorkouts] = useState([]);
+  const [availableExercises, setAvailableExercises] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [intensityFilter, setIntensityFilter] = useState("");
   const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [intensityFilter, setIntensityFilter] = useState("");
 
-  useEffect(() => {
-    const validTabs = ["available", "past", "recommended"];
-    if (!validTabs.includes(selectedTab)) return;
+  const fetchData = async () => {
+    if (!token) return;
+    setLoading(true);
 
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/workouts/${selectedTab}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            params:
-              selectedTab === "available"
-                ? {
-                    search: searchTerm,
-                    intensity: intensityFilter,
-                  }
-                : {},
-          }
-        );
-
-        if (selectedTab === "available") setAvailableWorkouts(res.data);
-        if (selectedTab === "past") setPastWorkouts(res.data);
-        if (selectedTab === "recommended") setRecommendedWorkouts(res.data);
-      } catch (err) {
-        console.error(`Failed to fetch ${selectedTab} workouts`, err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [selectedTab, searchTerm, intensityFilter]);
-
-  const handleWorkoutClick = (workout) => {
-    setSelectedWorkout(workout);
-    setOpenDialog(true);
-  };
-
-  const handleFinishWorkout = async () => {
-    if (!selectedWorkout) return;
     try {
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/workouts/complete`,
-        {
-          workout_id: selectedWorkout.id,
-          duration_minutes: selectedWorkout.duration ?? 30,
-          calories_burned: 200,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert(`Workout "${selectedWorkout.workout_name}" completed!`);
-      setOpenDialog(false);
-      setSelectedTab("past");
+      if (selectedTab === "available") {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/available`, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { search: searchQuery, intensity: intensityFilter },
+        });
+        setAvailableWorkouts(res.data);
+      } else if (selectedTab === "recommended") {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/recommended`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setRecommendedWorkouts(res.data.recommendations || []);
+      } else if (selectedTab === "past") {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/past`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPastActivity(res.data);
+      } else if (selectedTab === "exercises") {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/exercises`, {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { search: searchQuery, intensity: intensityFilter },
+        });
+        setAvailableExercises(res.data);
+      }
     } catch (err) {
-      console.error("Error logging workout:", err);
-      alert("Error logging workout.");
+      console.error(`Error fetching ${selectedTab} data:`, err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // --- Main content based on tab ---
-  let mainContent;
+  useEffect(() => {
+    fetchData();
+    setAvailableWorkouts([]);
+    setPastActivity([]);
+    setRecommendedWorkouts([]);
+    setAvailableExercises([]);
+  }, [selectedTab, searchQuery, intensityFilter]);
 
-  if (loading) {
-    mainContent = (
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <CircularProgress />
-      </Box>
-    );
-  } else if (selectedTab === "available") {
-    mainContent = (
-      <>
-        {/* Search & Filter Section */}
-        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          <TextField
-            label="Search"
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <TextField
-            label="Intensity"
-            variant="outlined"
-            select
-            value={intensityFilter}
-            onChange={(e) => setIntensityFilter(e.target.value)}
-            sx={{ minWidth: 180 }}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="beginner">Beginner</MenuItem>
-            <MenuItem value="intermediate">Intermediate</MenuItem>
-            <MenuItem value="advanced">Advanced</MenuItem>
-          </TextField>
-        </Box>
+  const handleViewDetails = (item) => {
+    setSelectedItem(item);
+    setOpenDialog(true);
+  };
 
-        <Grid container spacing={3}>
-          {Array.isArray(availableWorkouts) &&
-            availableWorkouts.map((w) => (
-              <Grid item xs={12} md={6} lg={4} key={w.id}>
-                <Card sx={{ height: "100%", display: "flex", flexDirection: "column", boxShadow: "none", border: "1px solid", borderColor: "divider" }}>
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" gutterBottom>{w.workout_name}</Typography>
-                    <Typography variant="body2" color="text.secondary">Duration: {w.duration} min</Typography>
-                    <Typography variant="body2" color="text.secondary">Intensity: {w.level_of_intensity}</Typography>
-                  </CardContent>
-                  <CardActions sx={{ justifyContent: "flex-end", p: 2 }}>
-                    <Button
-                      variant="contained"
-                      onClick={() => handleWorkoutClick(w)}
-                      sx={{ bgcolor: "error.main", "&:hover": { bgcolor: "error.dark" } }}
-                    >
-                      View Details
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+  const handleFinish = async () => {
+    if (!selectedItem) return;
+    const isWorkout = !!selectedItem.exercises;
+    const endpoint = isWorkout ? "complete" : "exercises/complete";
+
+    try {
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/workouts/${endpoint}`,
+        isWorkout
+          ? {
+              workout_id: selectedItem.id,
+              duration_minutes: selectedItem.duration ?? 30,
+              calories_burned: 200,
+            }
+          : {
+              exercise_id: selectedItem.id,
+              duration_minutes: selectedItem.duration ?? 20,
+              calories_burned: 100,
+            },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      alert(`${isWorkout ? "Workout" : "Exercise"} marked as complete!`);
+      setOpenDialog(false);
+      setSelectedTab("past");
+    } catch (err) {
+      console.error("Error completing activity:", err);
+      alert("Failed to log activity.");
+    }
+  };
+
+  const renderCards = (items, isWorkout = true) => (
+    <Grid container spacing={3}>
+      {items.map((item) => (
+        <Grid item xs={12} md={6} lg={4} key={item.id}>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">{item.workout_name || item.name}</Typography>
+              <Typography variant="body2">Duration: {item.duration ?? 20} min</Typography>
+              <Typography variant="body2">
+                Intensity: {item.level_of_intensity || item.difficulty_level}
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ justifyContent: "flex-end" }}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleViewDetails(item)}
+              >
+                View Details
+              </Button>
+            </CardActions>
+          </Card>
         </Grid>
-      </>
-    );
-  } else if (selectedTab === "past") {
-    mainContent = (
-      <Box>
-        {Array.isArray(pastWorkouts) &&
-          pastWorkouts.map((pw) => (
-            <Card key={pw.id} sx={{ mb: 2, boxShadow: "none", border: "1px solid", borderColor: "divider" }}>
-              <CardContent>
-                <Typography variant="h6">{pw.workout_name}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Completed on: {pw.completed_on} | Calories: {pw.total_calories_burned}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))}
-      </Box>
-    );
-  } else if (selectedTab === "recommended") {
-    mainContent = (
-      <Grid container spacing={3}>
-        {Array.isArray(recommendedWorkouts) &&
-          recommendedWorkouts.map((rw) => (
-            <Grid item xs={12} md={6} lg={4} key={rw.id}>
-              <Card sx={{ height: "100%", display: "flex", flexDirection: "column", boxShadow: "none", border: "1px solid", borderColor: "divider" }}>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" gutterBottom>{rw.workout_name}</Typography>
-                  <Typography variant="body2" color="text.secondary">Duration: {rw.duration} min</Typography>
-                  <Typography variant="body2" color="text.secondary">Intensity: {rw.level_of_intensity}</Typography>
+      ))}
+    </Grid>
+  );
+
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+          <CircularProgress />
+        </Box>
+      );
+    }
+
+    switch (selectedTab) {
+      case "available":
+        return (
+          <>
+            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+              <TextField
+                label="Search Workouts"
+                variant="outlined"
+                fullWidth
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <TextField
+                select
+                label="Intensity"
+                value={intensityFilter}
+                onChange={(e) => setIntensityFilter(e.target.value)}
+                sx={{ width: 200 }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="beginner">Beginner</MenuItem>
+                <MenuItem value="intermediate">Intermediate</MenuItem>
+                <MenuItem value="advanced">Advanced</MenuItem>
+              </TextField>
+            </Box>
+            {renderCards(availableWorkouts)}
+          </>
+        );
+      case "past":
+        return (
+          <Box>
+            {pastActivity.map((entry) => (
+              <Card key={entry.id} sx={{ mb: 2 }}>
+                <CardContent>
+                  <Typography variant="h6">
+                    {entry.workout_name || entry.exercise_name}
+                  </Typography>
+                  <Typography variant="body2">
+                    Completed on: {entry.completed_on} | Calories:{" "}
+                    {entry.total_calories_burned}
+                  </Typography>
                 </CardContent>
-                <CardActions sx={{ justifyContent: "flex-end", p: 2 }}>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleWorkoutClick(rw)}
-                    sx={{ bgcolor: "error.main", "&:hover": { bgcolor: "error.dark" } }}
-                  >
-                    View Details
-                  </Button>
-                </CardActions>
               </Card>
-            </Grid>
-          ))}
-      </Grid>
-    );
-  }
+            ))}
+          </Box>
+        );
+      case "recommended":
+        return (
+          <Box>
+            {recommendedWorkouts.length > 0 ? (
+              renderCards(recommendedWorkouts)
+            ) : (
+              <Typography>No recommended workouts found.</Typography>
+            )}
+          </Box>
+        );
+      case "exercises":
+        return (
+          <Box>
+            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+              <TextField
+                label="Search Exercises"
+                variant="outlined"
+                fullWidth
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <TextField
+                select
+                label="Intensity"
+                value={intensityFilter}
+                onChange={(e) => setIntensityFilter(e.target.value)}
+                sx={{ width: 200 }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="beginner">Beginner</MenuItem>
+                <MenuItem value="intermediate">Intermediate</MenuItem>
+                <MenuItem value="advanced">Advanced</MenuItem>
+              </TextField>
+            </Box>
+            {renderCards(availableExercises, false)}
+          </Box>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", minHeight: "100vh", bgcolor: "background.default", px: 4 }}>
-      <Box sx={{ display: "flex", maxWidth: "1200px", width: "100%" }}>
-        {/* Sidebar */}
-        <Box sx={{ width: 240, flexShrink: 0 }}>
-          <List sx={{ pt: 0 }}>
-            {["available", "past", "recommended"].map((tab) => (
-              <ListItemButton
-                key={tab}
-                selected={selectedTab === tab}
-                onClick={() => setSelectedTab(tab)}
-                sx={{
-                  borderLeft: "4px solid",
-                  borderLeftColor: selectedTab === tab ? "error.main" : "transparent",
-                  "&.Mui-selected": { bgcolor: "transparent", color: "text.primary" },
-                  "&:hover": { bgcolor: "transparent", color: "text.primary" },
+    <Box sx={{ display: "flex", px: 4, minHeight: "100vh" }}>
+      <Box sx={{ width: 240 }}>
+        <List>
+          {[
+            { key: "available", label: "Available Workouts" },
+            { key: "past", label: "Past Activity" },
+            { key: "recommended", label: "Recommended Workouts" },
+            { key: "exercises", label: "Available Exercises" },
+          ].map((tab) => (
+            <ListItemButton
+              key={tab.key}
+              selected={selectedTab === tab.key}
+              onClick={() => setSelectedTab(tab.key)}
+              sx={{
+                borderLeft: "4px solid",
+                borderLeftColor:
+                  selectedTab === tab.key ? "error.main" : "transparent",
+              }}
+            >
+              <ListItemText
+                primary={tab.label}
+                primaryTypographyProps={{
+                  fontSize: "0.875rem",
+                  fontWeight: selectedTab === tab.key ? 500 : 400,
                 }}
-              >
-                <ListItemText
-                  primary={tab.charAt(0).toUpperCase() + tab.slice(1) + " Workouts"}
-                  primaryTypographyProps={{
-                    fontSize: "0.875rem",
-                    fontWeight: selectedTab === tab ? 500 : 400,
-                  }}
-                />
-              </ListItemButton>
-            ))}
-          </List>
-        </Box>
-
-        {/* Main content */}
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
-            {selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)} Workouts
-          </Typography>
-          {mainContent}
-        </Box>
+              />
+            </ListItemButton>
+          ))}
+        </List>
       </Box>
 
-      {/* Workout Detail Dialog */}
-      {selectedWorkout && (
+      <Box sx={{ flexGrow: 1, p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          {
+            {
+              available: "Available Workouts",
+              past: "Past Activity",
+              recommended: "Recommended Workouts",
+              exercises: "Available Exercises",
+            }[selectedTab]
+          }
+        </Typography>
+        {renderContent()}
+      </Box>
+
+      {selectedItem && (
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>{selectedWorkout.workout_name}</DialogTitle>
+          <DialogTitle>{selectedItem.workout_name || selectedItem.name}</DialogTitle>
           <DialogContent dividers>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Duration: {selectedWorkout.duration ?? "N/A"} min
+            <Typography sx={{ mb: 1 }}>
+              Duration: {selectedItem.duration ?? 20} min
             </Typography>
-            <Typography variant="body1" sx={{ mb: 2 }}>
-              Intensity: {selectedWorkout.level_of_intensity ?? "N/A"}
+            <Typography sx={{ mb: 2 }}>
+              Intensity:{" "}
+              {selectedItem.level_of_intensity || selectedItem.difficulty_level}
             </Typography>
-            <Divider sx={{ mb: 2 }} />
-            {selectedWorkout.exercises?.length > 0 ? (
-              selectedWorkout.exercises.map((ex) => (
-                <Box key={ex.id} sx={{ mb: 2 }}>
-                  <Typography variant="subtitle1">{ex.name}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Sets/Reps: {ex.sets} x {ex.reps}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Rest: {ex.rest_seconds} sec | Est. Calories: {ex.total_calories_burned}
-                  </Typography>
-                  <Divider sx={{ mt: 1, mb: 1 }} />
-                </Box>
-              ))
-            ) : (
-              <Typography>No exercises found.</Typography>
-            )}
+            {selectedItem.exercises?.map((ex) => (
+              <Box key={ex.id} sx={{ mb: 2 }}>
+                <Typography variant="subtitle1">{ex.name}</Typography>
+                <Typography variant="body2">
+                  Sets: {ex.sets}, Reps: {ex.reps}
+                </Typography>
+                <Typography variant="body2">
+                  Rest: {ex.rest_seconds} sec | Est. Calories:{" "}
+                  {ex.total_calories_burned}
+                </Typography>
+                <Divider sx={{ my: 1 }} />
+              </Box>
+            ))}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-            <Button variant="contained" onClick={handleFinishWorkout} sx={{ bgcolor: "error.main", "&:hover": { bgcolor: "error.dark" } }}>
-              Finish/Complete
+            <Button variant="contained" color="error" onClick={handleFinish}>
+              Complete
             </Button>
           </DialogActions>
         </Dialog>

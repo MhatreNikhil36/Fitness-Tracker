@@ -109,16 +109,16 @@ const DashboardPage = () => {
         setNutritionData([]); // Fallback to empty array
       }
 
-      // Fetch recent activity data from backend
+      // // Fetch recent activity data from backend
       try {
-        const resActivity = await axios.get(`${API_URL}/api/activities`, {
+        const resActivity = await axios.get(`${API_URL}/api/workouts/past`, {
           headers: { Authorization: `Bearer ${authToken}` },
         });
         console.log("Fetched recent activity:", resActivity.data);
         setRecentActivity(resActivity.data);
       } catch (err) {
         console.error("Error fetching recent activity:", err);
-        setRecentActivity([]); // Fallback to empty
+        setRecentActivity([]);
       }
 
       setIsLoading(false);
@@ -320,11 +320,11 @@ const DashboardPage = () => {
               <Divider sx={{ mb: 2 }} />
               {recentActivity.length > 0 ? (
                 <List>
-                  {recentActivity.map((act) => (
+                  {recentActivity.slice(0, 3).map((act) => (
                     <ListItem key={act.id} disableGutters>
                       <ListItemText
-                        primary={act.workout_name}
-                        secondary={`Date: ${act.date} | Calories: ${act.calories_burned}`}
+                        primary={act.workout_name || act.exercise_name || "Activity"}
+                        secondary={`Completed on: ${act.completed_on} | Calories: ${act.calories_burned}`}
                       />
                     </ListItem>
                   ))}
