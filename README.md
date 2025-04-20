@@ -32,11 +32,11 @@ We named our project Fittrack and hosted it on UTA Cloud. You can access the hos
 The login page allows users to sign in either as Admin or User.
 
 - **Admin Panel:**
-  - Username: admin@mavs.uta.edu
-  - Password: admin@123
+  - Username: mhatrenikhil36@gmail.com
+  - Password: 123456
 - **User Panel:**
-  - Username: user@mavs.uta.edu
-  - Password: user@123
+  - Username: nxm2555@mavs.uta.edu
+  - Password: 123456
 
 ## Features Implemented
 
