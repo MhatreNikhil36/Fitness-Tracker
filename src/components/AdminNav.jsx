@@ -86,7 +86,6 @@ export default function AdminNav() {
                 <StyledNavLink to="/admin" end>
                   Admin Dashboard
                 </StyledNavLink>
-                <StyledNavLink to="/admin/messages">User Messages</StyledNavLink>
                 <StyledNavLink to="/admin/add-exercise">
                   Add Exercise
                 </StyledNavLink>
@@ -94,7 +93,9 @@ export default function AdminNav() {
                   Add Workout
                 </StyledNavLink>
                 <StyledNavLink to="/admin/add-Ai">Add AI Prompt</StyledNavLink>
-                
+                <StyledNavLink to="/admin/messages">
+                  User Messages
+                </StyledNavLink>
               </Box>
             </Box>
           )}

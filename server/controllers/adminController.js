@@ -9,7 +9,7 @@ export const getAdminStats = async (req, res) => {
       "SELECT COUNT(*) AS totalWorkouts FROM workouttemplates"
     );
     const [[{ totalAiPrompts }]] = await pool.query(
-      "SELECT COUNT(*) AS totalAiPrompts FROM aiPrompts"
+      "SELECT COUNT(*) AS totalAiPrompts FROM aiprompts"
     );
     const [[{ totalUsers }]] = await pool.query(
       "SELECT COUNT(*) AS totalUsers FROM users"

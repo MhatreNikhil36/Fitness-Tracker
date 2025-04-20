@@ -111,7 +111,6 @@ const AdminHome = () => {
             </Card>
           </Grid>
         </Grid>
-
         <Typography variant="h5" gutterBottom>
           Quick Actions
         </Typography>
@@ -130,7 +129,6 @@ const AdminHome = () => {
               </CardActionArea>
             </Card>
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <CardActionArea component={Link} to="/admin/add-workout">
@@ -147,21 +145,6 @@ const AdminHome = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <Card>
-              <CardActionArea component={Link} to="/admin/messages">
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    messages
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    check messages from users.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <Card>
               <CardActionArea component={Link} to="/admin/add-Ai">
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
@@ -169,6 +152,20 @@ const AdminHome = () => {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Create or update AI-based recommendations or prompts.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea component={Link} to="/admin/messages">
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Messages
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Check messages from users.
                   </Typography>
                 </CardContent>
               </CardActionArea>
