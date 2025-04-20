@@ -12,15 +12,15 @@ import {
 const router = express.Router();
 
 /* ---------- user routes ---------- */
-router.post("/",      verifyToken, createMessage);
-router.get("/",       verifyToken, getMessagesForUser);
-router.put("/",       verifyToken, updateMessage);
+router.post("/", verifyToken, createMessage);
+router.get("/", verifyToken, getMessagesForUser);
+router.put("/", verifyToken, updateMessage);
 router.delete("/:messageId", verifyToken, deleteMessage);
 
 /* ---------- admin routes ---------- */
 /* Keep /all BEFORE the :messageId param route */
-router.get("/all",                verifyToken, listAllMessages);
-router.post("/:messageId/reply",  verifyToken, replyToMessage);
-router.put("/reply",        verifyToken, replyToMessage)
+router.get("/all", verifyToken, listAllMessages);
+router.post("/:messageId/reply", verifyToken, replyToMessage);
+router.put("/reply", verifyToken, replyToMessage);
 
 export default router;

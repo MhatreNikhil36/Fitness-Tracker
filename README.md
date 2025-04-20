@@ -1,4 +1,4 @@
-# Personalized Fitness Tracker Frontend
+# Personalized Fitness Tracker
 
 ## Phase 2 - Readme
 
@@ -24,7 +24,6 @@
    ```
    The project will now be accessible at: http://localhost:3000
 
-
 We named our project Fittrack and hosted it on UTA Cloud. You can access the hosted project [here](https://knv2382.uta.cloud/).
 
 ### Login Details
@@ -32,11 +31,11 @@ We named our project Fittrack and hosted it on UTA Cloud. You can access the hos
 The login page allows users to sign in either as Admin or User.
 
 - **Admin Panel:**
-  - Username: mhatrenikhil36@gmail.com
-  - Password: 123456
+  - Username: admin@mavs.uta.edu
+  - Password: admin@123
 - **User Panel:**
-  - Username: nxm2555@mavs.uta.edu
-  - Password: 123456
+  - Username: user@mavs.uta.edu
+  - Password: user@123
 
 ## Features Implemented
 

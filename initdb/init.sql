@@ -485,8 +485,19 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- Sample data
-INSERT INTO users (first_name, last_name, email, password_hash)
-VALUES ('Test', 'User', 'test@example.com', '$2b$10$V.Z5oDeFiYMuw2g4iPeyOewpsJo8jT47cVXUBm05b3k0kFwOrWqvG'); -- password: "password123"
+INSERT INTO users (
+  first_name,
+  last_name,
+  email,
+  password_hash,
+  date_of_birth,
+  height_cm,
+  weight_kg,
+  is_admin
+) VALUES
+  ('Admin', 'User', 'admin@mavs.uta.edu', 'admin@123', '1986-02-14', 182.4, 84.7, 1),
+  ('Test',  'User', 'user@mavs.uta.edu',  'user@123',  '1998-09-07', 167.6, 72.3, 0);
+
 
 INSERT INTO exercisecategories (name, created_by) VALUES ('Strength', 1);
 
