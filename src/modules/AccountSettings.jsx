@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
 export default function AccountSettings() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,7 @@ export default function AccountSettings() {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/users/profile", {
+        const res = await axios.get(`${API_BASE_URL}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEmail(res.data.user.email);
@@ -44,7 +45,7 @@ export default function AccountSettings() {
     try {
       const token = localStorage.getItem("token");
       await axios.put(
-        "http://localhost:5000/api/users/email",
+        `${API_BASE_URL}/api/users/email`,
         { email },
         {
           headers: { Authorization: `Bearer ${token}` },

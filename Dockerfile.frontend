@@ -1,0 +1,24 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install --legacy-peer-deps
+# Explicitly install axios
+RUN npm install --save axios
+
+# Copy the rest of the app
+COPY . .
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose the port
+EXPOSE 3000
+
+# Use entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]

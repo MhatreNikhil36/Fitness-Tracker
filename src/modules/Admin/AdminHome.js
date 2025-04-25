@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,16 +8,33 @@ import {
   CardActionArea,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-
-// Example: replace these with real fetch calls or props
-const mockStats = {
-  totalExercises: 42,
-  totalWorkouts: 15,
-  totalAiPrompts: 7,
-  totalUsers: 123,
-};
+import axios from "axios";
+import { API_BASE_URL } from "../../api/config";
 
 const AdminHome = () => {
+  const [stats, setStats] = useState({
+    totalExercises: 0,
+    totalWorkouts: 0,
+    totalAiPrompts: 0,
+    totalUsers: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API_BASE_URL}/api/admin/stats`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setStats(res.data);
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -36,7 +53,6 @@ const AdminHome = () => {
           overview and direct actions.
         </Typography>
 
-        {/* Quick Stats Section */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card>
@@ -48,7 +64,7 @@ const AdminHome = () => {
                 >
                   Total Exercises
                 </Typography>
-                <Typography variant="h5">{mockStats.totalExercises}</Typography>
+                <Typography variant="h5">{stats.totalExercises}</Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -62,7 +78,7 @@ const AdminHome = () => {
                 >
                   Total Workouts
                 </Typography>
-                <Typography variant="h5">{mockStats.totalWorkouts}</Typography>
+                <Typography variant="h5">{stats.totalWorkouts}</Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -76,7 +92,7 @@ const AdminHome = () => {
                 >
                   AI Prompts
                 </Typography>
-                <Typography variant="h5">{mockStats.totalAiPrompts}</Typography>
+                <Typography variant="h5">{stats.totalAiPrompts}</Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -90,18 +106,15 @@ const AdminHome = () => {
                 >
                   Registered Users
                 </Typography>
-                <Typography variant="h5">{mockStats.totalUsers}</Typography>
+                <Typography variant="h5">{stats.totalUsers}</Typography>
               </CardContent>
             </Card>
           </Grid>
         </Grid>
-
-        {/* Quick Actions Section */}
         <Typography variant="h5" gutterBottom>
           Quick Actions
         </Typography>
         <Grid container spacing={3}>
-          {/* Add Exercise */}
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <CardActionArea component={Link} to="/admin/add-exercise">
@@ -116,8 +129,6 @@ const AdminHome = () => {
               </CardActionArea>
             </Card>
           </Grid>
-
-          {/* Add Workout */}
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <CardActionArea component={Link} to="/admin/add-workout">
@@ -132,8 +143,6 @@ const AdminHome = () => {
               </CardActionArea>
             </Card>
           </Grid>
-
-          {/* Add AI Prompt */}
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <CardActionArea component={Link} to="/admin/add-Ai">
@@ -143,6 +152,20 @@ const AdminHome = () => {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Create or update AI-based recommendations or prompts.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardActionArea component={Link} to="/admin/messages">
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Messages
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Check messages from users.
                   </Typography>
                 </CardContent>
               </CardActionArea>

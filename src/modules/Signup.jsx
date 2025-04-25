@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Info } from "lucide-react";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 import {
   Box,
   Typography,
@@ -58,6 +59,7 @@ const OrDivider = styled(Box)(({ theme }) => ({
 }));
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -69,6 +71,7 @@ export default function Signup() {
     country: "us",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -78,12 +81,14 @@ export default function Signup() {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const handleSelectChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
     setErrorMessage("");
+    setSuccessMessage("");
   };
 
   const validateForm = () => {
@@ -112,8 +117,6 @@ export default function Signup() {
     return "";
   };
 
-  const [successMessage, setSuccessMessage] = useState("");
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -125,7 +128,7 @@ export default function Signup() {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/users/signup", {
+      await axios.post(`${API_BASE_URL}/api/users/signup`, {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
@@ -155,6 +158,10 @@ export default function Signup() {
       setErrorMessage(msg);
       setSuccessMessage("");
     }
+  };
+
+  const handleGoogleSignup = () => {
+    window.location.href = `${API_BASE_URL}/api/users/auth/google`;
   };
 
   return (
@@ -312,6 +319,7 @@ export default function Signup() {
 
             <GoogleButton
               variant="outlined"
+              onClick={handleGoogleSignup}
               startIcon={
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

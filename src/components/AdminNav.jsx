@@ -84,7 +84,7 @@ export default function AdminNav() {
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Box sx={{ display: "flex", gap: 4 }}>
                 <StyledNavLink to="/admin" end>
-                  Dashboard
+                  Admin Dashboard
                 </StyledNavLink>
                 <StyledNavLink to="/admin/add-exercise">
                   Add Exercise
@@ -93,6 +93,9 @@ export default function AdminNav() {
                   Add Workout
                 </StyledNavLink>
                 <StyledNavLink to="/admin/add-Ai">Add AI Prompt</StyledNavLink>
+                <StyledNavLink to="/admin/messages">
+                  User Messages
+                </StyledNavLink>
               </Box>
             </Box>
           )}

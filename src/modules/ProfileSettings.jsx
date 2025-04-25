@@ -16,6 +16,7 @@ import {
 import { User } from "lucide-react";
 import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
 export default function ProfileSettings() {
   const [userData, setUserData] = useState({
@@ -38,7 +39,7 @@ export default function ProfileSettings() {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:5000/api/users/profile", {
+        const res = await axios.get(`${API_BASE_URL}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -68,7 +69,7 @@ export default function ProfileSettings() {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.put("http://localhost:5000/api/users/profile", userData, {
+      await axios.put(`${API_BASE_URL}/api/users/profile`, userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccessMessage("Profile updated successfully.");
