@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`workouttemplates` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
-  `difficulty_level` ENUM('beginner', 'intermediate', 'advanced') NULL DEFAULT NULL,
+  `difficulty_level` ENUM('Beginner', 'Intermediate', 'Advanced') NULL DEFAULT NULL,
   `estimated_duration` INT NULL DEFAULT NULL,
   `equipment_needed` JSON NULL DEFAULT NULL,
   `created_by` INT NULL DEFAULT NULL,
@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`exercises` (
   `name` VARCHAR(100) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `category_id` INT NOT NULL,
-  `difficulty_level` ENUM('beginner', 'intermediate', 'advanced') NULL DEFAULT NULL,
+  `difficulty_level` ENUM('Beginner', 'Intermediate', 'Advanced') NULL DEFAULT NULL,
   `muscle_groups` JSON NULL DEFAULT NULL,
   `equipment_needed` JSON NULL DEFAULT NULL,
   `instructions` TEXT NULL DEFAULT NULL,
@@ -498,24 +498,24 @@ VALUES
 -- Exercises
 INSERT INTO exercises (name, category_id, difficulty_level, created_by)
 VALUES
-  ('Push Ups', 1, 'beginner', 1),
-  ('Squats', 1, 'beginner', 1),
-  ('Jumping Jacks', 2, 'beginner', 1),
-  ('Lunges', 1, 'intermediate', 1),
-  ('Plank', 3, 'intermediate', 1),
-  ('Burpees', 2, 'advanced', 1),
-  ('Mountain Climbers', 2, 'advanced', 1);
+  ('Push Ups', 1, 'Beginner', 1),
+  ('Squats', 1, 'Beginner', 1),
+  ('Jumping Jacks', 2, 'Beginner', 1),
+  ('Lunges', 1, 'Intermediate', 1),
+  ('Plank', 3, 'Intermediate', 1),
+  ('Burpees', 2, 'Advanced', 1),
+  ('Mountain Climbers', 2, 'Advanced', 1);
 
 -- Workout Templates
 INSERT INTO workouttemplates (name, description, difficulty_level, estimated_duration, created_by)
 VALUES
-  ('Full Body Blast', 'A high-intensity full-body workout.', 'intermediate', 45, 1),
-  ('Beginner Cardio', 'Light cardio session.', 'beginner', 20, 1),
-  ('Cardio Burnout', 'High-intensity cardio routine.', 'advanced', 30, 1),
-  ('Strength Builder', 'Intermediate strength training session.', 'intermediate', 40, 1),
-  ('Core Focus', 'Plank-based core exercises.', 'beginner', 20, 1),
-  ('Leg Day Special', 'Targeted lower body workout.', 'intermediate', 35, 1),
-  ('Quick Sweat', 'Short burst workout for busy days.', 'beginner', 15, 1);
+  ('Full Body Blast', 'A high-intensity full-body workout.', 'Intermediate', 45, 1),
+  ('Beginner Cardio', 'Light cardio session.', 'Beginner', 20, 1),
+  ('Cardio Burnout', 'High-intensity cardio routine.', 'Advanced', 30, 1),
+  ('Strength Builder', 'Intermediate strength training session.', 'Intermediate', 40, 1),
+  ('Core Focus', 'Plank-based core exercises.', 'Beginner', 20, 1),
+  ('Leg Day Special', 'Targeted lower body workout.', 'Intermediate', 35, 1),
+  ('Quick Sweat', 'Short burst workout for busy days.', 'Beginner', 15, 1);
 
 -- Workout Template Exercises
 INSERT INTO workouttemplateexercises (template_id, exercise_id, sets, reps, rest_time, sequence_order)
