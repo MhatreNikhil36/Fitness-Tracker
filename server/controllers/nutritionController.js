@@ -7,6 +7,34 @@ dotenv.config();
 /**
  * GET /api/nutrition/recommendations
  */
+export const getAllNutritionRecords = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const [rows] = await pool.query(
+      `SELECT 
+         id,
+         user_id,
+         date,
+         meal_type,
+         calories,
+         protein,
+         carbs,
+         fats,
+         created_at
+       FROM nutrition
+       WHERE user_id = ?
+       ORDER BY date DESC`,
+      [userId]
+    );
+    // Return array of logs or [] if none
+    res.json(rows);
+  } catch (err) {
+    console.error("Error fetching nutrition records:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 export const getNutritionRecommendations = async (req, res) => {
   const userId = req.userId;
 
