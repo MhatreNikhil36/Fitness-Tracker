@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,12 +13,12 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Snackbar,
-  Alert,
   useTheme,
 } from "@mui/material";
 import { Email, Phone, LocationOn, Send } from "@mui/icons-material";
 import Footer from "../components/Footer";
+import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
 const Contact = () => {
   const theme = useTheme();
@@ -27,11 +27,29 @@ const Contact = () => {
     email: "",
     message: "",
   });
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setFormData({
+        name: user.first_name + " " + user.last_name,
+        email: user.email,
+        message: "",
+      });
+      setIsUserLoggedIn(true);
+    } else {
+      setFormData({
+        name: "",
+        email: "",
+        message: "",
+      });
+      setIsUserLoggedIn(false);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,21 +57,27 @@ const Contact = () => {
       ...prev,
       [name]: value,
     }));
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setSnackbar({
-      open: true,
-      message: "YOUR FEEDBACK IS HIGHLY APPRECIATED!",
-      severity: "success",
-    });
-    setFormData({ name: "", email: "", message: "" });
-  };
+    try {
+      await axios.post(`${API_BASE_URL}/api/contact`, {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+      });
 
-  const handleCloseSnackbar = () => {
-    setSnackbar((prev) => ({ ...prev, open: false }));
+      setSuccessMessage("Your feedback is highly appreciated!");
+      setErrorMessage("");
+      setFormData({ name: formData.name, email: formData.email, message: "" });
+    } catch (error) {
+      setErrorMessage("Failed to send message. Please try again later.");
+      setSuccessMessage("");
+    }
   };
 
   return (
@@ -93,6 +117,21 @@ const Contact = () => {
                 </Typography>
                 <Divider sx={{ mb: 3 }} />
 
+                {successMessage && (
+                  <Typography
+                    color="success.main"
+                    variant="body2"
+                    sx={{ mb: 2 }}
+                  >
+                    {successMessage}
+                  </Typography>
+                )}
+                {errorMessage && (
+                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                    {errorMessage}
+                  </Typography>
+                )}
+
                 <form onSubmit={handleSubmit}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
@@ -104,6 +143,9 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         variant="outlined"
+                        InputProps={{
+                          readOnly: isUserLoggedIn,
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -116,6 +158,9 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         variant="outlined"
+                        InputProps={{
+                          readOnly: isUserLoggedIn,
+                        }}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -177,7 +222,7 @@ const Contact = () => {
                         </ListItemIcon>
                         <ListItemText
                           primary="Email"
-                          secondary="support@fittrack.com"
+                          secondary="fittrack.wdm@gmail.com"
                         />
                       </ListItem>
                       <ListItem>
@@ -232,23 +277,8 @@ const Contact = () => {
             </Grid>
           </Grid>
         </Grid>
-
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={5000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity={snackbar.severity}
-            variant="filled"
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
       </Box>
+
       <Box sx={{ width: "100%" }}>
         <Footer />
       </Box>

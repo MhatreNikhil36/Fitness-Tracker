@@ -2,26 +2,21 @@ import pool from "../lib/db.js";
 
 export const addWorkout = async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      difficulty_level,
-      estimated_duration,
-      equipment_needed,
-      created_by,
-    } = req.body;
+    const { name, difficulty_level, estimated_duration, equipment_needed } =
+      req.body;
+
+    const created_by = req.userId;
 
     const [result] = await pool.query(
       `INSERT INTO workouttemplates (
         name, description, difficulty_level,
         estimated_duration, equipment_needed, created_by
-      ) VALUES (?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, NULL, ?, ?, ?, ?)`,
       [
         name,
-        description || null,
         difficulty_level,
         estimated_duration,
-        JSON.stringify(equipment_needed),
+        JSON.stringify(equipment_needed || []),
         created_by,
       ]
     );

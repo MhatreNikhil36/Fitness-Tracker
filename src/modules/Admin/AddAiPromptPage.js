@@ -7,26 +7,59 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
+import axios from "axios";
+import { API_BASE_URL } from "../../api/config";
 
 const AddAiPromptPage = () => {
   const [formData, setFormData] = useState({
-    type: "",
-    prompt: "",
-    content: "",
+    prompt_type: "",
+    prompt_template: "",
+    variables: "",
   });
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Example: POST /api/ai-prompts
-    // In reality, you'd set user_id & generated_at on the backend
-    console.log("Submitting AI prompt:", formData);
-    // Reset form
-    setFormData({ type: "", prompt: "", content: "" });
+    const token = localStorage.getItem("token");
+
+    try {
+      const payload = {
+        prompt_type: formData.prompt_type,
+        prompt_template: formData.prompt_template,
+        variables: formData.variables
+          ? formData.variables.split(",").map((v) => v.trim())
+          : [],
+      };
+
+      await axios.post(`${API_BASE_URL}/api/aiprompts`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSuccessMessage("AI Prompt created successfully.");
+      setErrorMessage("");
+      setFormData({
+        prompt_type: "",
+        prompt_template: "",
+        variables: "",
+      });
+    } catch (err) {
+      console.error(err);
+      setErrorMessage(
+        err.response?.data?.message || "Failed to save AI prompt."
+      );
+      setSuccessMessage("");
+    }
   };
 
   return (
@@ -36,20 +69,32 @@ const AddAiPromptPage = () => {
           <Typography variant="h5" gutterBottom>
             Add AI Prompt
           </Typography>
+
+          {errorMessage && (
+            <Typography variant="body2" sx={{ color: "error.main", mb: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
+          {successMessage && (
+            <Typography variant="body2" sx={{ color: "success.main", mb: 2 }}>
+              {successMessage}
+            </Typography>
+          )}
+
           <form onSubmit={handleSubmit}>
             <TextField
-              label="Type (workout/nutrition/etc.)"
-              name="type"
-              value={formData.type}
+              label="Prompt Type (e.g., workout, nutrition)"
+              name="prompt_type"
+              value={formData.prompt_type}
               onChange={handleChange}
               fullWidth
               margin="normal"
               required
             />
             <TextField
-              label="Prompt"
-              name="prompt"
-              value={formData.prompt}
+              label="Prompt Template"
+              name="prompt_template"
+              value={formData.prompt_template}
               onChange={handleChange}
               fullWidth
               margin="normal"
@@ -57,14 +102,12 @@ const AddAiPromptPage = () => {
               required
             />
             <TextField
-              label="Content (AI-generated details)"
-              name="content"
-              value={formData.content}
+              label="Variables (comma-separated)"
+              name="variables"
+              value={formData.variables}
               onChange={handleChange}
               fullWidth
               margin="normal"
-              multiline
-              required
             />
             <Button
               type="submit"

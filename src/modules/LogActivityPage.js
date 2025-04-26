@@ -19,6 +19,7 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
+  Container,
 } from "@mui/material";
 
 const LogActivityPage = () => {
@@ -41,26 +42,38 @@ const LogActivityPage = () => {
 
     try {
       if (selectedTab === "available") {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/available`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { search: searchQuery, intensity: intensityFilter },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/workouts/available`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { search: searchQuery, intensity: intensityFilter },
+          }
+        );
         setAvailableWorkouts(res.data);
       } else if (selectedTab === "recommended") {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/recommended`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/workouts/recommended`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setRecommendedWorkouts(res.data.recommendations || []);
       } else if (selectedTab === "past") {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/past`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/workouts/past`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setPastActivity(res.data);
       } else if (selectedTab === "exercises") {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/workouts/exercises`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { search: searchQuery, intensity: intensityFilter },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/workouts/exercises`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            params: { search: searchQuery, intensity: intensityFilter },
+          }
+        );
         setAvailableExercises(res.data);
       }
     } catch (err) {
@@ -120,8 +133,12 @@ const LogActivityPage = () => {
         <Grid item xs={12} md={6} lg={4} key={item.id}>
           <Card>
             <CardContent>
-              <Typography variant="h6">{item.workout_name || item.name}</Typography>
-              <Typography variant="body2">Duration: {item.duration ?? 20} min</Typography>
+              <Typography variant="h6">
+                {item.workout_name || item.name}
+              </Typography>
+              <Typography variant="body2">
+                Duration: {item.duration ?? 20} min
+              </Typography>
               <Typography variant="body2">
                 Intensity: {item.level_of_intensity || item.difficulty_level}
               </Typography>
@@ -239,54 +256,66 @@ const LogActivityPage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", px: 4, minHeight: "100vh" }}>
-      <Box sx={{ width: 240 }}>
-        <List>
-          {[
-            { key: "available", label: "Available Workouts" },
-            { key: "past", label: "Past Activity" },
-            { key: "recommended", label: "Recommended Workouts" },
-            { key: "exercises", label: "Available Exercises" },
-          ].map((tab) => (
-            <ListItemButton
-              key={tab.key}
-              selected={selectedTab === tab.key}
-              onClick={() => setSelectedTab(tab.key)}
-              sx={{
-                borderLeft: "4px solid",
-                borderLeftColor:
-                  selectedTab === tab.key ? "error.main" : "transparent",
-              }}
-            >
-              <ListItemText
-                primary={tab.label}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: selectedTab === tab.key ? 500 : 400,
+    <Container maxWidth="lg" sx={{ mt: 2 }}>
+      <Grid container spacing={4}>
+        <Grid item sx={{ width: 240 }}>
+          <List>
+            {[
+              { key: "available", label: "Available Workouts" },
+              { key: "past", label: "Past Activity" },
+              { key: "recommended", label: "Recommended Workouts" },
+              { key: "exercises", label: "Available Exercises" },
+            ].map((tab) => (
+              <ListItemButton
+                key={tab.key}
+                selected={selectedTab === tab.key}
+                onClick={() => setSelectedTab(tab.key)}
+                sx={{
+                  borderLeft: "4px solid",
+                  borderLeftColor:
+                    selectedTab === tab.key ? "error.main" : "transparent",
                 }}
-              />
-            </ListItemButton>
-          ))}
-        </List>
-      </Box>
+              >
+                <ListItemText
+                  primary={tab.label}
+                  primaryTypographyProps={{
+                    fontSize: "0.875rem",
+                    fontWeight: selectedTab === tab.key ? 500 : 400,
+                  }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Grid>
 
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          {
-            {
-              available: "Available Workouts",
-              past: "Past Activity",
-              recommended: "Recommended Workouts",
-              exercises: "Available Exercises",
-            }[selectedTab]
-          }
-        </Typography>
-        {renderContent()}
-      </Box>
+        <Grid item xs>
+          <Box sx={{ maxWidth: 900 }}>
+            <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>
+              {
+                {
+                  available: "Available Workouts",
+                  past: "Past Activity",
+                  recommended: "Recommended Workouts",
+                  exercises: "Available Exercises",
+                }[selectedTab]
+              }
+            </Typography>
+
+            {renderContent()}
+          </Box>
+        </Grid>
+      </Grid>
 
       {selectedItem && (
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
-          <DialogTitle>{selectedItem.workout_name || selectedItem.name}</DialogTitle>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>
+            {selectedItem.workout_name || selectedItem.name}
+          </DialogTitle>
           <DialogContent dividers>
             <Typography sx={{ mb: 1 }}>
               Duration: {selectedItem.duration ?? 20} min
@@ -317,7 +346,7 @@ const LogActivityPage = () => {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </Container>
   );
 };
 

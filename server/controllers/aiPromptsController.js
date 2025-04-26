@@ -1,29 +1,18 @@
-// server/controllers/aiPromptsController.js
 import pool from "../lib/db.js";
 
-/**
- * POST /api/aiprompts
- * Inserts a new AI prompt template into the 'aiprompts' table.
- */
 export const createAiPrompt = async (req, res) => {
-  const userId = req.userId; // from verifyToken
-  const {
-    prompt_type,
-    prompt_template,
-    variables, // optional JSON
-    is_active,
-  } = req.body;
-
-  if (!prompt_type || !prompt_template) {
-    return res.status(400).json({
-      message: "prompt_type and prompt_template are required fields.",
-    });
-  }
-
   try {
+    const userId = req.userId;
+    const { prompt_type, prompt_template, variables, is_active } = req.body;
+
+    if (!prompt_type || !prompt_template) {
+      return res
+        .status(400)
+        .json({ message: "prompt_type and prompt_template are required." });
+    }
+
     const [result] = await pool.query(
-      `INSERT INTO aiprompts 
-       (prompt_type, prompt_template, variables, is_active, created_by) 
+      `INSERT INTO aiprompts (prompt_type, prompt_template, variables, is_active, created_by)
        VALUES (?, ?, ?, ?, ?)`,
       [
         prompt_type,
@@ -34,21 +23,16 @@ export const createAiPrompt = async (req, res) => {
       ]
     );
 
-    const newId = result.insertId;
     res.status(201).json({
-      message: "AI prompt template created successfully",
-      promptId: newId,
+      message: "AI prompt created successfully",
+      promptId: result.insertId,
     });
   } catch (err) {
-    console.error("Error creating AI prompt:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("Create AI Prompt Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-/**
- * GET /api/aiprompts
- * Retrieves a list of AI prompt templates. (Optional, if you want to see them.)
- */
 export const listAiPrompts = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -56,7 +40,7 @@ export const listAiPrompts = async (req, res) => {
     );
     res.json(rows);
   } catch (err) {
-    console.error("Error fetching AI prompts:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("List AI Prompts Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };

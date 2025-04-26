@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
+import axios from "axios";
+import { API_BASE_URL } from "../../api/config";
 
 const AddWorkoutPage = () => {
   const [workoutData, setWorkoutData] = useState({
@@ -20,7 +22,6 @@ const AddWorkoutPage = () => {
   });
 
   const [exercises, setExercises] = useState([
-    // Start with one row or none, up to you
     {
       exercise_id: "",
       sets: "",
@@ -30,13 +31,16 @@ const AddWorkoutPage = () => {
     },
   ]);
 
-  // Handle workout details
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleWorkoutChange = (e) => {
     const { name, value } = e.target;
     setWorkoutData((prev) => ({ ...prev, [name]: value }));
+    setErrorMessage("");
+    setSuccessMessage("");
   };
 
-  // Handle exercise row changes
   const handleExerciseChange = (index, e) => {
     const { name, value } = e.target;
     setExercises((prev) => {
@@ -46,7 +50,6 @@ const AddWorkoutPage = () => {
     });
   };
 
-  // Add new exercise row
   const handleAddExercise = () => {
     setExercises((prev) => [
       ...prev,
@@ -60,29 +63,73 @@ const AddWorkoutPage = () => {
     ]);
   };
 
-  // Remove exercise row
   const handleRemoveExercise = (index) => {
     setExercises((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // Submit the form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Example: POST /api/workouts to create the workout
-    // Then POST /api/workout-exercises for each exercise entry
-    console.log("Workout Data:", workoutData);
-    console.log("Exercises:", exercises);
-    // Reset form
-    setWorkoutData({ workout_name: "", level_of_intensity: "", duration: "" });
-    setExercises([
-      {
-        exercise_id: "",
-        sets: "",
-        reps: "",
-        rest_seconds: "",
-        total_calories_burned: "",
-      },
-    ]);
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    try {
+      const workoutRes = await axios.post(
+        `${API_BASE_URL}/api/workouts/add`,
+        {
+          name: workoutData.workout_name,
+          difficulty_level: workoutData.level_of_intensity,
+          estimated_duration: workoutData.duration,
+          equipment_needed: [],
+          created_by: user.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const templateId = workoutRes.data.templateId;
+
+      const exercisesPayload = exercises.map((ex, idx) => ({
+        exercise_id: ex.exercise_id,
+        sets: ex.sets,
+        reps: ex.reps,
+        rest_time: ex.rest_seconds,
+        sequence_order: idx + 1,
+      }));
+
+      await axios.post(
+        `${API_BASE_URL}/api/workouts/add-exercises/${templateId}`,
+        { exercises: exercisesPayload },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setSuccessMessage("Workout added successfully.");
+      setErrorMessage("");
+
+      setWorkoutData({
+        workout_name: "",
+        level_of_intensity: "",
+        duration: "",
+      });
+      setExercises([
+        {
+          exercise_id: "",
+          sets: "",
+          reps: "",
+          rest_seconds: "",
+          total_calories_burned: "",
+        },
+      ]);
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || "Failed to save workout.");
+      setSuccessMessage("");
+    }
   };
 
   return (
@@ -92,6 +139,18 @@ const AddWorkoutPage = () => {
           <Typography variant="h5" gutterBottom>
             Add New Workout
           </Typography>
+
+          {errorMessage && (
+            <Typography variant="body2" sx={{ color: "error.main", mb: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
+          {successMessage && (
+            <Typography variant="body2" sx={{ color: "success.main", mb: 2 }}>
+              {successMessage}
+            </Typography>
+          )}
+
           <form onSubmit={handleSubmit}>
             <TextField
               label="Workout Name"
@@ -167,31 +226,18 @@ const AddWorkoutPage = () => {
                     type="number"
                   />
                 </Grid>
-                <Grid item xs={6} sm={2}>
-                  <TextField
-                    label="Calories"
-                    name="total_calories_burned"
-                    value={ex.total_calories_burned}
-                    onChange={(e) => handleExerciseChange(index, e)}
-                    fullWidth
-                    type="number"
-                  />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={1}
-                  sx={{ display: "flex", alignItems: "center" }}
-                >
+                <Grid item xs={12} sm={1}>
                   <IconButton
                     color="error"
                     onClick={() => handleRemoveExercise(index)}
+                    sx={{ mt: 1 }}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Grid>
               </Grid>
             ))}
+
             <Button
               variant="outlined"
               color="error"

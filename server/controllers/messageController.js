@@ -7,10 +7,9 @@ import pool from "../lib/db.js";
 
 async function isAdmin(userId) {
   if (!userId) return false;
-  const [[row]] = await pool.query(
-    "SELECT is_admin FROM users WHERE id = ?",
-    [userId]
-  );
+  const [[row]] = await pool.query("SELECT is_admin FROM users WHERE id = ?", [
+    userId,
+  ]);
   return !!row?.is_admin;
 }
 
@@ -19,7 +18,8 @@ async function loadMessage(messageId) {
     "SELECT * FROM messages WHERE message_id = ?",
     [messageId]
   );
-  if (!msg) throw Object.assign(new Error("Message not found"), { status: 404 });
+  if (!msg)
+    throw Object.assign(new Error("Message not found"), { status: 404 });
   return msg;
 }
 
@@ -106,10 +106,7 @@ export const deleteMessage = async (req, res) => {
         .status(404)
         .json({ message: "Message not found or unauthorized" });
     }
-    await pool.query(
-      "DELETE FROM messages WHERE message_id = ?",
-      [messageId]
-    );
+    await pool.query("DELETE FROM messages WHERE message_id = ?", [messageId]);
     res.json({ message: "Message deleted successfully" });
   } catch (err) {
     console.error("Error deleting message:", err);
