@@ -34,6 +34,46 @@ export const getGoalWithProgress = async (req, res) => {
   }
 };
 
+// server/controllers/goalProgressController.js
+export const markGoalCompleted = async (req, res) => {
+  const { goalId } = req.params;
+  const userId = req.userId;
+
+  try {
+    // Ensure the goal belongs to the requesting user
+    const [[goal]] = await pool.query(
+      "SELECT * FROM goals WHERE id = ? AND user_id = ?",
+      [goalId, userId]
+    );
+    if (!goal) return res.status(404).json({ message: "Goal not found" });
+    if (goal.status === "completed")
+      return res.status(400).json({ message: "Goal already completed" });
+
+    // Mark as completed
+    await pool.query(
+      "UPDATE goals SET status = 'completed', updated_at = NOW() WHERE id = ?",
+      [goalId]
+    );
+
+    // Return the updated goal with its progress records
+    const [[updatedGoal]] = await pool.query(
+      "SELECT * FROM goals WHERE id = ?",
+      [goalId]
+    );
+    const [progressRows] = await pool.query(
+      "SELECT id, recorded_value, recorded_date AS timestamp, notes \
+       FROM progress WHERE goal_id = ? ORDER BY recorded_date ASC",
+      [goalId]
+    );
+
+    res.json({ ...updatedGoal, progress: progressRows });
+  } catch (err) {
+    console.error("Error completing goal:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 // POST /api/goals/:goalId/progress
 // Adds a new progress record for the specified goal.
 export const addProgressToGoal = async (req, res) => {

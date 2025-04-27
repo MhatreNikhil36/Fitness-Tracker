@@ -36,6 +36,9 @@ const GoalProgressPage = () => {
   // Retrieve auth token from storage
   const authToken = localStorage.getItem("token") || "";
 
+
+
+
   useEffect(() => {
     const fetchGoal = async () => {
       try {
@@ -57,6 +60,24 @@ const GoalProgressPage = () => {
 
     fetchGoal();
   }, [goalId, authToken]);
+
+  const handleMarkCompleted = async () => {
+    if (!window.confirm("Mark this goal as completed?")) return;
+  
+    try {
+      const res = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/api/goals/${goalId}/complete`,
+        {},                                     // no body content needed
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      setGoalData(res.data);                   // refresh local state
+    } catch (err) {
+      console.error("Error marking goal completed:", err);
+      setErrorMessage(
+        err.response?.data?.message || "Could not complete the goal."
+      );
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -116,11 +137,23 @@ const GoalProgressPage = () => {
           {errorMessage}
         </Alert>
       )}
-      <Card sx={{ mb: 3 }}>
+      {/* <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" color="text.primary" gutterBottom>
             Current Progress
           </Typography>
+          {goalData.status === "in_progress" && (
+          <Button
+            onClick={handleMarkCompleted}
+            variant="contained"
+            color="success"
+            size="small"
+            sx={{ pb: 0 }} 
+          >
+            Mark Completed
+          </Button>
+        )}
+          
           {goalData.progress && goalData.progress.length > 0 ? (
             <Box sx={{ mt: 2, width: "100%", height: 300 }}>
               <ResponsiveContainer>
@@ -143,10 +176,63 @@ const GoalProgressPage = () => {
             <Typography>No progress data available.</Typography>
           )}
         </CardContent>
-      </Card>
+      </Card> */}
+      <Card sx={{ mb: 3 }}>
+  <CardContent>
+
+    {/* ── header row: title left, button right ─────────── */}
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        mb: 1   // little space under the row
+      }}
+    >
+      <Typography variant="h6" color="text.primary">
+        Current Progress
+      </Typography>
+
+      {goalData.status === "in_progress" && (
+        <Button
+          onClick={handleMarkCompleted}
+          variant="contained"
+          color="success"
+          size="small"
+        >
+          Mark Completed
+        </Button>
+      )}
+    </Box>
+    {/* ──────────────────────────────────────────────────── */}
+
+    {goalData.progress?.length ? (
+      <Box sx={{ mt: 2, width: "100%", height: 300 }}>
+        <ResponsiveContainer>
+          <LineChart data={formatProgressData(goalData.progress)}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="label" />
+            <YAxis />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="recorded_value"
+              stroke="#d32f2f"
+              strokeWidth={2}
+              dot={{ r: 5 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </Box>
+    ) : (
+      <Typography>No progress data available.</Typography>
+    )}
+  </CardContent>
+</Card>
       {goalData.status === "in_progress" && (
         <Card>
           <CardContent>
+          
             <Typography variant="h6" color="text.primary" gutterBottom>
               Add Progress
             </Typography>
