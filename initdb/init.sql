@@ -143,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`completedworkouts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `template_id` INT NULL DEFAULT NULL,
+  `custom_workout_name` VARCHAR(255) NULL,
   `workout_date` DATE NOT NULL,
   `duration` INT NULL DEFAULT NULL,
   `calories_burned` INT NULL DEFAULT NULL,
