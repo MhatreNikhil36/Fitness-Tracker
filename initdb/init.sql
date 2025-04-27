@@ -268,6 +268,35 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+
+/* ------------------------------------------------------------------
+   Table: fitness_tracker.messages
+   ------------------------------------------------------------------*/
+CREATE TABLE IF NOT EXISTS `fitness_tracker`.`messages` (
+  `message_id`   INT             NOT NULL AUTO_INCREMENT,
+  `user_id`      INT             NOT NULL,
+  `subject`      VARCHAR(255)         NULL,
+  `body`         TEXT            NOT NULL,
+  `admin_reply`  TEXT                NULL,          -- ← added for admin responses
+  `status`       ENUM('open','closed') DEFAULT 'open',
+  `is_read`      BOOLEAN          DEFAULT FALSE,
+  `created_at`   TIMESTAMP        DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`message_id`),
+
+  /* helpful for filtering by user in queries */
+  KEY `idx_messages_user` (`user_id`),
+
+  /* FK now matches the actual PK column name in users (id) */
+  CONSTRAINT `messages_ibfk_1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `fitness_tracker`.`users` (`id`)
+    ON DELETE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE       = utf8mb4_0900_ai_ci;
+
+
+
 -- -----------------------------------------------------
 -- Table `fitness_tracker`.`goals`
 -- -----------------------------------------------------
@@ -434,6 +463,26 @@ CREATE TABLE IF NOT EXISTS `fitness_tracker`.`workouttemplateexercises` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `fitness_tracker`.`completedexercises`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `fitness_tracker`.`completedexercises` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `exercise_id` INT NOT NULL,
+  `duration_minutes` INT DEFAULT 20,
+  `calories_burned` INT DEFAULT 100,
+  `completed_on` DATE NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `fitness_tracker`.`users` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`exercise_id`) REFERENCES `fitness_tracker`.`exercises` (`id`) ON DELETE CASCADE
+)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 
 -- Sample data
 INSERT INTO users (first_name, last_name, email, password_hash)

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -20,6 +20,14 @@ export default function ResetPassword() {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isGoogleUser, setIsGoogleUser] = useState(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user?.password_hash || user?.password_hash === "null") {
+      setIsGoogleUser(true);
+    }
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,27 +73,38 @@ export default function ResetPassword() {
   return (
     <Container maxWidth="lg">
       <Grid container spacing={4} sx={{ mt: 2 }}>
-        {/* Sidebar */}
         <Grid item>
           <SettingsSidebar />
         </Grid>
 
-        {/* Main Content */}
         <Grid item xs>
           <Box sx={{ maxWidth: 600 }}>
             <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>
               Reset Password
             </Typography>
 
-            {errorMessage && (
+            {isGoogleUser ? (
               <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-                {errorMessage}
+                This account was created using Google. You don't need to set or
+                change a password.
               </Typography>
-            )}
-            {successMessage && (
-              <Typography color="success.main" variant="body2" sx={{ mb: 2 }}>
-                {successMessage}
-              </Typography>
+            ) : (
+              <>
+                {errorMessage && (
+                  <Typography color="error" variant="body2" sx={{ mb: 2 }}>
+                    {errorMessage}
+                  </Typography>
+                )}
+                {successMessage && (
+                  <Typography
+                    color="success.main"
+                    variant="body2"
+                    sx={{ mb: 2 }}
+                  >
+                    {successMessage}
+                  </Typography>
+                )}
+              </>
             )}
 
             <Box
@@ -101,6 +120,7 @@ export default function ResetPassword() {
                 onChange={handleChange}
                 fullWidth
                 size="small"
+                disabled={isGoogleUser}
               />
 
               <TextField
@@ -111,6 +131,7 @@ export default function ResetPassword() {
                 onChange={handleChange}
                 fullWidth
                 size="small"
+                disabled={isGoogleUser}
               />
 
               <TextField
@@ -121,12 +142,14 @@ export default function ResetPassword() {
                 onChange={handleChange}
                 fullWidth
                 size="small"
+                disabled={isGoogleUser}
               />
 
               <Box sx={{ mt: 1 }}>
                 <Button
                   variant="contained"
                   type="submit"
+                  disabled={isGoogleUser}
                   sx={{
                     bgcolor: "black",
                     color: "white",

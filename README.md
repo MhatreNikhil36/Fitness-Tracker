@@ -1,6 +1,6 @@
 # Personalized Fitness Tracker Frontend
 
-## Phase 2 - Readme
+## Phase 3 - Readme
 
 ### Group 11 Members:
 
@@ -13,6 +13,23 @@
 ## Hosted Project
 
 We named our project Fittrack and hosted it on UTA Cloud. You can access the hosted project [here](https://knv2382.uta.cloud/).
+<<<<<<< Updated upstream
+=======
+
+### Running with Docker:
+
+1. Build the Docker Image:
+   ```bash
+   docker compose build --no-cache
+   ```
+2. Run the Docker Container:
+   ```bash
+   docker compose up
+   ```
+   The project will now be accessible at:
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:5000
+>>>>>>> Stashed changes
 
 ### Login Details
 
@@ -27,54 +44,120 @@ The login page allows users to sign in either as Admin or User.
 
 ## Features Implemented
 
-This React-based application (Fittrack) includes:
+This phase primarily focused on **backend feature expansion** along with integration into the frontend pages. Major enhancements included:
 
-- **User Authentication:** Login and signup screens.
-- **Activity Logging:** Interface for users to track workouts and progress.
-- **Dashboard & Analytics:** Data-driven visualizations for performance insights.
-- **Administrator Authentication and Logging:** Interface for administrator to Login and manage workout plans/exercises.
-- **Responsive Design:** Mobile & desktop compatibility.
+- **JWT Authentication & Secure Routing:**
+
+  - Token-based login/signup for both users and admins.
+  - Middleware (`verifyToken.js`) added to protect sensitive routes.
+
+- **Activity Logging:**
+
+  - Log workouts and exercises.
+  - Track completion status.
+  - View complete history of user activities.
+
+- **Goal Management:**
+
+  - Create, update, delete goals.
+  - Fetch progress metrics.
+  - Integrated analytics with charts.
+
+- **AI-Powered Nutrition System:**
+
+  - Gemini 2.0 Flash-Lite model integrated via backend.
+  - Personalized meal recommendations.
+  - Responses cached to reduce repeated API calls.
+
+- **Analytics Dashboard:**
+
+  - Backend APIs serve goal, nutrition, and activity data.
+  - Frontend uses Recharts to visualize analytics.
+
+- **Admin Control Panel Enhancements:**
+
+  - Add/edit exercises and workouts.
+  - Manage Gemini prompt templates for nutrition AI.
+
+- **Messaging Functionality:**
+  - Enabled direct communication between users and admins through an integrated messaging system.
+
+## Backend Files Added in This Phase
+
+A majority of the work was implemented on the server side. Key backend files include:
+
+### 📁 Controllers:
+
+- `addExerciseController.js`
+- `addWorkoutController.js`
+- `goalsController.js`
+- `goalProgressController.js`
+- `nutritionController.js`
+- `aiPromptsController.js`
+- `messageController.js`
+- `workoutsController.js`
+- `authController.js`
+- `googleAuth.js`
+- `adminController.js`
+
+### 🛣️ Routes:
+
+- `addExerciseRoute.js`
+- `addWorkoutRoute.js`
+- `goals.js`
+- `goalProgress.js`
+- `nutrition.js`
+- `aiPrompts.js`
+- `messageRoutes.js`
+- `workoutRoutes.js`
+- `authRoutes.js`
+- `adminRoute.js`
+- `exerciseCategoriesRoute.js`
+
+### 🧩 Middleware:
+
+- `verifyToken.js` – Secures routes using JWT.
 
 ## Pages Developed for This Phase
 
 ### User-Facing Pages:
 
-- `/Homepage` & `/` – Landing page.
-- `/login` – User login.
-- `/signup` – User signup.
-- `/Dash` – Main user dashboard with goals, nutrition charts, and recent activity.
-- `/nutrition` – AI-generated meal/plan recommendations.
-- `/log-nutrition` – Form to track daily calories/macros.
-- `/goals` – Goals overview; add new goal at `/addGoal`.
-- `/goal-progress/:goalId` – Detailed progress tracking for a specific goal.
-- `/logactivity` – Log a workout or activity session.
-- `/activity` – View all logged activities.
-- `*` – Fallback page (NotFound).
+- `/login` – Login page.
+- `/signup` – Signup page.
+- `/dash` – Dashboard showing analytics and overview.
+- `/nutrition` – AI-generated nutrition suggestions.
+- `/log-nutrition` – Log meals and macros.
+- `/goals` – Goals list.
+- `/addGoal` – Add a new goal.
+- `/goal-progress/:goalId` – Track progress for a specific goal.
+- `/logactivity` – Log workouts and exercises.
+- `/activity` – View all completed activities.
 
 ### Admin Pages:
 
-- `/admin` – Admin dashboard (custom nav bar, quick stats).
-- `/admin/add-exercise` – Create new exercises (name, muscle group, instructions).
-- `/admin/add-workout` – Build workouts (sets, reps, rest time, attach exercises).
-- `/admin/add-Ai` – Manage AI prompts (type, prompt text, generated content).
+- `/admin` – Admin dashboard.
+- `/admin/add-exercise` – Create new exercises.
+- `/admin/add-workout` – Build workout plans.
+- `/admin/add-Ai` – Manage Gemini AI prompts.
 
 ## How to Run This Program
 
 ### On Localhost:
 
 1. Install Dependencies:
-   ```
+   ```bash
    npm install
    ```
 2. Start the Development Server:
-   ```
+   ```bash
    npm start
    ```
-   The project will be available at: https://knv2382.uta.cloud/
+   The project will be available at: http://localhost:3000
 
 ### Running with Docker:
 
 1. Build the Docker Image:
+<<<<<<< Updated upstream
    ```
    docker build -t fitness-tracker-frontend .
    ```
@@ -83,29 +166,40 @@ This React-based application (Fittrack) includes:
    docker run -p 4000:80 --name Fitnessapp fitness-tracker-frontend
    ```
    The project will now be accessible at: http://localhost:4000
+=======
+   ```bash
+   docker compose build --no-cache
+   ```
+2. Run the Docker Container:
+   ```bash
+   docker compose up
+   ```
+   - Frontend: http://localhost:3000
+   - Backend: http://localhost:5000
+>>>>>>> Stashed changes
 
 ## Troubleshooting & Common Errors
 
 1. **Error: "Module Not Found" in React Router:**
    If you encounter:
 
-   ```
+   ```bash
    Error: Cannot find module 'react-router-dom'
    ```
 
-   Run the following command:
+   Run:
 
-   ```
+   ```bash
    npm install react-router-dom
    ```
 
 2. **Error: Docker Port Already in Use:**
    If you get:
-   ```
+   ```bash
    docker: Error response from daemon: Conflict. The container name "/Fitnessapp" is already in use
    ```
-   Remove the existing container and restart:
-   ```
+   Run:
+   ```bash
    docker stop Fitnessapp
    docker rm Fitnessapp
    docker run -p 4000:80 --name Fitnessapp fitness-tracker-frontend
@@ -113,5 +207,6 @@ This React-based application (Fittrack) includes:
 
 ## Notes
 
-- The React project & WordPress files are uploaded to UTA Cloud.
-- Additional revisions will be implemented in Phase 3 if required.
+- This phase emphasized backend development with robust API integration and middleware protection.
+- Gemini AI integration is modular for future expansion.
+- Backend structure is organized with clear separation of concerns via controllers and routes.
