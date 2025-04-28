@@ -34,7 +34,6 @@ export const getAllNutritionRecords = async (req, res) => {
   }
 };
 
-
 export const getNutritionRecommendations = async (req, res) => {
   const userId = req.userId;
 

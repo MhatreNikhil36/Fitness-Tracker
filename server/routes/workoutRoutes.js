@@ -1,12 +1,12 @@
 import express from "express";
 import {
-    getAvailableWorkouts,
-    getPastActivity,
-    getRecommendedWorkouts,
-    completeWorkout,
-    getAvailableExercises,
-    completeExercise
-  } from "../controllers/workoutsController.js";
+  getAvailableWorkouts,
+  getPastActivity,
+  getRecommendedWorkouts,
+  completeWorkout,
+  getAvailableExercises,
+  completeExercise,
+} from "../controllers/workoutsController.js";
 
 import { verifyToken } from "../middleware/verifyToken.js";
 

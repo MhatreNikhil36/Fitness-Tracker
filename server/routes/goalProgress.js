@@ -3,7 +3,7 @@ import express from "express";
 import {
   getGoalWithProgress,
   addProgressToGoal,
-  markGoalCompleted 
+  markGoalCompleted,
 } from "../controllers/goalProgressController.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 

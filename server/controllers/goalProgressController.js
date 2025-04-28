@@ -73,7 +73,6 @@ export const markGoalCompleted = async (req, res) => {
   }
 };
 
-
 // POST /api/goals/:goalId/progress
 // Adds a new progress record for the specified goal.
 export const addProgressToGoal = async (req, res) => {

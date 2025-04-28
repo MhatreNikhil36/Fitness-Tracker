@@ -3,16 +3,18 @@
 First off, **thanks for taking the time to contribute!**  
 This project grows with every bug you squash, feature you ship, and doc you improve.
 
-> **TL;DR**  
-> 1. Fork → Branch → PR.  
-> 2. Follow the style guides & commit conventions.  
-> 3. Make sure `npm test` and `docker compose up` work.  
-> 4. One logical change per pull-request.  
+> **TL;DR**
+>
+> 1. Fork → Branch → PR.
+> 2. Follow the style guides & commit conventions.
+> 3. Make sure `npm test` and `docker compose up` work.
+> 4. One logical change per pull-request.
 > 5. Be excellent to each other.
 
 ---
 
 ## Table of Contents
+
 1. [Workflow](#workflow)
 2. [Project Setup](#project-setup)
 3. [Coding Standards](#coding-standards)
@@ -35,7 +37,7 @@ fork  →  clone  →  create branch   →  hack ✔  →  push →  PR
 ```
 
 1. **Fork** the repo and clone your fork.
-2. **Create a branch**  
+2. **Create a branch**
    ```
    git checkout -b feat/<short-description>
    ```
@@ -67,14 +69,14 @@ Environment variables live in `server/.env.example` and `src/.env.example`; copy
 
 ## Coding Standards
 
-| Area              | Tooling / Guideline |
-|-------------------|---------------------|
-| **JS / JSX**      | ESLint + Prettier (`npm run lint:fix`) |
-| **SQL**           | MySQL8 – use snake_case for tables & columns |
-| **React**         | Functional components + hooks, no class comps |
-| **API**           | RESTful, prefixed with `/api` |
-| **Dockerfiles**   | Multi-stage builds, smallest possible base |
-| **Tests**         | Jest + React Testing Library |
+| Area            | Tooling / Guideline                           |
+| --------------- | --------------------------------------------- |
+| **JS / JSX**    | ESLint + Prettier (`npm run lint:fix`)        |
+| **SQL**         | MySQL8 – use snake_case for tables & columns  |
+| **React**       | Functional components + hooks, no class comps |
+| **API**         | RESTful, prefixed with `/api`                 |
+| **Dockerfiles** | Multi-stage builds, smallest possible base    |
+| **Tests**       | Jest + React Testing Library                  |
 
 Please **run Prettier** before committing (a pre-commit hook is already configured).
 
@@ -111,15 +113,15 @@ A PR is ✅ only if tests & linting pass.
 
 ## Docker & Database
 
-* **Spin-up full stack**
+- **Spin-up full stack**
 
   ```bash
   docker compose up --build
   ```
 
-* **Init DB** – schema lives in `initdb/init.sql`; Compose runs it automatically for fresh volumes.
+- **Init DB** – schema lives in `initdb/init.sql`; Compose runs it automatically for fresh volumes.
 
-* **Migrations** – use SQL files in `migrations/*` + bump `init.sql`. Document the migration in the PR body.
+- **Migrations** – use SQL files in `migrations/*` + bump `init.sql`. Document the migration in the PR body.
 
 ---
 
@@ -139,13 +141,13 @@ A PR is ✅ only if tests & linting pass.
 
 When filing a bug, include:
 
-| Field            | What to provide                                   |
-|------------------|---------------------------------------------------|
-| **Repro Steps**  | numbered list; minimal credentials if required    |
-| **Expected**     | what you thought would happen                     |
-| **Actual**       | what actually happened (+ logs, stack traces)     |
-| **Environment**  | OS, browser, Node/Docker versions                 |
-| **Screenshots**  | *if UI related*                                   |
+| Field           | What to provide                                |
+| --------------- | ---------------------------------------------- |
+| **Repro Steps** | numbered list; minimal credentials if required |
+| **Expected**    | what you thought would happen                  |
+| **Actual**      | what actually happened (+ logs, stack traces)  |
+| **Environment** | OS, browser, Node/Docker versions              |
+| **Screenshots** | _if UI related_                                |
 
 Feature requests welcome – please search first to avoid duplicates.
 
@@ -171,4 +173,4 @@ This project is distributed under the **MIT License** – see `LICENSE` for deta
 
 ---
 
-Happy tracking – and happy hacking! 🎉  
+Happy tracking – and happy hacking! 🎉

@@ -40,9 +40,7 @@
 - Health metrics logging
 - Activity logging
 - Analytics endpoints
--
-
-**Reference Pages**:
+- **Reference Pages**:
 
 - `/src/components/NutritionPage.js`
 - `/src/components/LogNutritionPage.js`
