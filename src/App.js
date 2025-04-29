@@ -21,7 +21,6 @@ import AddExercisePage from "./modules/Admin/AddExercisePage";
 import AddWorkoutPage from "./modules/Admin/AddWorkoutPage";
 import AddAiPromptPage from "./modules/Admin/AddAiPromptPage";
 import AdminHome from "./modules/Admin/AdminHome";
-
 import Login from "./modules/Login";
 import Signup from "./modules/Signup";
 import ProfileSettings from "./modules/ProfileSettings";
@@ -37,7 +36,6 @@ import Contact from "./modules/Contact";
 import AboutUs from "./modules/About";
 import ScrollToTop from "./components/ScrollToTop";
 import Messages from "./modules/Messages";
-
 import AdminMessagesPage from "./modules/Admin/AdminMessagesPage";
 
 const getUserFromLocalStorage = () => {

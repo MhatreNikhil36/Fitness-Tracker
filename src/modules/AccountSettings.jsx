@@ -29,7 +29,9 @@ export default function AccountSettings() {
         setEmail(res.data.user.email);
         setOriginalEmail(res.data.user.email);
       } catch (err) {
-        setErrorMessage("Failed to fetch user info.");
+        setErrorMessage(
+          "Unable to retrieve your account information. Please try again later."
+        );
       }
     };
 
@@ -38,7 +40,7 @@ export default function AccountSettings() {
 
   const handleSave = async () => {
     if (email === originalEmail) {
-      setSuccessMessage("No changes to save.");
+      setSuccessMessage("No changes detected.");
       return;
     }
 
@@ -52,10 +54,12 @@ export default function AccountSettings() {
         }
       );
       setOriginalEmail(email);
-      setSuccessMessage("Email updated successfully.");
+      setSuccessMessage("Your email address has been updated successfully.");
       setErrorMessage("");
     } catch (err) {
-      const msg = err.response?.data?.message || "Failed to update email.";
+      const msg =
+        err.response?.data?.message ||
+        "Unable to update your email address. Please try again.";
       setErrorMessage(msg);
       setSuccessMessage("");
     }

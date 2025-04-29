@@ -54,7 +54,9 @@ export default function ProfileSettings() {
           date_of_birth: formattedDate,
         });
       } catch (err) {
-        setErrorMessage("Failed to load profile data.");
+        setErrorMessage(
+          "Unable to load your profile information. Please try again later."
+        );
       }
     };
 
@@ -72,13 +74,13 @@ export default function ProfileSettings() {
       await axios.put(`${API_BASE_URL}/api/users/profile`, userData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setSuccessMessage("Profile updated successfully.");
+      setSuccessMessage("Your profile has been updated successfully.");
       setErrorMessage("");
     } catch (err) {
       const msg =
         err.response?.data?.message ||
         err.message ||
-        "Failed to update profile.";
+        "Unable to update your profile. Please try again.";
       setErrorMessage(msg);
       setSuccessMessage("");
     }

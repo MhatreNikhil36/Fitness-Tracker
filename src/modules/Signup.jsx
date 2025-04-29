@@ -66,12 +66,14 @@ export default function Signup() {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
     birthdate: "",
     gender: "",
     country: "us",
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleClickShowPassword = () => {
     setShowPassword((prev) => !prev);
@@ -82,6 +84,7 @@ export default function Signup() {
     setFormData((prev) => ({ ...prev, [id]: value }));
     setErrorMessage("");
     setSuccessMessage("");
+    setFieldErrors((prev) => ({ ...prev, [id]: "" }));
   };
 
   const handleSelectChange = (e) => {
@@ -89,40 +92,60 @@ export default function Signup() {
     setFormData((prevData) => ({ ...prevData, [name]: value }));
     setErrorMessage("");
     setSuccessMessage("");
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const validateForm = () => {
-    const { firstName, lastName, email, password, birthdate, gender } =
-      formData;
+    const errors = {};
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !password ||
-      !birthdate ||
-      !gender
-    ) {
-      return "All fields are required.";
+    if (!formData.firstName.trim())
+      errors.firstName = "Please enter your first name.";
+    if (!formData.lastName.trim())
+      errors.lastName = "Please enter your last name.";
+
+    if (!formData.email.trim()) {
+      errors.email = "Please enter your email address.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = "Please enter a valid email address.";
     }
 
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      return "Please enter a valid email address.";
+    if (!formData.password) {
+      errors.password = "Please create a password.";
+    } else {
+      if (formData.password.length < 5) {
+        errors.password = "Password must be at least 5 characters.";
+      }
+      if (!/[A-Za-z]/.test(formData.password)) {
+        errors.password = "Password must include at least one letter.";
+      }
+      if (!/[0-9]/.test(formData.password)) {
+        errors.password = "Password must include at least one number.";
+      }
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+        errors.password =
+          "Password must include at least one special character.";
+      }
     }
 
-    if (password.length < 6) {
-      return "Password must be at least 6 characters long.";
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = "Please confirm your password.";
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match. Please try again.";
     }
 
-    return "";
+    if (!formData.birthdate) errors.birthdate = "Please select your birthdate.";
+    if (!formData.gender) errors.gender = "Please select your gender.";
+
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const validationError = validateForm();
-    if (validationError) {
-      setErrorMessage(validationError);
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setErrorMessage("");
       setSuccessMessage("");
       return;
     }
@@ -143,18 +166,20 @@ export default function Signup() {
         lastName: "",
         email: "",
         password: "",
+        confirmPassword: "",
         birthdate: "",
         gender: "",
         country: "us",
       });
 
+      setFieldErrors({});
       setErrorMessage("");
-      setSuccessMessage("Signup successful! You can now log in.");
+      setSuccessMessage("Your account has been created successfully!");
     } catch (error) {
       const msg =
         error.response?.data?.message ||
         error.message ||
-        "Something went wrong. Please try again.";
+        "An unexpected error occurred. Please try again later.";
       setErrorMessage(msg);
       setSuccessMessage("");
     }
@@ -197,6 +222,8 @@ export default function Signup() {
               size="small"
               value={formData.firstName}
               onChange={handleChange}
+              error={!!fieldErrors.firstName}
+              helperText={fieldErrors.firstName}
             />
             <TextField
               id="lastName"
@@ -205,6 +232,8 @@ export default function Signup() {
               size="small"
               value={formData.lastName}
               onChange={handleChange}
+              error={!!fieldErrors.lastName}
+              helperText={fieldErrors.lastName}
             />
             <TextField
               id="email"
@@ -214,6 +243,8 @@ export default function Signup() {
               size="small"
               value={formData.email}
               onChange={handleChange}
+              error={!!fieldErrors.email}
+              helperText={fieldErrors.email}
             />
             <TextField
               id="password"
@@ -223,6 +254,28 @@ export default function Signup() {
               size="small"
               value={formData.password}
               onChange={handleChange}
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              id="confirmPassword"
+              label="Confirm Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              size="small"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={!!fieldErrors.confirmPassword}
+              helperText={fieldErrors.confirmPassword}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -241,10 +294,12 @@ export default function Signup() {
               size="small"
               value={formData.birthdate}
               onChange={handleChange}
+              error={!!fieldErrors.birthdate}
+              helperText={fieldErrors.birthdate}
               InputLabelProps={{ shrink: true }}
             />
 
-            <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small" error={!!fieldErrors.gender}>
               <InputLabel
                 id="gender-label"
                 sx={{ display: "flex", alignItems: "center" }}
@@ -269,6 +324,15 @@ export default function Signup() {
                 <MenuItem value="female">Female</MenuItem>
                 <MenuItem value="other">Other</MenuItem>
               </Select>
+              {fieldErrors.gender && (
+                <Typography
+                  variant="caption"
+                  color="error"
+                  sx={{ ml: 2, mt: 0.5 }}
+                >
+                  {fieldErrors.gender}
+                </Typography>
+              )}
             </FormControl>
 
             <FormControl fullWidth size="small">

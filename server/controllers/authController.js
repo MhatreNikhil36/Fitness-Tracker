@@ -16,7 +16,9 @@ export const loginUser = async (req, res) => {
     ]);
 
     if (users.length === 0) {
-      return res.status(404).json({ message: "User does not exist" });
+      return res
+        .status(404)
+        .json({ message: "No account found with this email address." });
     }
 
     const user = users[0];
@@ -29,7 +31,7 @@ export const loginUser = async (req, res) => {
     }
 
     if (password !== user.password_hash) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Incorrect email or password." });
     }
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "3h" });
@@ -51,7 +53,11 @@ export const loginUser = async (req, res) => {
     });
   } catch (err) {
     console.error("Login Error:", err);
-    res.status(500).json({ message: "Server error" });
+    res
+      .status(500)
+      .json({
+        message: "An unexpected error occurred. Please try again later.",
+      });
   }
 };
 
@@ -75,7 +81,11 @@ export const registerUser = async (req, res) => {
     );
 
     if (existingUsers.length > 0) {
-      return res.status(409).json({ message: "Email already registered" });
+      return res
+        .status(409)
+        .json({
+          message: "This email is already associated with an existing account.",
+        });
     }
 
     await pool.query(
@@ -94,9 +104,13 @@ export const registerUser = async (req, res) => {
       ]
     );
 
-    res.status(201).json({ message: "User registered successfully" });
+    res.status(201).json({ message: "User registered successfully." });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res
+      .status(500)
+      .json({
+        message: "An unexpected error occurred. Please try again later.",
+      });
   }
 };
 
@@ -109,12 +123,16 @@ export const getUserProfile = async (req, res) => {
     ]);
 
     if (rows.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Account not found." });
     }
 
     res.json({ user: rows[0] });
   } catch (err) {
-    res.status(500).json({ message: "Server error", error: err.message });
+    res
+      .status(500)
+      .json({
+        message: "An unexpected error occurred. Please try again later.",
+      });
   }
 };
 
@@ -152,9 +170,11 @@ export const updateUserProfile = async (req, res) => {
       ]
     );
 
-    res.json({ message: "Profile updated successfully" });
+    res.json({ message: "Profile updated successfully." });
   } catch (err) {
-    res.status(500).json({ message: "Update failed", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update your profile. Please try again." });
   }
 };
 
@@ -167,13 +187,15 @@ export const updatePassword = async (req, res) => {
       userId,
     ]);
     if (rows.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Account not found." });
     }
 
     const user = rows[0];
 
     if (user.password_hash && currentPassword !== user.password_hash) {
-      return res.status(401).json({ message: "Current password is incorrect" });
+      return res
+        .status(401)
+        .json({ message: "The current password you entered is incorrect." });
     }
 
     await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [
@@ -181,11 +203,11 @@ export const updatePassword = async (req, res) => {
       userId,
     ]);
 
-    res.json({ message: "Password updated successfully" });
+    res.json({ message: "Password updated successfully." });
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Failed to update password", error: err.message });
+      .json({ message: "Failed to update password. Please try again." });
   }
 };
 
@@ -197,7 +219,9 @@ export const sendPasswordResetEmail = async (req, res) => {
       email,
     ]);
     if (users.length === 0) {
-      return res.status(404).json({ message: "Email not found" });
+      return res
+        .status(404)
+        .json({ message: "No account found with this email address." });
     }
 
     const user = users[0];
@@ -221,11 +245,13 @@ export const sendPasswordResetEmail = async (req, res) => {
              <a href="${resetLink}">${resetLink}</a>`,
     });
 
-    res.json({ message: "Password reset email sent" });
+    res.json({ message: "Password reset email sent successfully." });
   } catch (err) {
     res
       .status(500)
-      .json({ message: "Failed to send reset email", error: err.message });
+      .json({
+        message: "Unable to send password reset email. Please try again.",
+      });
   }
 };
 
@@ -242,10 +268,10 @@ export const resetPassword = async (req, res) => {
       userId,
     ]);
 
-    res.json({ message: "Password updated successfully" });
+    res.json({ message: "Password updated successfully." });
   } catch (err) {
     res
       .status(400)
-      .json({ message: "Invalid or expired token", error: err.message });
+      .json({ message: "The password reset link is invalid or has expired." });
   }
 };

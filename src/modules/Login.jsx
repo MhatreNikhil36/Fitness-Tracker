@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
-
 import {
   Box,
   Typography,
@@ -71,12 +70,36 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  const validateFields = () => {
+    const errors = {};
+
+    if (!email.trim()) {
+      errors.email = "Please enter your email address.";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    if (!password) {
+      errors.password = "Please enter your password.";
+    }
+
+    return errors;
+  };
+
   const handleLogin = async () => {
+    const errors = validateFields();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setLoginError("");
+      return;
+    }
+
     try {
       const response = await axios.post(`${API_BASE_URL}/api/users/login`, {
         email,
@@ -87,6 +110,7 @@ export default function Login() {
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       setLoginError("");
+      setFieldErrors({});
 
       const isAdmin =
         response?.data?.user?.is_admin === 1 ||
@@ -94,7 +118,7 @@ export default function Login() {
 
       navigate(isAdmin ? "/admin" : "/dash");
     } catch (err) {
-      const msg = err.response?.data?.message || "Invalid email or password.";
+      const msg = err.response?.data?.message || "Incorrect email or password.";
       setLoginError(msg);
     }
   };
@@ -147,7 +171,12 @@ export default function Login() {
               variant="outlined"
               size="small"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setFieldErrors((prev) => ({ ...prev, email: "" }));
+              }}
+              error={!!fieldErrors.email}
+              helperText={fieldErrors.email}
             />
 
             <TextField
@@ -159,7 +188,12 @@ export default function Login() {
               variant="outlined"
               size="small"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setFieldErrors((prev) => ({ ...prev, password: "" }));
+              }}
+              error={!!fieldErrors.password}
+              helperText={fieldErrors.password}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

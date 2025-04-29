@@ -7,7 +7,9 @@ export const sendContactMessage = async (req, res) => {
   const { name, email, message } = req.body;
 
   if (!name || !email || !message) {
-    return res.status(400).json({ message: "All fields are required." });
+    return res.status(400).json({
+      message: "Please complete all required fields before submitting.",
+    });
   }
 
   try {
@@ -29,9 +31,15 @@ export const sendContactMessage = async (req, res) => {
              <p><strong>Message:</strong><br/>${message}</p>`,
     });
 
-    res.status(200).json({ message: "Message sent successfully." });
+    res.status(200).json({
+      message:
+        "Your message has been sent successfully. We will get back to you soon.",
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to send message." });
+    res.status(500).json({
+      message:
+        "Unable to send your message at the moment. Please try again later.",
+    });
   }
 };
