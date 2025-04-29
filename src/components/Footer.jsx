@@ -33,10 +33,16 @@ const Footer = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" color="black">
-              Connect
+              Get Started
             </Typography>
             <Typography variant="body2">
-              <Link to="#">Facebook</Link>
+              <Link to="/login" style={{ marginRight: 8 }}>
+                Login
+              </Link>
+              /
+              <Link to="/signup" style={{ marginLeft: 8 }}>
+                Register
+              </Link>
             </Typography>
           </Grid>
         </Grid>

@@ -129,7 +129,7 @@ const Homepage = () => {
             <Grid item xs={12} md={6}>
               <Box
                 component="img"
-                src="/performance-chart.png"
+                src="/performance-chart2.png"
                 alt="Performance Chart"
                 sx={{ width: "100%", borderRadius: 2 }}
               />
@@ -140,8 +140,8 @@ const Homepage = () => {
                 BUILT TO MAKE YOU BETTER
               </Typography>
               <Typography variant="body1" sx={{ mt: 2 }} color="black">
-                Turn your phone or smartwatch into your coach—track your
-                workouts and get tons of data and tips to help you run better.
+                Dive into your fitness data with clean visual insights on your
+                workouts, meals, and habits — all in one place.
               </Typography>
               <Typography
                 variant="h6"
