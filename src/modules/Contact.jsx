@@ -36,8 +36,8 @@ const Contact = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFormData({
-        name: user.first_name + " " + user.last_name,
-        email: user.email,
+        name: (user.firstName || "") + " " + (user.lastName || ""),
+        email: user.email || "",
         message: "",
       });
       setIsUserLoggedIn(true);
