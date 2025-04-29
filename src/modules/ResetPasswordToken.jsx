@@ -11,7 +11,10 @@ import {
   ListItem,
   ListItemText,
   styled,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
 
@@ -45,6 +48,8 @@ export default function ResetPasswordToken() {
     confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
@@ -55,16 +60,37 @@ export default function ResetPasswordToken() {
     setSuccessMessage("");
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < 5) return "Password must be at least 5 characters.";
+    if (!/[A-Za-z]/.test(password))
+      return "Password must include at least one letter.";
+    if (!/[0-9]/.test(password))
+      return "Password must include at least one number.";
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password))
+      return "Password must include at least one special character.";
+    return "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.newPassword || !form.confirmPassword) {
-      setErrorMessage("All fields are required.");
+      setErrorMessage("Please complete all required fields.");
+      return;
+    }
+
+    const passwordError = validatePassword(form.newPassword);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       return;
     }
 
     if (form.newPassword !== form.confirmPassword) {
-      setErrorMessage("Passwords do not match.");
+      setErrorMessage("Passwords do not match. Please try again.");
       return;
     }
 
@@ -74,11 +100,13 @@ export default function ResetPasswordToken() {
       });
 
       setSuccessMessage(
-        "Password reset successful! You can now log in with your new password."
+        "Your password has been reset successfully. You can now log in with your new password."
       );
       setForm({ newPassword: "", confirmPassword: "" });
     } catch (err) {
-      const msg = err.response?.data?.message || "Failed to reset password.";
+      const msg =
+        err.response?.data?.message ||
+        "Unable to reset your password. Please try again.";
       setErrorMessage(msg);
     }
   };
@@ -130,21 +158,47 @@ export default function ResetPasswordToken() {
               <TextField
                 label="New Password"
                 name="newPassword"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={form.newPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility} edge="end">
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <TextField
                 label="Confirm Password"
                 name="confirmPassword"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={form.confirmPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={togglePasswordVisibility} edge="end">
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Box sx={{ mt: 1 }}>

@@ -37,19 +37,21 @@ const ForgotPassword = () => {
     e.preventDefault();
 
     if (!email) {
-      setErrorMessage("Email is required.");
+      setErrorMessage("Please enter your email address.");
       return;
     }
 
     try {
       await axios.post(`${API_BASE_URL}/api/users/forgot-password`, { email });
       setSuccessMessage(
-        "Password reset link has been sent to your email. Please also check your spam folder."
+        "A password reset link has been sent to your email address. Please also check your spam folder."
       );
       setErrorMessage("");
       setEmail("");
     } catch (err) {
-      const msg = err.response?.data?.message || "Failed to send reset email.";
+      const msg =
+        err.response?.data?.message ||
+        "Unable to send password reset email. Please try again later.";
       setErrorMessage(msg);
     }
   };

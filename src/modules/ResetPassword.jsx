@@ -6,7 +6,10 @@ import {
   Grid,
   TextField,
   Typography,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
+import { Eye, EyeOff } from "lucide-react";
 import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
@@ -18,15 +21,38 @@ export default function ResetPassword() {
     confirmPassword: "",
   });
 
+  const [showPassword, setShowPassword] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isGoogleUser, setIsGoogleUser] = useState(false);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?.password_hash || user?.password_hash === "null") {
-      setIsGoogleUser(true);
-    }
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${API_BASE_URL}/api/users/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (
+          !res.data.user.password_hash ||
+          res.data.user.password_hash === ""
+        ) {
+          setIsGoogleUser(true);
+        } else {
+          setIsGoogleUser(false);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user profile", err);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const handleChange = (e) => {
@@ -36,16 +62,51 @@ export default function ResetPassword() {
     setSuccessMessage("");
   };
 
+  const togglePasswordVisibility = (field) => {
+    if (field === "new-confirm") {
+      setShowPassword((prev) => ({
+        ...prev,
+        new: !prev.new,
+        confirm: !prev.new,
+      }));
+    } else {
+      setShowPassword((prev) => ({
+        ...prev,
+        [field]: !prev[field],
+      }));
+    }
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < 5)
+      return "Password must be at least 5 characters long.";
+    if (!/[A-Za-z]/.test(password))
+      return "Password must include at least one letter.";
+    if (!/[0-9]/.test(password))
+      return "Password must include at least one number.";
+    if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password))
+      return "Password must include at least one special character.";
+    return "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!form.currentPassword || !form.newPassword || !form.confirmPassword) {
-      setErrorMessage("All fields are required.");
+      setErrorMessage("Please complete all required fields.");
+      return;
+    }
+
+    const passwordError = validatePassword(form.newPassword);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       return;
     }
 
     if (form.newPassword !== form.confirmPassword) {
-      setErrorMessage("New passwords do not match.");
+      setErrorMessage(
+        "The new passwords you entered do not match. Please try again."
+      );
       return;
     }
 
@@ -62,10 +123,12 @@ export default function ResetPassword() {
         }
       );
 
-      setSuccessMessage("Password updated successfully.");
+      setSuccessMessage("Your password has been updated successfully.");
       setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
-      const msg = err.response?.data?.message || "Failed to update password.";
+      const msg =
+        err.response?.data?.message ||
+        "Unable to update your password. Please try again later.";
       setErrorMessage(msg);
     }
   };
@@ -85,8 +148,8 @@ export default function ResetPassword() {
 
             {isGoogleUser ? (
               <Typography color="error" variant="body2" sx={{ mb: 2 }}>
-                This account was created using Google. You don't need to set or
-                change a password.
+                This account was created with Google Sign-In. You do not need to
+                set or change a password.
               </Typography>
             ) : (
               <>
@@ -115,34 +178,82 @@ export default function ResetPassword() {
               <TextField
                 label="Current Password"
                 name="currentPassword"
-                type="password"
+                type={showPassword.current ? "text" : "password"}
                 value={form.currentPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
                 disabled={isGoogleUser}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => togglePasswordVisibility("current")}
+                        edge="end"
+                      >
+                        {showPassword.current ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <TextField
                 label="New Password"
                 name="newPassword"
-                type="password"
+                type={showPassword.new ? "text" : "password"}
                 value={form.newPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
                 disabled={isGoogleUser}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => togglePasswordVisibility("new-confirm")}
+                        edge="end"
+                      >
+                        {showPassword.new ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <TextField
                 label="Confirm New Password"
                 name="confirmPassword"
-                type="password"
+                type={showPassword.confirm ? "text" : "password"}
                 value={form.confirmPassword}
                 onChange={handleChange}
                 fullWidth
                 size="small"
                 disabled={isGoogleUser}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => togglePasswordVisibility("new-confirm")}
+                        edge="end"
+                      >
+                        {showPassword.confirm ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Box sx={{ mt: 1 }}>

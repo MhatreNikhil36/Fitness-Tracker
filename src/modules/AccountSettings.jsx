@@ -7,8 +7,13 @@ import {
   Container,
   Grid,
   Link as MuiLink,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SettingsSidebar from "../components/SettingsSidebar";
 import axios from "axios";
 import { API_BASE_URL } from "../api/config";
@@ -18,6 +23,8 @@ export default function AccountSettings() {
   const [originalEmail, setOriginalEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -62,6 +69,25 @@ export default function AccountSettings() {
         "Unable to update your email address. Please try again.";
       setErrorMessage(msg);
       setSuccessMessage("");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`${API_BASE_URL}/api/users/delete-account`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      navigate("/signup");
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          "Unable to delete your account. Please try again later."
+      );
     }
   };
 
@@ -152,14 +178,39 @@ export default function AccountSettings() {
                 proceeding.
               </Typography>
               <MuiLink
-                component={Link}
-                to="/delete-account"
+                component="button"
                 underline="hover"
                 sx={{ color: "text.primary" }}
+                onClick={() => setOpenDeleteDialog(true)}
               >
                 Delete Account
               </MuiLink>
             </Box>
+
+            <Dialog
+              open={openDeleteDialog}
+              onClose={() => setOpenDeleteDialog(false)}
+            >
+              <DialogTitle>Delete Account</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to permanently delete your account? This
+                  action cannot be undone.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={() => setOpenDeleteDialog(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDeleteAccount}
+                  color="error"
+                  variant="contained"
+                >
+                  Confirm Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Box>
         </Grid>
       </Grid>

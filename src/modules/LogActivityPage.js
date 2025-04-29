@@ -19,6 +19,7 @@ import {
   TextField,
   MenuItem,
   CircularProgress,
+  Container,
 } from "@mui/material";
 
 const LogActivityPage = () => {
@@ -223,7 +224,6 @@ const LogActivityPage = () => {
       case "recommended":
         return (
           <Box>
-            {/* User Overview */}
             {recommendedWorkouts.user && (
               <Card sx={{ mb: 3 }}>
                 <CardContent>
@@ -257,62 +257,8 @@ const LogActivityPage = () => {
                 </CardContent>
               </Card>
             )}
-
-            {/* Workouts Grid */}
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress />
-              </Box>
-            ) : recommendedWorkouts.recommendedWorkouts &&
-              recommendedWorkouts.recommendedWorkouts.length > 0 ? (
-              <Grid container spacing={3}>
-                {recommendedWorkouts.recommendedWorkouts.map((rec, idx) => (
-                  <Grid item xs={12} md={6} lg={4} key={idx}>
-                    <Card>
-                      <CardContent>
-                        <Typography variant="h6">
-                          {rec.title ||
-                            rec.workout_name ||
-                            `Workout ${idx + 1}`}
-                        </Typography>
-                        <Typography variant="body2">
-                          Duration: {rec.duration ?? 30} min
-                        </Typography>
-                        <Typography variant="body2">
-                          Intensity:{" "}
-                          {rec.intensity || rec.level_of_intensity || "N/A"}
-                        </Typography>
-
-                        {rec.exercises && rec.exercises.length > 0 && (
-                          <Box sx={{ mt: 2 }}>
-                            <Typography variant="subtitle2">
-                              Exercises:
-                            </Typography>
-                            <ul style={{ paddingLeft: 16 }}>
-                              {rec.exercises.map((exercise, exIdx) => (
-                                <li key={exIdx}>
-                                  <Typography variant="body2">
-                                    {exercise}
-                                  </Typography>
-                                </li>
-                              ))}
-                            </ul>
-                          </Box>
-                        )}
-                      </CardContent>
-                      <CardActions sx={{ justifyContent: "flex-end" }}>
-                        <Button
-                          variant="contained"
-                          color="error"
-                          onClick={() => handleViewDetails(rec)}
-                        >
-                          View Details
-                        </Button>
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+            {recommendedWorkouts.recommendedWorkouts?.length > 0 ? (
+              renderCards(recommendedWorkouts.recommendedWorkouts)
             ) : (
               <Typography>No recommended workouts found.</Typography>
             )}
@@ -351,50 +297,54 @@ const LogActivityPage = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", px: 4, minHeight: "100vh" }}>
-      <Box sx={{ width: 240 }}>
-        <List>
-          {[
-            { key: "available", label: "Available Workouts" },
-            { key: "past", label: "Past Activity" },
-            { key: "recommended", label: "Recommended Workouts" },
-            { key: "exercises", label: "Available Exercises" },
-          ].map((tab) => (
-            <ListItemButton
-              key={tab.key}
-              selected={selectedTab === tab.key}
-              onClick={() => setSelectedTab(tab.key)}
-              sx={{
-                borderLeft: "4px solid",
-                borderLeftColor:
-                  selectedTab === tab.key ? "error.main" : "transparent",
-              }}
-            >
-              <ListItemText
-                primary={tab.label}
-                primaryTypographyProps={{
-                  fontSize: "0.875rem",
-                  fontWeight: selectedTab === tab.key ? 500 : 400,
+    <Container maxWidth="lg" sx={{ mt: 2 }}>
+      <Grid container spacing={4}>
+        <Grid item sx={{ width: 240 }}>
+          <List>
+            {[
+              { key: "available", label: "Available Workouts" },
+              { key: "past", label: "Past Activity" },
+              { key: "recommended", label: "Recommended Workouts" },
+              { key: "exercises", label: "Available Exercises" },
+            ].map((tab) => (
+              <ListItemButton
+                key={tab.key}
+                selected={selectedTab === tab.key}
+                onClick={() => setSelectedTab(tab.key)}
+                sx={{
+                  borderLeft: "4px solid",
+                  borderLeftColor:
+                    selectedTab === tab.key ? "error.main" : "transparent",
                 }}
-              />
-            </ListItemButton>
-          ))}
-        </List>
-      </Box>
+              >
+                <ListItemText
+                  primary={tab.label}
+                  primaryTypographyProps={{
+                    fontSize: "0.875rem",
+                    fontWeight: selectedTab === tab.key ? 500 : 400,
+                  }}
+                />
+              </ListItemButton>
+            ))}
+          </List>
+        </Grid>
 
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          {
-            {
-              available: "Available Workouts",
-              past: "Past Activity",
-              recommended: "Recommended Workouts",
-              exercises: "Available Exercises",
-            }[selectedTab]
-          }
-        </Typography>
-        {renderContent()}
-      </Box>
+        <Grid item xs>
+          <Box sx={{ maxWidth: 900 }}>
+            <Typography variant="h6" fontWeight={500} sx={{ mb: 4 }}>
+              {
+                {
+                  available: "Available Workouts",
+                  past: "Past Activity",
+                  recommended: "Recommended Workouts",
+                  exercises: "Available Exercises",
+                }[selectedTab]
+              }
+            </Typography>
+            {renderContent()}
+          </Box>
+        </Grid>
+      </Grid>
 
       {selectedItem && (
         <Dialog
@@ -433,7 +383,7 @@ const LogActivityPage = () => {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </Container>
   );
 };
 

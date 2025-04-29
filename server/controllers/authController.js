@@ -31,7 +31,9 @@ export const loginUser = async (req, res) => {
     }
 
     if (password !== user.password_hash) {
-      return res.status(401).json({ message: "Incorrect email or password." });
+      return res
+        .status(401)
+        .json({ message: "The password you entered is incorrect." });
     }
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "3h" });
@@ -53,11 +55,9 @@ export const loginUser = async (req, res) => {
     });
   } catch (err) {
     console.error("Login Error:", err);
-    res
-      .status(500)
-      .json({
-        message: "An unexpected error occurred. Please try again later.",
-      });
+    res.status(500).json({
+      message: "An unexpected error occurred. Please try again later.",
+    });
   }
 };
 
@@ -81,11 +81,9 @@ export const registerUser = async (req, res) => {
     );
 
     if (existingUsers.length > 0) {
-      return res
-        .status(409)
-        .json({
-          message: "This email is already associated with an existing account.",
-        });
+      return res.status(409).json({
+        message: "This email is already associated with an existing account.",
+      });
     }
 
     await pool.query(
@@ -106,11 +104,9 @@ export const registerUser = async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully." });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "An unexpected error occurred. Please try again later.",
-      });
+    res.status(500).json({
+      message: "An unexpected error occurred. Please try again later.",
+    });
   }
 };
 
@@ -128,11 +124,9 @@ export const getUserProfile = async (req, res) => {
 
     res.json({ user: rows[0] });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "An unexpected error occurred. Please try again later.",
-      });
+    res.status(500).json({
+      message: "An unexpected error occurred. Please try again later.",
+    });
   }
 };
 
@@ -247,11 +241,9 @@ export const sendPasswordResetEmail = async (req, res) => {
 
     res.json({ message: "Password reset email sent successfully." });
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Unable to send password reset email. Please try again.",
-      });
+    res.status(500).json({
+      message: "Unable to send password reset email. Please try again.",
+    });
   }
 };
 
@@ -273,5 +265,51 @@ export const resetPassword = async (req, res) => {
     res
       .status(400)
       .json({ message: "The password reset link is invalid or has expired." });
+  }
+};
+
+export const updateEmail = async (req, res) => {
+  const userId = req.userId;
+  const { email } = req.body;
+
+  try {
+    if (!email) {
+      return res.status(400).json({ message: "Email is required." });
+    }
+
+    const [existingUsers] = await pool.query(
+      "SELECT id FROM users WHERE email = ? AND id != ?",
+      [email, userId]
+    );
+
+    if (existingUsers.length > 0) {
+      return res
+        .status(409)
+        .json({ message: "This email is already in use by another account." });
+    }
+
+    await pool.query("UPDATE users SET email = ? WHERE id = ?", [
+      email,
+      userId,
+    ]);
+
+    res.json({ message: "Email updated successfully." });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to update email. Please try again later." });
+  }
+};
+
+export const deleteAccount = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    await pool.query("DELETE FROM users WHERE id = ?", [userId]);
+    res.json({ message: "Account deleted successfully." });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to delete account. Please try again later." });
   }
 };
