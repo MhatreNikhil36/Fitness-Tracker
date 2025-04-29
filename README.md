@@ -1,7 +1,5 @@
 # Personalized Fitness Tracker
 
-## Phase 3 - Readme
-
 ### Group 11 Members:
 
 1. Alekhya Yalagonda (1002210903)
@@ -41,8 +39,6 @@ The login page allows users to sign in either as Admin or User.
 
 ## Features Implemented
 
-This phase primarily focused on **backend feature expansion** along with integration into the frontend pages. Major enhancements included:
-
 - **JWT Authentication & Secure Routing:**
 
   - Token-based login/signup for both users and admins.
@@ -72,12 +68,18 @@ This phase primarily focused on **backend feature expansion** along with integra
   - Frontend uses Recharts to visualize analytics.
 
 - **Admin Control Panel Enhancements:**
+
   - Add/edit exercises and workouts.
   - Manage Gemini prompt templates for nutrition AI.
 
-## Backend Files Added in This Phase
+- **Messaging Functionality:**
 
-A majority of the work was implemented on the server side. Key backend files include:
+  - Enabled direct communication between users and admins through an integrated messaging system.
+
+- **Utility Pages:**
+  - Forgot Password, Reset Password, Profile Settings, Account Settings.
+
+## Backend Files
 
 ### 📁 Controllers:
 
@@ -111,7 +113,7 @@ A majority of the work was implemented on the server side. Key backend files inc
 
 - `verifyToken.js` – Secures routes using JWT.
 
-## Pages Developed for This Phase
+## Pages Developed
 
 ### User-Facing Pages:
 
@@ -125,6 +127,10 @@ A majority of the work was implemented on the server side. Key backend files inc
 - `/goal-progress/:goalId` – Track progress for a specific goal.
 - `/logactivity` – Log workouts and exercises.
 - `/activity` – View all completed activities.
+- `/profile` – User profile page.
+- `/settings` – Account settings.
+- `/forgot-password` – Forgot password page.
+- `/reset-password` – Reset password page.
 
 ### Admin Pages:
 
@@ -189,6 +195,6 @@ A majority of the work was implemented on the server side. Key backend files inc
 
 ## Notes
 
-- This phase emphasized backend development with robust API integration and middleware protection.
+- Backend development includes robust API integration and middleware protection.
 - Gemini AI integration is modular for future expansion.
 - Backend structure is organized with clear separation of concerns via controllers and routes.
