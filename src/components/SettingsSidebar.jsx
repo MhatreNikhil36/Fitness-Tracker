@@ -20,7 +20,7 @@ const SettingsSidebar = () => {
   const navItems = [
     { path: "/settings/profile", label: "Profile Information" },
     { path: "/settings/account", label: "Account" },
-    { path: "/settings/display", label: "Display" },
+    // { path: "/settings/display", label: "Display" },
     { path: "/messages", label: "Messages" },
     { path: "#logout", label: "Log Out", isLogout: true },
   ];
